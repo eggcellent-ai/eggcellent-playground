@@ -1,0 +1,187 @@
+import { useEffect, useState } from 'react'
+import { useSystemPromptStore } from '../lib/stores'
+import type { UploadedImage } from './InputComponent'
+import { useAIService, type ChatMessage } from '../lib/aiService'
+
+interface TableCellProps {
+	rowId: string
+	modelId: string
+	input: string
+	images?: UploadedImage[]
+	systemPrompt: string
+	activePromptId: string | null
+	activeVersionId: string | null
+}
+
+export default function TableCell({
+	rowId,
+	modelId,
+	input,
+	images = [],
+	systemPrompt,
+	activePromptId,
+	activeVersionId,
+}: TableCellProps) {
+	const [response, setResponse] = useState('')
+	const [isLoading, setIsLoading] = useState(false)
+	const [hasRun, setHasRun] = useState(false)
+
+	const { getTableCellResponse, updateTableCellResponse } =
+		useSystemPromptStore()
+
+	const { streamText, hasValidKeyForModel } = useAIService()
+
+	// Load existing response
+	useEffect(() => {
+		if (activePromptId && activeVersionId) {
+			const existingResponse = getTableCellResponse(
+				activePromptId,
+				activeVersionId,
+				rowId,
+				modelId
+			)
+			if (existingResponse) {
+				setResponse(existingResponse)
+				setHasRun(true)
+			} else {
+				setResponse('')
+				setHasRun(false)
+			}
+		}
+	}, [activePromptId, activeVersionId, rowId, modelId, getTableCellResponse])
+
+	const handleRun = async () => {
+		// Allow if there's either text input or images
+		const hasContent = input.trim() || images.length > 0
+		if (!hasContent || isLoading) return
+
+		// Check if we have a valid API key for this model
+		if (!hasValidKeyForModel(modelId)) {
+			setResponse('Error: API key required for this model')
+			setHasRun(true)
+			return
+		}
+
+		setIsLoading(true)
+		setResponse('')
+		setHasRun(false)
+
+		try {
+			// Build messages array for AI service
+			const messages: ChatMessage[] = [
+				{
+					role: 'system',
+					content: systemPrompt,
+				},
+			]
+
+			// Build user message content
+			if (images.length > 0) {
+				// Multimodal content
+				const content: Array<
+					{ type: 'text'; text: string } | { type: 'image'; image: string }
+				> = []
+
+				if (input.trim()) {
+					content.push({
+						type: 'text',
+						text: input.trim(),
+					})
+				}
+
+				images.forEach((image) => {
+					content.push({
+						type: 'image',
+						image: image.base64,
+					})
+				})
+
+				messages.push({
+					role: 'user',
+					content,
+				})
+			} else {
+				// Text-only content
+				messages.push({
+					role: 'user',
+					content: input.trim(),
+				})
+			}
+
+			// Use streaming AI service
+			const fullResponse = await streamText(messages, modelId, (text) =>
+				setResponse(text)
+			)
+
+			// Save response to store
+			if (activePromptId && activeVersionId) {
+				updateTableCellResponse(
+					activePromptId,
+					activeVersionId,
+					rowId,
+					modelId,
+					fullResponse
+				)
+			}
+
+			setHasRun(true)
+		} catch (error) {
+			console.error('Error:', error)
+			const errorMessage =
+				error instanceof Error ? error.message : 'Failed to get response'
+			setResponse(`Error: ${errorMessage}`)
+			setHasRun(true)
+		} finally {
+			setIsLoading(false)
+		}
+	}
+
+	const handleClear = () => {
+		setResponse('')
+		setHasRun(false)
+		if (activePromptId && activeVersionId) {
+			updateTableCellResponse(
+				activePromptId,
+				activeVersionId,
+				rowId,
+				modelId,
+				''
+			)
+		}
+	}
+
+	return (
+		<div className="flex flex-col h-full min-h-40 justify-between group">
+			{/* Response Area */}
+			<div className="flex-1 min-h-24 text-sm">
+				{isLoading ? (
+					<div className="animate-pulse text-text-muted">Running prompt...</div>
+				) : response ? (
+					<div className="whitespace-pre-wrap text-text-primary">
+						{response}
+					</div>
+				) : (
+					<div className="text-text-muted italic">Click Run to test</div>
+				)}
+			</div>
+			{/* Controls */}
+			<div className="flex space-x-2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+				<button
+					onClick={handleRun}
+					disabled={isLoading}
+					className="px-3 py-1 bg-neutral-900 text-white text-xs rounded hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+				>
+					{isLoading ? 'Running...' : 'Run'}
+				</button>
+				{hasRun && (
+					<button
+						onClick={handleClear}
+						className="px-3 py-1 border border-neutral-300 text-neutral-700 text-xs rounded hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
+					>
+						Clear
+					</button>
+				)}
+			</div>
+		</div>
+	)
+}
