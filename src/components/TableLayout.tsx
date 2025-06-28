@@ -716,7 +716,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										(row) => row.input.trim() || (row.images || []).length > 0
 									)
 								}
-								className="px-4 py-2 bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+								className="px-4 py-2 bg-green hover:bg-app text-white text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
 							>
 								<PlayIcon className="w-4 h-4" />
 								{runningAllTable ? 'Running All...' : 'Run Table'}

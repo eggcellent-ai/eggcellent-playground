@@ -5,37 +5,35 @@
 	--background: #ffffff;
 	--foreground: #171717;
 
-	/* Surface colors */
-	--surface-background: #ffffff;
-	--surface-foreground: #171717;
+	/* App semantic colors */
+	--color-text-main: #011a25;
+	--color-text-sub: #093c52;
+	--color-app: #0080bc;
+	--color-border: #cee1e8;
+	--color-button: #ddeaf0;
+	--color-background: #f6f6f6;
+	--color-green: #00d945;
+	--color-green-light: #c5ddcc;
+	--color-green-border: #c2d9c8;
+	--color-pink: #f53293;
+
+	/* Surface colors (keeping for compatibility) */
+	--surface-background: var(--background);
+	--surface-foreground: var(--foreground);
 	--surface-card: #ffffff;
 	--surface-hover: #f5f5f5;
-	--surface-border: #e5e5e5;
+	--surface-border: var(--color-border);
 	--surface-input: #ffffff;
 
-	/* Text colors */
-	--text-primary: #171717;
-	--text-secondary: #525252;
+	/* Text colors (keeping for compatibility) */
+	--text-primary: var(--color-text-main);
+	--text-secondary: var(--color-text-sub);
 	--text-muted: #737373;
 	--text-inverse: #ffffff;
 
-	/* Brand colors */
-	--primary: #2563eb;
-	--primary-hover: #1d4ed8;
-	--primary-light: #dbeafe;
-
-	/* Status colors */
-	--success: #16a34a;
-	--success-hover: #15803d;
-	--success-light: #dcfce7;
-
-	--error: #dc2626;
-	--error-hover: #b91c1c;
-	--error-light: #fee2e2;
-
-	--warning: #d97706;
-	--warning-hover: #b45309;
-	--warning-light: #fef3c7;
+	/* Legacy brand colors (keeping for compatibility) */
+	--primary: var(--color-green);
+	--primary-hover: var(--color-app);
 
 	--font-geist-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
 		Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -49,37 +47,31 @@
 		--background: #0a0a0a;
 		--foreground: #ededed;
 
-		/* Surface colors */
-		--surface-background: #0a0a0a;
-		--surface-foreground: #ededed;
+		/* App semantic colors - dark mode variants */
+		--color-text-main: #ededed;
+		--color-text-sub: #a3a3a3;
+		--color-app: #0080bc;
+		--color-border: #404040;
+		--color-button: #262626;
+		--color-background: #171717;
+		--color-green: #00d945;
+		--color-green-light: #166534;
+		--color-green-border: #22c55e;
+		--color-pink: #f53293;
+
+		/* Surface colors (compatibility) */
+		--surface-background: var(--background);
+		--surface-foreground: var(--foreground);
 		--surface-card: #171717;
 		--surface-hover: #262626;
-		--surface-border: #404040;
+		--surface-border: var(--color-border);
 		--surface-input: #171717;
 
-		/* Text colors */
-		--text-primary: #ededed;
-		--text-secondary: #a3a3a3;
+		/* Text colors (compatibility) */
+		--text-primary: var(--color-text-main);
+		--text-secondary: var(--color-text-sub);
 		--text-muted: #737373;
 		--text-inverse: #171717;
-
-		/* Brand colors */
-		--primary: #3b82f6;
-		--primary-hover: #2563eb;
-		--primary-light: #1e40af;
-
-		/* Status colors */
-		--success: #22c55e;
-		--success-hover: #16a34a;
-		--success-light: #166534;
-
-		--error: #ef4444;
-		--error-hover: #dc2626;
-		--error-light: #991b1b;
-
-		--warning: #f59e0b;
-		--warning-hover: #d97706;
-		--warning-light: #92400e;
 	}
 }
 
@@ -94,6 +86,47 @@ body {
 	background: var(--background);
 	color: var(--foreground);
 	font-family: var(--font-geist-mono), monospace;
+}
+
+/* Utility classes */
+.text-main {
+	color: var(--color-text-main);
+}
+.text-sub {
+	color: var(--color-text-sub);
+}
+.text-app {
+	color: var(--color-app);
+}
+.bg-button {
+	background-color: var(--color-button);
+}
+.bg-app {
+	background-color: var(--color-app);
+}
+.bg-page {
+	background-color: var(--color-background);
+}
+.border-app {
+	border-color: var(--color-border);
+}
+.text-green {
+	color: var(--color-green);
+}
+.bg-green-light {
+	background-color: var(--color-green-light);
+}
+.border-green-light {
+	border-color: var(--color-green-light);
+}
+.text-pink {
+	color: var(--color-pink);
+}
+.bg-pink {
+	background-color: var(--color-pink);
+}
+.bg-green {
+	background-color: var(--color-green);
 }
 
 /* Line clamp utilities */
