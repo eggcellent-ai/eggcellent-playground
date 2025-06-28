@@ -9,7 +9,7 @@
 	--color-text-main: #011a25;
 	--color-text-sub: #093c52;
 	--color-app: #0080bc;
-	--color-border: #cee1e8;
+	--color-border: #e5e5e5;
 	--color-button: #ddeaf0;
 	--color-background: #f6f6f6;
 	--color-green: #00d945;
@@ -108,6 +108,9 @@ body {
 	background-color: var(--color-background);
 }
 .border-app {
+	border-color: var(--color-border);
+}
+.border-table {
 	border-color: var(--color-border);
 }
 .text-green {

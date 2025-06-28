@@ -691,12 +691,12 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	}, [showModelDropdown])
 
 	return (
-		<div className="flex flex-col w-full h-full overflow-hidden border border-surface-border bg-surface-card">
+		<div className="flex flex-col w-full h-full overflow-hidden border border-table bg-surface-card">
 			{/* Show table only if there's an active prompt version */}
 			{activePromptId && activeVersionId ? (
 				<>
 					{/* Prompt Management Section */}
-					<div className="border-b border-surface-border">
+					<div className="border-b border-table">
 						<div className="flex justify-between items-center gap-2 mt-auto p-4">
 							<div className="flex-1">
 								<input
@@ -724,7 +724,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						</div>
 
 						{/* Full Prompt Editor */}
-						<div className="border-t border-surface-border bg-surface-card">
+						<div className="border-t border-table bg-surface-card">
 							<div className="p-4">
 								<textarea
 									className="w-full resize-y bg-surface-card text-text-primary placeholder-text-muted transition-colors text-sm focus:outline-none"
@@ -792,7 +792,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 						{/* Version History Section */}
 						{showVersionHistory && (
-							<div className="border-t border-surface-border p-4">
+							<div className="border-t border-table p-4">
 								<h3 className="text-sm font-semibold mb-3 text-text-primary">
 									Version History
 								</h3>
@@ -802,7 +802,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					</div>
 
 					{/* JSON Input Section */}
-					<div className="p-4 border-b border-surface-border">
+					<div className="p-4 border-b border-table">
 						<div className="mb-3">
 							<h3 className="text-sm font-semibold text-text-primary">
 								Bulk Input
@@ -822,7 +822,7 @@ Examples of valid formats:
 {"items": ["Item 1", "Item 2"]}`}
 									className={`w-full h-32 p-3 border text-sm resize-none focus:ring-2 focus:border-blue-500 bg-surface-input transition-colors ${
 										jsonValidationStatus.isEmpty
-											? 'border-surface-border'
+											? 'border-table'
 											: jsonValidationStatus.isValid
 											? 'border-green-300 focus:ring-green-500'
 											: 'border-red-300 focus:ring-red-500'
@@ -869,7 +869,7 @@ Examples of valid formats:
 					</div>
 
 					{/* Add Row Button */}
-					<div className="p-4 border-b border-surface-border">
+					<div className="p-4 border-b border-table">
 						<button
 							onClick={handleAddRow}
 							className="flex items-center px-4 py-2 text-sm text-neutral-900 hover:text-neutral-700 hover:bg-neutral-50 transition-colors"
@@ -884,7 +884,7 @@ Examples of valid formats:
 						<table className="w-full h-full table-fixed border-collapse">
 							<thead className="sticky top-0">
 								<tr>
-									<th className="p-3 text-left text-sm font-semibold w-1/3 bg-surface-card text-text-primary border-b border-r border-surface-border">
+									<th className="p-3 text-left text-sm font-semibold w-1/3 bg-surface-card text-text-primary border-b border-r border-table">
 										Input
 									</th>
 									{selectedModels.map((modelId, index) => {
@@ -895,8 +895,10 @@ Examples of valid formats:
 										return (
 											<th
 												key={modelId}
-												className={`p-3 text-left text-sm font-semibold bg-surface-card text-text-primary border-b border-surface-border ${
-													index < selectedModels.length - 1 ? 'border-r' : ''
+												className={`p-3 text-left text-sm font-semibold bg-surface-card text-text-primary border-b border-table ${
+													index < selectedModels.length - 1
+														? 'border-r border-table'
+														: ''
 												}`}
 												style={{ width: columnWidth }}
 											>
@@ -918,7 +920,7 @@ Examples of valid formats:
 											</th>
 										)
 									})}
-									<th className="p-3 text-center text-sm font-semibold w-16 bg-surface-card text-text-primary border-b border-l border-surface-border relative">
+									<th className="p-3 text-center text-sm font-semibold w-16 bg-surface-card text-text-primary border-b border-l border-table relative">
 										<div ref={dropdownRef}>
 											<button
 												onClick={() => setShowModelDropdown(!showModelDropdown)}
@@ -981,7 +983,7 @@ Examples of valid formats:
 									) => (
 										<tr key={row.id} className="hover:bg-surface-hover">
 											<td
-												className={`p-3 align-top border-r border-surface-border ${
+												className={`p-3 align-top border-r border-table ${
 													rowIndex < tableData.length - 1 ? 'border-b' : ''
 												}`}
 											>
@@ -1036,11 +1038,11 @@ Examples of valid formats:
 											{selectedModels.map((modelId, colIndex) => (
 												<td
 													key={`${row.id}-${modelId}`}
-													className={`p-3 align-top border-surface-border ${
+													className={`p-3 align-top border-table ${
 														rowIndex < tableData.length - 1 ? 'border-b' : ''
 													} ${
 														colIndex < selectedModels.length - 1
-															? 'border-r'
+															? 'border-r border-table'
 															: ''
 													}`}
 												>
@@ -1060,7 +1062,7 @@ Examples of valid formats:
 											))}
 											{/* Add Model Column - Empty Cell */}
 											<td
-												className={`p-3 align-top border-l border-surface-border ${
+												className={`p-3 align-top border-l border-table ${
 													rowIndex < tableData.length - 1 ? 'border-b' : ''
 												}`}
 											>
