@@ -97,7 +97,7 @@ export default function PromptList() {
 							<div
 								key={prompt.id}
 								onClick={() => handlePromptClick(prompt.id)}
-								className="bg-surface-card border border-surface-border hover:border-secondary-300 transition-all duration-200 cursor-pointer group"
+								className="bg-white border border-table hover:border-app transition-all duration-200 cursor-pointer group"
 							>
 								<div className="p-4">
 									<div className="flex items-start justify-between mb-8">

@@ -696,7 +696,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	}, [showModelDropdown])
 
 	return (
-		<div className="flex flex-col w-full h-full overflow-hidden border border-table bg-surface-card">
+		<div className="flex flex-col w-full h-full overflow-hidden border border-table bg-white">
 			{/* Show table only if there's an active prompt version */}
 			{activePromptId && activeVersionId ? (
 				<>
@@ -768,7 +768,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										onClick={() => setShowVersionHistory(!showVersionHistory)}
 										className={`px-4 py-2 text-sm border transition-colors ${
 											showVersionHistory
-												? 'bg-neutral-900 border-neutral-700 text-white'
+												? 'bg-neutral-300 border-neutral-300 text-black'
 												: 'border-neutral-300 text-text-secondary hover:border-neutral-400 hover:bg-neutral-50'
 										}`}
 									>
