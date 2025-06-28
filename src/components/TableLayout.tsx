@@ -1,5 +1,10 @@
 import { useSystemPromptStore, AVAILABLE_MODELS } from '../lib/stores'
-import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import {
+	PlusIcon,
+	XMarkIcon,
+	ArrowsPointingOutIcon,
+	ArrowsPointingInIcon,
+} from '@heroicons/react/24/outline'
 import { PlayIcon } from '@heroicons/react/24/solid'
 import { CheckIcon } from '@heroicons/react/24/solid'
 import { useState, useEffect, useRef, useCallback } from 'react'
@@ -716,7 +721,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										(row) => row.input.trim() || (row.images || []).length > 0
 									)
 								}
-								className="px-4 py-2 bg-green hover:bg-app text-white text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+								className="px-5 py-2 bg-green hover:bg-app text-white text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
 							>
 								<PlayIcon className="w-4 h-4" />
 								{runningAllTable ? 'Running All...' : 'Run Table'}
@@ -725,7 +730,19 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 						{/* Full Prompt Editor */}
 						<div className="border-t border-table bg-surface-card">
-							<div className="p-4">
+							<div className="p-4 relative">
+								{/* Expand/Collapse Icon - Top Right */}
+								<button
+									onClick={() => setIsEditorExpanded(!isEditorExpanded)}
+									className="absolute top-2 right-2 p-1 text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors z-10"
+									title={isEditorExpanded ? 'Collapse editor' : 'Expand editor'}
+								>
+									{isEditorExpanded ? (
+										<ArrowsPointingInIcon className="w-4 h-4" />
+									) : (
+										<ArrowsPointingOutIcon className="w-4 h-4" />
+									)}
+								</button>
 								<textarea
 									className="w-full resize-y bg-surface-card text-text-primary placeholder-text-muted transition-colors text-sm focus:outline-none"
 									style={{
@@ -748,18 +765,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 								/>
 								<div className="flex justify-end items-center gap-2 mt-3">
 									<button
-										onClick={() => setIsEditorExpanded(!isEditorExpanded)}
-										className={`px-3 py-1 text-xs border transition-colors ${
-											isEditorExpanded
-												? 'bg-neutral-900 border-neutral-700 text-white'
-												: 'border-neutral-300 text-text-secondary hover:border-neutral-400 hover:bg-neutral-50'
-										}`}
-									>
-										{isEditorExpanded ? 'Collapse' : 'Expand'}
-									</button>
-									<button
 										onClick={() => setShowVersionHistory(!showVersionHistory)}
-										className={`px-3 py-1 text-xs border transition-colors ${
+										className={`px-4 py-2 text-sm border transition-colors ${
 											showVersionHistory
 												? 'bg-neutral-900 border-neutral-700 text-white'
 												: 'border-neutral-300 text-text-secondary hover:border-neutral-400 hover:bg-neutral-50'
@@ -771,7 +778,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									</button>
 									<button
 										onClick={handleSavePrompt}
-										className={`px-3 py-1 text-xs border ${
+										className={`px-4 py-2 text-sm border ${
 											updateSuccess
 												? 'bg-green-600 border-green-600 text-white'
 												: 'bg-neutral-900 border-neutral-900 text-white hover:bg-neutral-800'
