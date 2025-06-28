@@ -169,14 +169,14 @@ export default function TableCell({
 				<button
 					onClick={handleRun}
 					disabled={isLoading}
-					className="px-3 py-1 bg-neutral-900 text-white text-xs rounded hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+					className="px-3 py-1 bg-neutral-900 text-white text-xs hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 				>
 					{isLoading ? 'Running...' : 'Run'}
 				</button>
 				{hasRun && (
 					<button
 						onClick={handleClear}
-						className="px-3 py-1 border border-neutral-300 text-neutral-700 text-xs rounded hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
+						className="px-3 py-1 border border-neutral-300 text-neutral-700 text-xs hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
 					>
 						Clear
 					</button>

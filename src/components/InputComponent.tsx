@@ -124,11 +124,11 @@ export default function InputComponent({
 								<img
 									src={image.preview}
 									alt={image.name}
-									className="w-12 h-12 object-cover rounded-lg border border-gray-300"
+									className="w-12 h-12 object-cover border border-gray-300"
 								/>
 								<button
 									onClick={() => removeImage(image.id)}
-									className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+									className="absolute -top-1 -right-1 bg-red-500 text-white p-1 opacity-0 group-hover:opacity-100 transition-opacity"
 									title="Remove image"
 								>
 									<TrashIcon className="w-2 h-2" />
@@ -152,7 +152,7 @@ export default function InputComponent({
 				placeholder={placeholder}
 				rows={rows}
 				disabled={disabled}
-				className="w-full p-2 border bg-surface-input border-surface-border rounded text-sm resize-none focus:ring-blue-500 focus:border-blue-500"
+				className="w-full p-2 border bg-surface-input border-surface-border text-sm resize-none focus:ring-blue-500 focus:border-blue-500"
 			/>
 
 			{/* Image Upload Button */}
@@ -169,7 +169,7 @@ export default function InputComponent({
 					/>
 					<label
 						htmlFor={inputId}
-						className="flex items-center px-2 py-1 text-gray-700 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer text-xs"
+						className="flex items-center px-2 py-1 text-gray-700 bg-gray-100 border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer text-xs"
 					>
 						<PhotoIcon className="w-3 h-3 mr-1" />
 						Images

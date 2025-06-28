@@ -66,7 +66,7 @@ export default function PromptList() {
 				{prompts.length === 0 ? (
 					<div className="h-full flex items-center justify-center">
 						<div className="text-center py-12">
-							<div className="w-24 h-24 mx-auto mb-4 bg-surface-hover rounded-full flex items-center justify-center">
+							<div className="w-24 h-24 mx-auto mb-4 bg-surface-hover flex items-center justify-center">
 								<DocumentTextIcon
 									className="w-12 h-12 text-text-muted"
 									aria-hidden="true"
@@ -84,7 +84,7 @@ export default function PromptList() {
 								</div>
 								<button
 									onClick={handleCreateNewPrompt}
-									className="bg-neutral-900 hover:bg-neutral-800 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+									className="bg-neutral-900 hover:bg-neutral-800 text-white px-6 py-3 font-medium transition-colors"
 								>
 									Create First Prompt
 								</button>
@@ -97,7 +97,7 @@ export default function PromptList() {
 							<div
 								key={prompt.id}
 								onClick={() => handlePromptClick(prompt.id)}
-								className="bg-surface-card rounded-lg border border-surface-border hover:border-secondary-300 transition-all duration-200 cursor-pointer group"
+								className="bg-surface-card border border-surface-border hover:border-secondary-300 transition-all duration-200 cursor-pointer group"
 							>
 								<div className="p-4">
 									<div className="flex items-start justify-between mb-8">
@@ -127,7 +127,7 @@ export default function PromptList() {
 													e.stopPropagation()
 													deletePrompt(prompt.id)
 												}}
-												className="transition-opacity p-1 hover:bg-error-50 rounded"
+												className="transition-opacity p-1 hover:bg-error-50"
 												aria-label="Delete prompt"
 											>
 												<TrashIcon
@@ -151,7 +151,7 @@ export default function PromptList() {
 				<div className="w-full flex justify-start p-6 items-start">
 					<button
 						onClick={handleCreateNewPrompt}
-						className="bg-neutral-900 hover:bg-neutral-800 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
+						className="bg-neutral-900 hover:bg-neutral-800 text-white px-4 py-2 font-medium transition-colors flex items-center gap-2"
 					>
 						<PlusIcon className="w-5 h-5" />
 						New Prompt

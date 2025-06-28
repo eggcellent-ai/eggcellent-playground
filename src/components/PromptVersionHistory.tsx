@@ -74,7 +74,7 @@ const PromptVersionHistory: React.FC<PromptVersionHistoryProps> = ({
 						setActiveVersionId(version.versionId)
 						revertPromptVersion(activePrompt.id, version.versionId)
 					}}
-					className={`p-3 rounded-lg border cursor-pointer transition-all duration-200 group ${
+					className={`p-3 border cursor-pointer transition-all duration-200 group ${
 						activeVersionId === version.versionId
 							? 'bg-success-100 border-success-500'
 							: 'border-surface-border hover:border-secondary-300'
@@ -86,7 +86,7 @@ const PromptVersionHistory: React.FC<PromptVersionHistoryProps> = ({
 								e.stopPropagation()
 								handleDelete(version.versionId, e)
 							}}
-							className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-error-100 rounded"
+							className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-error-100"
 							aria-label="Delete version"
 						>
 							<TrashIcon

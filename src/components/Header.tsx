@@ -50,7 +50,7 @@ export default function Header() {
 							{!isHomePage && (
 								<Link
 									to="/"
-									className="text-text-secondary px-4 py-2 rounded-lg font-semibold transition-colors hover:text-amber-500 pl-10"
+									className="text-text-secondary px-4 py-2 font-semibold transition-colors hover:text-amber-500 pl-10"
 								>
 									All Prompts
 								</Link>
@@ -61,7 +61,7 @@ export default function Header() {
 						<div className="pr-6">
 							<button
 								onClick={() => setShowApiKeySettings(true)}
-								className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+								className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors ${
 									mounted && hasKeys
 										? 'bg-green-50 text-green-700 border border-green-200 hover:bg-green-100'
 										: 'bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100'

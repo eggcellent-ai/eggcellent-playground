@@ -691,7 +691,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	}, [showModelDropdown])
 
 	return (
-		<div className="flex flex-col w-full h-full rounded-lg overflow-hidden border border-surface-border bg-surface-card">
+		<div className="flex flex-col w-full h-full overflow-hidden border border-surface-border bg-surface-card">
 			{/* Show table only if there's an active prompt version */}
 			{activePromptId && activeVersionId ? (
 				<>
@@ -716,7 +716,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										(row) => row.input.trim() || (row.images || []).length > 0
 									)
 								}
-								className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+								className="px-4 py-2 bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
 							>
 								<PlayIcon className="w-4 h-4" />
 								{runningAllTable ? 'Running All...' : 'Run Table'}
@@ -749,7 +749,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 								<div className="flex justify-end items-center gap-2 mt-3">
 									<button
 										onClick={() => setIsEditorExpanded(!isEditorExpanded)}
-										className={`px-3 py-1 text-xs rounded border transition-colors ${
+										className={`px-3 py-1 text-xs border transition-colors ${
 											isEditorExpanded
 												? 'bg-neutral-900 border-neutral-700 text-white'
 												: 'border-neutral-300 text-text-secondary hover:border-neutral-400 hover:bg-neutral-50'
@@ -759,7 +759,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									</button>
 									<button
 										onClick={() => setShowVersionHistory(!showVersionHistory)}
-										className={`px-3 py-1 text-xs rounded border transition-colors ${
+										className={`px-3 py-1 text-xs border transition-colors ${
 											showVersionHistory
 												? 'bg-neutral-900 border-neutral-700 text-white'
 												: 'border-neutral-300 text-text-secondary hover:border-neutral-400 hover:bg-neutral-50'
@@ -771,7 +771,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									</button>
 									<button
 										onClick={handleSavePrompt}
-										className={`px-3 py-1 text-xs rounded border ${
+										className={`px-3 py-1 text-xs border ${
 											updateSuccess
 												? 'bg-green-600 border-green-600 text-white'
 												: 'bg-neutral-900 border-neutral-900 text-white hover:bg-neutral-800'
@@ -820,7 +820,7 @@ Examples of valid formats:
 ["Input 1", "Input 2", "Input 3"]
 [{"input": "Test 1"}, {"text": "Test 2"}]
 {"items": ["Item 1", "Item 2"]}`}
-									className={`w-full h-32 p-3 border rounded-lg text-sm resize-none focus:ring-2 focus:border-blue-500 bg-surface-input transition-colors ${
+									className={`w-full h-32 p-3 border text-sm resize-none focus:ring-2 focus:border-blue-500 bg-surface-input transition-colors ${
 										jsonValidationStatus.isEmpty
 											? 'border-surface-border'
 											: jsonValidationStatus.isValid
@@ -830,7 +830,7 @@ Examples of valid formats:
 								/>
 								{!jsonValidationStatus.isEmpty && (
 									<div
-										className={`text-xs px-2 py-1 rounded ${
+										className={`text-xs px-2 py-1 ${
 											jsonValidationStatus.isValid
 												? 'text-green-700 bg-green-50 border border-green-200'
 												: 'text-red-700 bg-red-50 border border-red-200'
@@ -847,7 +847,7 @@ Examples of valid formats:
 									disabled={
 										!jsonInputValue.trim() || !jsonValidationStatus.isValid
 									}
-									className="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+									className="px-4 py-2 bg-blue-600 text-white text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 								>
 									Save JSON
 								</button>
@@ -860,7 +860,7 @@ Examples of valid formats:
 											isEmpty: true,
 										})
 									}}
-									className="px-4 py-2 border border-neutral-300 text-neutral-700 text-sm rounded hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
+									className="px-4 py-2 border border-neutral-300 text-neutral-700 text-sm hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
 								>
 									Clear
 								</button>
@@ -872,7 +872,7 @@ Examples of valid formats:
 					<div className="p-4 border-b border-surface-border">
 						<button
 							onClick={handleAddRow}
-							className="flex items-center px-4 py-2 text-sm text-neutral-900 hover:text-neutral-700 hover:bg-neutral-50 rounded-lg transition-colors"
+							className="flex items-center px-4 py-2 text-sm text-neutral-900 hover:text-neutral-700 hover:bg-neutral-50 transition-colors"
 						>
 							<PlusIcon className="w-4 h-4 mr-2" />
 							Add Single Input
@@ -930,7 +930,7 @@ Examples of valid formats:
 
 											{/* Model Dropdown */}
 											{showModelDropdown && (
-												<div className="absolute top-12 right-0 z-50 bg-white rounded-lg shadow-lg border border-gray-200 min-w-48">
+												<div className="absolute top-12 right-0 z-50 bg-white shadow-lg border border-gray-200 min-w-48">
 													<div className="p-2">
 														<div className="text-xs font-medium text-gray-500 mb-2 px-2">
 															Add Model
@@ -942,7 +942,7 @@ Examples of valid formats:
 																<button
 																	key={model.id}
 																	onClick={() => handleAddModel(model.id)}
-																	className="w-full text-left p-2 rounded hover:bg-gray-50 transition-colors"
+																	className="w-full text-left p-2 hover:bg-gray-50 transition-colors"
 																>
 																	<div className="font-medium text-gray-900 text-sm">
 																		{model.name}
@@ -1014,7 +1014,7 @@ Examples of valid formats:
 																	(row.images || []).length > 0
 																) || runningRows.has(row.id)
 															}
-															className="px-3 py-1 bg-neutral-900 text-white text-xs rounded hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+															className="px-3 py-1 bg-neutral-900 text-white text-xs hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
 														>
 															<PlayIcon className="w-3 h-3" />
 															{runningRows.has(row.id) ? 'Running...' : 'Run'}
@@ -1024,7 +1024,7 @@ Examples of valid formats:
 														{tableData.length > 1 && (
 															<button
 																onClick={() => handleRemoveRow(row.id)}
-																className="px-3 py-1 border border-neutral-300 text-neutral-700 text-xs rounded hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
+																className="px-3 py-1 border border-neutral-300 text-neutral-700 text-xs hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
 																title="Remove row"
 															>
 																Remove
