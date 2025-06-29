@@ -125,10 +125,10 @@ export default function PromptDetailPage() {
 	}
 
 	return (
-		<div className="min-h-screen">
-			<div className="max-w-full mx-auto">
+		<div className="min-h-screen bg-surface-background">
+			<div className="max-w-full mx-auto h-full">
 				{/* Content - Vertical Split Layout */}
-				<div className="flex flex-col h-[calc(100vh-120px)]">
+				<div className="flex flex-col h-screen">
 					{/* Table Layout */}
 					<div className="flex-1 flex flex-col p-4">
 						<TableLayout inputPromptContent={inputPromptContent} />

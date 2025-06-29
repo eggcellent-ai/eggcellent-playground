@@ -709,110 +709,114 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 			{activePromptId && activeVersionId ? (
 				<>
 					{/* ===== SYSTEM PROMPT SECTION ===== */}
-					<div className="border-b border-table">
+					<div>
 						{/* Section Header */}
 						<div className="bg-neutral-50 px-4 pb-2 pt-8">
 							<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
 								System Prompt
 							</h2>
 						</div>
-
-						{/* Prompt Title and Run All Button */}
-						<div className="flex justify-between items-center gap-2 p-4">
-							<div className="flex-1">
-								<input
-									type="text"
-									value={titleContent}
-									onChange={(e) => setTitleContent(e.target.value)}
-									onBlur={handleSaveTitle}
-									className="text-lg font-semibold text-text-primary bg-transparent border-none outline-none focus:outline-none w-full"
-									placeholder="Enter prompt title..."
-								/>
-							</div>
-							<button
-								onClick={handleRunAllTable}
-								disabled={
-									runningAllTable ||
-									!tableData.some(
-										(row) => row.input.trim() || (row.images || []).length > 0
-									)
-								}
-								className="px-5 py-2 bg-green hover:bg-app text-white text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
-							>
-								<PlayIcon className="w-4 h-4" />
-								{runningAllTable ? 'Running All...' : 'Run Table'}
-							</button>
-						</div>
-
-						{/* Prompt Editor */}
-						<div className="border-t border-table bg-surface-card">
-							<div className="p-4 relative">
-								{/* Expand/Collapse Icon - Top Right */}
+						<div className="border border-table">
+							{/* Prompt Title and Run All Button */}
+							<div className="flex justify-between items-center gap-2 p-4">
+								<div className="flex-1">
+									<input
+										type="text"
+										value={titleContent}
+										onChange={(e) => setTitleContent(e.target.value)}
+										onBlur={handleSaveTitle}
+										className="text-lg font-semibold text-text-primary bg-transparent border-none outline-none focus:outline-none w-full"
+										placeholder="Enter prompt title..."
+									/>
+								</div>
 								<button
-									onClick={() => setIsEditorExpanded(!isEditorExpanded)}
-									className="absolute top-2 right-2 p-1 text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors z-10"
-									title={isEditorExpanded ? 'Collapse editor' : 'Expand editor'}
+									onClick={handleRunAllTable}
+									disabled={
+										runningAllTable ||
+										!tableData.some(
+											(row) => row.input.trim() || (row.images || []).length > 0
+										)
+									}
+									className="px-5 py-2 bg-green hover:bg-app text-white text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
 								>
-									{isEditorExpanded ? (
-										<ArrowsPointingInIcon className="w-4 h-4" />
-									) : (
-										<ArrowsPointingOutIcon className="w-4 h-4" />
-									)}
+									<PlayIcon className="w-4 h-4" />
+									{runningAllTable ? 'Running All...' : 'Run Table'}
 								</button>
-								<textarea
-									className="w-full resize-y bg-surface-card text-text-primary placeholder-text-muted transition-colors text-sm focus:outline-none"
-									style={{
-										height: isEditorExpanded
-											? 'calc(100vh - 200px)'
-											: `${editorHeight}px`,
-										minHeight: isEditorExpanded
-											? 'calc(100vh - 200px)'
-											: `${editorHeight}px`,
-									}}
-									value={promptContent}
-									placeholder="Enter system prompt..."
-									onChange={(e) => setPromptContent(e.target.value)}
-									onInput={(e) => {
-										if (!isEditorExpanded) {
-											const target = e.target as HTMLTextAreaElement
-											setEditorHeight(target.offsetHeight)
+							</div>
+
+							{/* Prompt Editor */}
+							<div className="border-t border-table bg-surface-card">
+								<div className="p-4 relative">
+									{/* Expand/Collapse Icon - Top Right */}
+									<button
+										onClick={() => setIsEditorExpanded(!isEditorExpanded)}
+										className="absolute top-2 right-2 p-1 text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors z-10"
+										title={
+											isEditorExpanded ? 'Collapse editor' : 'Expand editor'
 										}
-									}}
-								/>
-								<div className="flex justify-end items-center gap-2 mt-3">
-									<button
-										onClick={() => setShowVersionHistory(!showVersionHistory)}
-										className={`px-4 py-2 text-sm border transition-colors ${
-											showVersionHistory
-												? 'bg-neutral-300 border-neutral-300 text-black'
-												: 'border-neutral-300 text-text-secondary hover:border-neutral-400 hover:bg-neutral-50'
-										}`}
 									>
-										{showVersionHistory
-											? 'Hide Version'
-											: `Show Version (${currentPrompt?.versions.length || 0})`}
-									</button>
-									<button
-										onClick={handleSavePrompt}
-										className={`px-4 py-2 text-sm border ${
-											updateSuccess
-												? 'bg-green-600 border-green-600 text-white'
-												: 'bg-neutral-900 border-neutral-900 text-white hover:bg-neutral-800'
-										} transition-colors flex items-center gap-1`}
-									>
-										{updateSuccess ? (
-											<>
-												<CheckIcon className="w-3 h-3" />
-												Updated
-											</>
+										{isEditorExpanded ? (
+											<ArrowsPointingInIcon className="w-4 h-4" />
 										) : (
-											'Update Prompt'
+											<ArrowsPointingOutIcon className="w-4 h-4" />
 										)}
 									</button>
+									<textarea
+										className="w-full resize-y bg-surface-card text-text-primary placeholder-text-muted transition-colors text-sm focus:outline-none"
+										style={{
+											height: isEditorExpanded
+												? 'calc(100vh - 200px)'
+												: `${editorHeight}px`,
+											minHeight: isEditorExpanded
+												? 'calc(100vh - 200px)'
+												: `${editorHeight}px`,
+										}}
+										value={promptContent}
+										placeholder="Enter system prompt..."
+										onChange={(e) => setPromptContent(e.target.value)}
+										onInput={(e) => {
+											if (!isEditorExpanded) {
+												const target = e.target as HTMLTextAreaElement
+												setEditorHeight(target.offsetHeight)
+											}
+										}}
+									/>
+									<div className="flex justify-end items-center gap-2 mt-3">
+										<button
+											onClick={() => setShowVersionHistory(!showVersionHistory)}
+											className={`px-4 py-2 text-sm border transition-colors ${
+												showVersionHistory
+													? 'bg-neutral-300 border-neutral-300 text-black'
+													: 'border-neutral-300 text-text-secondary hover:border-neutral-400 hover:bg-neutral-50'
+											}`}
+										>
+											{showVersionHistory
+												? 'Hide Version'
+												: `Show Version (${
+														currentPrompt?.versions.length || 0
+												  })`}
+										</button>
+										<button
+											onClick={handleSavePrompt}
+											className={`px-4 py-2 text-sm border ${
+												updateSuccess
+													? 'bg-green-600 border-green-600 text-white'
+													: 'bg-neutral-900 border-neutral-900 text-white hover:bg-neutral-800'
+											} transition-colors flex items-center gap-1`}
+										>
+											{updateSuccess ? (
+												<>
+													<CheckIcon className="w-3 h-3" />
+													Updated
+												</>
+											) : (
+												'Update Prompt'
+											)}
+										</button>
+									</div>
 								</div>
 							</div>
 						</div>
-
 						{/* Version History */}
 						{showVersionHistory && (
 							<div className="border-t border-table p-4">
@@ -825,16 +829,16 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					</div>
 
 					{/* ===== INPUT SECTION ===== */}
-					<div className="border-b border-table">
+					<div>
 						{/* Section Header */}
-						<div className="bg-neutral-50 px-4 pb-2 pt-8 border-b border-table">
+						<div className="bg-neutral-50 px-4 pb-2 pt-8">
 							<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
 								Input
 							</h2>
 						</div>
 
 						{/* Bulk JSON Input */}
-						<div className="p-4 border-b border-table">
+						<div className="p-4 border border-table">
 							<div className="mb-3 flex justify-start items-center gap-2">
 								<h3 className="text-sm font-semibold text-text-primary">
 									Bulk Input
@@ -873,7 +877,17 @@ Examples of valid formats:
 										}`}
 									/>
 								</div>
-								<div className="flex items-center justify-end">
+								<div className="flex items-center justify-between">
+									{/* Add Single Input */}
+									<div>
+										<button
+											onClick={handleAddRow}
+											className="flex items-center px-4 py-2 text-sm text-neutral-900 hover:text-neutral-700 hover:bg-neutral-50 transition-colors border border-table"
+										>
+											<PlusIcon className="w-4 h-4 mr-2" />
+											Add Single Input
+										</button>
+									</div>
 									<div className="flex gap-2">
 										<button
 											onClick={handleSaveJsonData}
@@ -888,23 +902,12 @@ Examples of valid formats:
 								</div>
 							</div>
 						</div>
-
-						{/* Add Single Input */}
-						<div className="p-4">
-							<button
-								onClick={handleAddRow}
-								className="flex items-center px-4 py-2 text-sm text-neutral-900 hover:text-neutral-700 hover:bg-neutral-50 transition-colors"
-							>
-								<PlusIcon className="w-4 h-4 mr-2" />
-								Add Single Input
-							</button>
-						</div>
 					</div>
 
 					{/* ===== RESPONSE SECTION ===== */}
 					<div className="flex-1 flex flex-col overflow-hidden">
 						{/* Section Header */}
-						<div className="bg-neutral-50 px-4 pb-2 pt-8 border-b border-table">
+						<div className="bg-neutral-50 px-4 pb-2 pt-8">
 							<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
 								Response
 							</h2>
@@ -912,7 +915,7 @@ Examples of valid formats:
 
 						{/* Results Table */}
 						<div className="flex-1 overflow-auto bg-surface-card">
-							<table className="w-full h-full table-fixed border-collapse">
+							<table className="w-full h-full table-fixed border-collapse border border-table">
 								<thead className="sticky top-0">
 									<tr>
 										<th className="p-3 text-left text-sm font-semibold w-1/3 bg-surface-card text-text-primary border-b border-r border-table">

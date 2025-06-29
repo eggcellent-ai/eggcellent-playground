@@ -152,7 +152,7 @@ export default function InputComponent({
 				placeholder={placeholder}
 				rows={rows}
 				disabled={disabled}
-				className="w-full p-2 border bg-surface-input border-surface-border text-sm resize-none focus:ring-blue-500 focus:border-blue-500"
+				className="w-full p-2 border bg-surface-input border-table text-sm resize-none focus:ring-blue-500 focus:border-blue-500"
 			/>
 
 			{/* Image Upload Button */}
