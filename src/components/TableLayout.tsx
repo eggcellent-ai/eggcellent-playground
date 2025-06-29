@@ -848,21 +848,8 @@ Examples of valid formats:
 									}`}
 								/>
 							</div>
-							<div className="flex justify-between items-center">
+							<div className="flex items-center justify-end">
 								<div className="flex gap-2">
-									<button
-										onClick={() => {
-											setJsonInputValue('')
-											setJsonValidationStatus({
-												isValid: true,
-												message: '',
-												isEmpty: true,
-											})
-										}}
-										className="px-4 py-2 border border-neutral-300 text-neutral-700 text-sm hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
-									>
-										Clear
-									</button>
 									<button
 										onClick={handleSaveJsonData}
 										disabled={
@@ -870,7 +857,7 @@ Examples of valid formats:
 										}
 										className="px-4 py-2 bg-blue-600 text-white text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 									>
-										Save JSON
+										Save Inputs
 									</button>
 								</div>
 							</div>
