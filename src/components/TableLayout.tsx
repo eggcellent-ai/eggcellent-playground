@@ -810,10 +810,22 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 					{/* JSON Input Section */}
 					<div className="p-4 border-b border-table">
-						<div className="mb-3">
+						<div className="mb-3 flex justify-start items-center gap-2">
 							<h3 className="text-sm font-semibold text-text-primary">
 								Bulk Input
 							</h3>
+							{!jsonValidationStatus.isEmpty && (
+								<div
+									className={`text-xs px-2 py-1 ${
+										jsonValidationStatus.isValid
+											? 'text-green-700'
+											: 'text-red-700 border-red-200'
+									}`}
+								>
+									{jsonValidationStatus.isValid ? '✅' : '❌'}{' '}
+									{jsonValidationStatus.message}
+								</div>
+							)}
 						</div>
 
 						<div className="space-y-3">
@@ -835,42 +847,32 @@ Examples of valid formats:
 											: 'border-red-300 focus:ring-red-500'
 									}`}
 								/>
-								{!jsonValidationStatus.isEmpty && (
-									<div
-										className={`text-xs px-2 py-1 ${
-											jsonValidationStatus.isValid
-												? 'text-green-700 bg-green-50 border border-green-200'
-												: 'text-red-700 bg-red-50 border border-red-200'
-										}`}
-									>
-										{jsonValidationStatus.isValid ? '✓' : '✗'}{' '}
-										{jsonValidationStatus.message}
-									</div>
-								)}
 							</div>
-							<div className="flex gap-2">
-								<button
-									onClick={handleSaveJsonData}
-									disabled={
-										!jsonInputValue.trim() || !jsonValidationStatus.isValid
-									}
-									className="px-4 py-2 bg-blue-600 text-white text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-								>
-									Save JSON
-								</button>
-								<button
-									onClick={() => {
-										setJsonInputValue('')
-										setJsonValidationStatus({
-											isValid: true,
-											message: '',
-											isEmpty: true,
-										})
-									}}
-									className="px-4 py-2 border border-neutral-300 text-neutral-700 text-sm hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
-								>
-									Clear
-								</button>
+							<div className="flex justify-between items-center">
+								<div className="flex gap-2">
+									<button
+										onClick={() => {
+											setJsonInputValue('')
+											setJsonValidationStatus({
+												isValid: true,
+												message: '',
+												isEmpty: true,
+											})
+										}}
+										className="px-4 py-2 border border-neutral-300 text-neutral-700 text-sm hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
+									>
+										Clear
+									</button>
+									<button
+										onClick={handleSaveJsonData}
+										disabled={
+											!jsonInputValue.trim() || !jsonValidationStatus.isValid
+										}
+										className="px-4 py-2 bg-blue-600 text-white text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+									>
+										Save JSON
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
