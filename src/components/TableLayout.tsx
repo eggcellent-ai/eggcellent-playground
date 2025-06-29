@@ -112,8 +112,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					if (parsed.length === 0) {
 						setJsonValidationStatus({
 							isValid: true,
-							message: 'Valid - 0 rows detected (will clear all)',
-							isEmpty: false,
+							message: '',
+							isEmpty: true,
 						})
 					} else {
 						setJsonValidationStatus({
@@ -131,11 +131,19 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 					if (foundArrayProp) {
 						const arrayLength = parsed[foundArrayProp].length
-						setJsonValidationStatus({
-							isValid: true,
-							message: `Valid - ${arrayLength} rows detected`,
-							isEmpty: false,
-						})
+						if (arrayLength === 0) {
+							setJsonValidationStatus({
+								isValid: true,
+								message: '',
+								isEmpty: true,
+							})
+						} else {
+							setJsonValidationStatus({
+								isValid: true,
+								message: `Valid - ${arrayLength} rows detected`,
+								isEmpty: false,
+							})
+						}
 					} else {
 						// Count non-null values
 						const values = Object.values(parsed).filter(
@@ -839,7 +847,7 @@ Examples of valid formats:
 ["Input 1", "Input 2", "Input 3"]
 [{"input": "Test 1"}, {"text": "Test 2"}]
 {"items": ["Item 1", "Item 2"]}`}
-									className={`w-full h-32 p-3 border text-sm resize-none focus:ring-2 focus:border-blue-500 bg-surface-input transition-colors ${
+									className={`w-full h-32 p-3 border text-sm resize-none bg-surface-input transition-colors focus:ring-none ${
 										jsonValidationStatus.isEmpty
 											? 'border-table'
 											: jsonValidationStatus.isValid
