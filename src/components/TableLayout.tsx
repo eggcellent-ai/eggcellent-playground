@@ -704,13 +704,21 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	}, [showModelDropdown])
 
 	return (
-		<div className="flex flex-col w-full h-full overflow-hidden border border-table bg-white">
+		<div className="flex flex-col w-full h-full overflow-hidden bg-white">
 			{/* Show table only if there's an active prompt version */}
 			{activePromptId && activeVersionId ? (
 				<>
-					{/* Prompt Management Section */}
+					{/* ===== SYSTEM PROMPT SECTION ===== */}
 					<div className="border-b border-table">
-						<div className="flex justify-between items-center gap-2 mt-auto p-4">
+						{/* Section Header */}
+						<div className="bg-neutral-50 px-4 pb-2 pt-8">
+							<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
+								System Prompt
+							</h2>
+						</div>
+
+						{/* Prompt Title and Run All Button */}
+						<div className="flex justify-between items-center gap-2 p-4">
 							<div className="flex-1">
 								<input
 									type="text"
@@ -736,7 +744,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							</button>
 						</div>
 
-						{/* Full Prompt Editor */}
+						{/* Prompt Editor */}
 						<div className="border-t border-table bg-surface-card">
 							<div className="p-4 relative">
 								{/* Expand/Collapse Icon - Top Right */}
@@ -805,7 +813,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							</div>
 						</div>
 
-						{/* Version History Section */}
+						{/* Version History */}
 						{showVersionHistory && (
 							<div className="border-t border-table p-4">
 								<h3 className="text-sm font-semibold mb-3 text-text-primary">
@@ -816,267 +824,291 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						)}
 					</div>
 
-					{/* JSON Input Section */}
-					<div className="p-4 border-b border-table">
-						<div className="mb-3 flex justify-start items-center gap-2">
-							<h3 className="text-sm font-semibold text-text-primary">
-								Bulk Input
-							</h3>
-							{!jsonValidationStatus.isEmpty && (
-								<div
-									className={`text-xs px-2 py-1 ${
-										jsonValidationStatus.isValid
-											? 'text-green-700'
-											: 'text-red-700 border-red-200'
-									}`}
-								>
-									{jsonValidationStatus.isValid ? '✅' : '❌'}{' '}
-									{jsonValidationStatus.message}
-								</div>
-							)}
+					{/* ===== INPUT SECTION ===== */}
+					<div className="border-b border-table">
+						{/* Section Header */}
+						<div className="bg-neutral-50 px-4 pb-2 pt-8 border-b border-table">
+							<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
+								Input
+							</h2>
 						</div>
 
-						<div className="space-y-3">
-							<div className="space-y-2">
-								<textarea
-									value={jsonInputValue}
-									onChange={(e) => handleJsonInputChange(e.target.value)}
-									placeholder={`Current input rows are automatically loaded. Edit the JSON to manage multiple rows.
+						{/* Bulk JSON Input */}
+						<div className="p-4 border-b border-table">
+							<div className="mb-3 flex justify-start items-center gap-2">
+								<h3 className="text-sm font-semibold text-text-primary">
+									Bulk Input
+								</h3>
+								{!jsonValidationStatus.isEmpty && (
+									<div
+										className={`text-xs px-2 py-1 ${
+											jsonValidationStatus.isValid
+												? 'text-green-700'
+												: 'text-red-700 border-red-200'
+										}`}
+									>
+										{jsonValidationStatus.isValid ? '✅' : '❌'}{' '}
+										{jsonValidationStatus.message}
+									</div>
+								)}
+							</div>
+
+							<div className="space-y-3">
+								<div className="space-y-2">
+									<textarea
+										value={jsonInputValue}
+										onChange={(e) => handleJsonInputChange(e.target.value)}
+										placeholder={`Current input rows are automatically loaded. Edit the JSON to manage multiple rows.
 
 Examples of valid formats:
 ["Input 1", "Input 2", "Input 3"]
 [{"input": "Test 1"}, {"text": "Test 2"}]
 {"items": ["Item 1", "Item 2"]}`}
-									className={`w-full h-32 p-3 border text-sm resize-none bg-surface-input transition-colors focus:ring-none ${
-										jsonValidationStatus.isEmpty
-											? 'border-table'
-											: jsonValidationStatus.isValid
-											? 'border-green-300 focus:ring-green-500'
-											: 'border-red-300 focus:ring-red-500'
-									}`}
-								/>
-							</div>
-							<div className="flex items-center justify-end">
-								<div className="flex gap-2">
-									<button
-										onClick={handleSaveJsonData}
-										disabled={
-											!jsonInputValue.trim() || !jsonValidationStatus.isValid
-										}
-										className="px-4 py-2 bg-blue-600 text-white text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-									>
-										Save Inputs
-									</button>
+										className={`w-full h-32 p-3 border text-sm resize-none bg-surface-input transition-colors focus:ring-none ${
+											jsonValidationStatus.isEmpty
+												? 'border-table'
+												: jsonValidationStatus.isValid
+												? 'border-green-300 focus:ring-green-500'
+												: 'border-red-300 focus:ring-red-500'
+										}`}
+									/>
+								</div>
+								<div className="flex items-center justify-end">
+									<div className="flex gap-2">
+										<button
+											onClick={handleSaveJsonData}
+											disabled={
+												!jsonInputValue.trim() || !jsonValidationStatus.isValid
+											}
+											className="px-4 py-2 bg-blue-600 text-white text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+										>
+											Save Inputs
+										</button>
+									</div>
 								</div>
 							</div>
 						</div>
+
+						{/* Add Single Input */}
+						<div className="p-4">
+							<button
+								onClick={handleAddRow}
+								className="flex items-center px-4 py-2 text-sm text-neutral-900 hover:text-neutral-700 hover:bg-neutral-50 transition-colors"
+							>
+								<PlusIcon className="w-4 h-4 mr-2" />
+								Add Single Input
+							</button>
+						</div>
 					</div>
 
-					{/* Add Row Button */}
-					<div className="p-4 border-b border-table">
-						<button
-							onClick={handleAddRow}
-							className="flex items-center px-4 py-2 text-sm text-neutral-900 hover:text-neutral-700 hover:bg-neutral-50 transition-colors"
-						>
-							<PlusIcon className="w-4 h-4 mr-2" />
-							Add Single Input
-						</button>
-					</div>
+					{/* ===== RESPONSE SECTION ===== */}
+					<div className="flex-1 flex flex-col overflow-hidden">
+						{/* Section Header */}
+						<div className="bg-neutral-50 px-4 pb-2 pt-8 border-b border-table">
+							<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
+								Response
+							</h2>
+						</div>
 
-					{/* Table */}
-					<div className="flex-1 overflow-auto bg-surface-card">
-						<table className="w-full h-full table-fixed border-collapse">
-							<thead className="sticky top-0">
-								<tr>
-									<th className="p-3 text-left text-sm font-semibold w-1/3 bg-surface-card text-text-primary border-b border-r border-table">
-										Input
-									</th>
-									{selectedModels.map((modelId, index) => {
-										const model = AVAILABLE_MODELS.find((m) => m.id === modelId)
-										const columnWidth = `${Math.floor(
-											60 / selectedModels.length
-										)}%`
-										return (
-											<th
-												key={modelId}
-												className={`p-3 text-left text-sm font-semibold bg-surface-card text-text-primary border-b border-table ${
-													index < selectedModels.length - 1
-														? 'border-r border-table'
-														: ''
-												}`}
-												style={{ width: columnWidth }}
-											>
-												<div className="flex items-center justify-between">
-													<div>
-														{model?.name}
-														<span className="block text-xs font-normal text-text-secondary">
-															{model?.provider}
-														</span>
-													</div>
-													<button
-														onClick={() => handleRemoveModel(modelId)}
-														className="p-1 rounded-full text-text-muted hover:text-red-500 hover:bg-red-50 transition-colors ml-2"
-														title="Remove model"
-													>
-														<XMarkIcon className="w-4 h-4" />
-													</button>
-												</div>
-											</th>
-										)
-									})}
-									<th className="p-3 text-center text-sm font-semibold w-16 bg-surface-card text-text-primary border-b border-l border-table relative">
-										<div ref={dropdownRef}>
-											<button
-												onClick={() => setShowModelDropdown(!showModelDropdown)}
-												className="w-8 h-8 rounded-full border-2 border-dashed border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50 transition-colors flex items-center justify-center"
-												title="Add model"
-											>
-												<PlusIcon className="w-4 h-4 text-neutral-500" />
-											</button>
-
-											{/* Model Dropdown */}
-											{showModelDropdown && (
-												<div className="absolute top-12 right-0 z-50 bg-white shadow-lg border border-gray-200 min-w-48">
-													<div className="p-2">
-														<div className="text-xs font-medium text-gray-500 mb-2 px-2">
-															Add Model
-														</div>
-														<div className="max-h-60 overflow-y-auto">
-															{AVAILABLE_MODELS.filter(
-																(model) => !selectedModels.includes(model.id)
-															).map((model) => (
-																<button
-																	key={model.id}
-																	onClick={() => handleAddModel(model.id)}
-																	className="w-full text-left p-2 hover:bg-gray-50 transition-colors"
-																>
-																	<div className="font-medium text-gray-900 text-sm">
-																		{model.name}
-																	</div>
-																	<div className="text-xs text-gray-500">
-																		{model.provider}
-																	</div>
-																</button>
-															))}
-															{AVAILABLE_MODELS.filter(
-																(model) => !selectedModels.includes(model.id)
-															).length === 0 && (
-																<div className="text-center py-3 text-gray-500 text-xs">
-																	All models selected
-																</div>
-															)}
-														</div>
-													</div>
-												</div>
-											)}
-										</div>
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								{tableData.map(
-									(
-										row: {
-											id: string
-											input: string
-											images: UploadedImage[]
-											timestamp: number
-											responses: Record<string, string>
-										},
-										rowIndex: number
-									) => (
-										<tr key={row.id} className="hover:bg-surface-hover">
-											<td
-												className={`p-3 align-top border-r border-table ${
-													rowIndex < tableData.length - 1 ? 'border-b' : ''
-												}`}
-											>
-												<div className="space-y-3">
-													<InputComponent
-														value={row.input}
-														images={row.images || []}
-														onChange={(value, images) =>
-															handleUpdateRowInput(row.id, value, images)
-														}
-														placeholder="Enter your test input..."
-														rows={3}
-														showImageUpload={true}
-													/>
-
-													{/* Action Buttons */}
-													<div className="flex gap-2">
-														{/* Run All Models Button */}
-														<button
-															onClick={() =>
-																handleRunAllModels(
-																	row.id,
-																	row.input,
-																	row.images || []
-																)
-															}
-															disabled={
-																!(
-																	row.input.trim() ||
-																	(row.images || []).length > 0
-																) || runningRows.has(row.id)
-															}
-															className="px-3 py-1 bg-neutral-900 text-white text-xs hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
-														>
-															<PlayIcon className="w-3 h-3" />
-															{runningRows.has(row.id) ? 'Running...' : 'Run'}
-														</button>
-
-														{/* Remove Row Button */}
-														{tableData.length > 1 && (
-															<button
-																onClick={() => handleRemoveRow(row.id)}
-																className="px-3 py-1 border border-neutral-300 text-neutral-700 text-xs hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
-																title="Remove row"
-															>
-																Remove
-															</button>
-														)}
-													</div>
-												</div>
-											</td>
-											{selectedModels.map((modelId, colIndex) => (
-												<td
-													key={`${row.id}-${modelId}`}
-													className={`p-3 align-top border-table ${
-														rowIndex < tableData.length - 1 ? 'border-b' : ''
-													} ${
-														colIndex < selectedModels.length - 1
+						{/* Results Table */}
+						<div className="flex-1 overflow-auto bg-surface-card">
+							<table className="w-full h-full table-fixed border-collapse">
+								<thead className="sticky top-0">
+									<tr>
+										<th className="p-3 text-left text-sm font-semibold w-1/3 bg-surface-card text-text-primary border-b border-r border-table">
+											Input
+										</th>
+										{selectedModels.map((modelId, index) => {
+											const model = AVAILABLE_MODELS.find(
+												(m) => m.id === modelId
+											)
+											const columnWidth = `${Math.floor(
+												60 / selectedModels.length
+											)}%`
+											return (
+												<th
+													key={modelId}
+													className={`p-3 text-left text-sm font-semibold bg-surface-card text-text-primary border-b border-table ${
+														index < selectedModels.length - 1
 															? 'border-r border-table'
 															: ''
 													}`}
+													style={{ width: columnWidth }}
 												>
-													<TableCell
-														key={`${row.id}-${modelId}-${
-															row.responses[modelId] || 'empty'
-														}`}
-														rowId={row.id}
-														modelId={modelId}
-														input={row.input}
-														images={row.images || []}
-														systemPrompt={inputPromptContent}
-														activePromptId={activePromptId}
-														activeVersionId={activeVersionId}
-													/>
+													<div className="flex items-center justify-between">
+														<div>
+															{model?.name}
+															<span className="block text-xs font-normal text-text-secondary">
+																{model?.provider}
+															</span>
+														</div>
+														<button
+															onClick={() => handleRemoveModel(modelId)}
+															className="p-1 rounded-full text-text-muted hover:text-red-500 hover:bg-red-50 transition-colors ml-2"
+															title="Remove model"
+														>
+															<XMarkIcon className="w-4 h-4" />
+														</button>
+													</div>
+												</th>
+											)
+										})}
+										<th className="p-3 text-center text-sm font-semibold w-16 bg-surface-card text-text-primary border-b border-l border-table relative">
+											<div ref={dropdownRef}>
+												<button
+													onClick={() =>
+														setShowModelDropdown(!showModelDropdown)
+													}
+													className="w-8 h-8 rounded-full border-2 border-dashed border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50 transition-colors flex items-center justify-center"
+													title="Add model"
+												>
+													<PlusIcon className="w-4 h-4 text-neutral-500" />
+												</button>
+
+												{/* Model Dropdown */}
+												{showModelDropdown && (
+													<div className="absolute top-12 right-0 z-50 bg-white shadow-lg border border-gray-200 min-w-48">
+														<div className="p-2">
+															<div className="text-xs font-medium text-gray-500 mb-2 px-2">
+																Add Model
+															</div>
+															<div className="max-h-60 overflow-y-auto">
+																{AVAILABLE_MODELS.filter(
+																	(model) => !selectedModels.includes(model.id)
+																).map((model) => (
+																	<button
+																		key={model.id}
+																		onClick={() => handleAddModel(model.id)}
+																		className="w-full text-left p-2 hover:bg-gray-50 transition-colors"
+																	>
+																		<div className="font-medium text-gray-900 text-sm">
+																			{model.name}
+																		</div>
+																		<div className="text-xs text-gray-500">
+																			{model.provider}
+																		</div>
+																	</button>
+																))}
+																{AVAILABLE_MODELS.filter(
+																	(model) => !selectedModels.includes(model.id)
+																).length === 0 && (
+																	<div className="text-center py-3 text-gray-500 text-xs">
+																		All models selected
+																	</div>
+																)}
+															</div>
+														</div>
+													</div>
+												)}
+											</div>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									{tableData.map(
+										(
+											row: {
+												id: string
+												input: string
+												images: UploadedImage[]
+												timestamp: number
+												responses: Record<string, string>
+											},
+											rowIndex: number
+										) => (
+											<tr key={row.id} className="hover:bg-surface-hover">
+												<td
+													className={`p-3 align-top border-r border-table ${
+														rowIndex < tableData.length - 1 ? 'border-b' : ''
+													}`}
+												>
+													<div className="space-y-3">
+														<InputComponent
+															value={row.input}
+															images={row.images || []}
+															onChange={(value, images) =>
+																handleUpdateRowInput(row.id, value, images)
+															}
+															placeholder="Enter your test input..."
+															rows={3}
+															showImageUpload={true}
+														/>
+
+														{/* Action Buttons */}
+														<div className="flex gap-2">
+															{/* Run All Models Button */}
+															<button
+																onClick={() =>
+																	handleRunAllModels(
+																		row.id,
+																		row.input,
+																		row.images || []
+																	)
+																}
+																disabled={
+																	!(
+																		row.input.trim() ||
+																		(row.images || []).length > 0
+																	) || runningRows.has(row.id)
+																}
+																className="px-3 py-1 bg-neutral-900 text-white text-xs hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+															>
+																<PlayIcon className="w-3 h-3" />
+																{runningRows.has(row.id) ? 'Running...' : 'Run'}
+															</button>
+
+															{/* Remove Row Button */}
+															{tableData.length > 1 && (
+																<button
+																	onClick={() => handleRemoveRow(row.id)}
+																	className="px-3 py-1 border border-neutral-300 text-neutral-700 text-xs hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
+																	title="Remove row"
+																>
+																	Remove
+																</button>
+															)}
+														</div>
+													</div>
 												</td>
-											))}
-											{/* Add Model Column - Empty Cell */}
-											<td
-												className={`p-3 align-top border-l border-table ${
-													rowIndex < tableData.length - 1 ? 'border-b' : ''
-												}`}
-											>
-												{/* Empty cell for add model column */}
-											</td>
-										</tr>
-									)
-								)}
-							</tbody>
-						</table>
+												{selectedModels.map((modelId, colIndex) => (
+													<td
+														key={`${row.id}-${modelId}`}
+														className={`p-3 align-top border-table ${
+															rowIndex < tableData.length - 1 ? 'border-b' : ''
+														} ${
+															colIndex < selectedModels.length - 1
+																? 'border-r border-table'
+																: ''
+														}`}
+													>
+														<TableCell
+															key={`${row.id}-${modelId}-${
+																row.responses[modelId] || 'empty'
+															}`}
+															rowId={row.id}
+															modelId={modelId}
+															input={row.input}
+															images={row.images || []}
+															systemPrompt={inputPromptContent}
+															activePromptId={activePromptId}
+															activeVersionId={activeVersionId}
+														/>
+													</td>
+												))}
+												{/* Add Model Column - Empty Cell */}
+												<td
+													className={`p-3 align-top border-l border-table ${
+														rowIndex < tableData.length - 1 ? 'border-b' : ''
+													}`}
+												>
+													{/* Empty cell for add model column */}
+												</td>
+											</tr>
+										)
+									)}
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</>
 			) : (
