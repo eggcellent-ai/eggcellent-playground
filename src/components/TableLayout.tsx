@@ -711,7 +711,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					{/* ===== SYSTEM PROMPT SECTION ===== */}
 					<div>
 						{/* Section Header */}
-						<div className="bg-neutral-50 px-4 pb-2 pt-8">
+						<div className="bg-neutral-50 px-2 pb-2 pt-8">
 							<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
 								System Prompt
 							</h2>
@@ -831,7 +831,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					{/* ===== INPUT SECTION ===== */}
 					<div>
 						{/* Section Header */}
-						<div className="bg-neutral-50 px-4 pb-2 pt-8">
+						<div className="bg-neutral-50 px-2 pb-2 pt-8">
 							<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
 								Input
 							</h2>
@@ -907,7 +907,7 @@ Examples of valid formats:
 					{/* ===== RESPONSE SECTION ===== */}
 					<div className="flex-1 flex flex-col overflow-hidden">
 						{/* Section Header */}
-						<div className="bg-neutral-50 px-4 pb-2 pt-8">
+						<div className="bg-neutral-50 px-2 pb-2 pt-8">
 							<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
 								Response
 							</h2>
