@@ -87,6 +87,11 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 				return row.input
 			})
 
+		// If no existing data, return example input
+		if (jsonData.length === 0) {
+			return JSON.stringify(['example input'], null, 2)
+		}
+
 		return JSON.stringify(jsonData, null, 2)
 	}, [activePromptId, prompts])
 
