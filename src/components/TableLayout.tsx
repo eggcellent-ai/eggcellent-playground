@@ -877,7 +877,7 @@ Examples of valid formats:
 											jsonValidationStatus.isEmpty
 												? 'border-table'
 												: jsonValidationStatus.isValid
-												? 'border-green-300 focus:ring-green-500'
+												? 'border-table focus:ring-green-500'
 												: 'border-red-300 focus:ring-red-500'
 										}`}
 									/>
@@ -901,7 +901,7 @@ Examples of valid formats:
 											}
 											className="px-4 py-2 bg-blue-600 text-white text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 										>
-											Save Inputs
+											Update Inputs
 										</button>
 									</div>
 								</div>
