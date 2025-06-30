@@ -901,7 +901,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							</div>
 
 							{/* Variables Display */}
-							<div className="p-4">
+							<div className="p-4 border border-table">
 								<div className="overflow-x-auto">
 									<table className="w-full text-sm border-collapse">
 										<tbody>
@@ -951,43 +951,42 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										</tbody>
 									</table>
 								</div>
-							</div>
-							{/* Final Prompt Preview */}
-							<div className="p-3">
-								<div className="flex justify-between items-center mb-2">
-									<div className="text-xs font-medium text-blue-700">
-										Final Prompt with Variables: {detectedVariables.length}{' '}
-										variable(s) will be substituted
+								{/* Final Prompt Preview */}
+								<div className="pt-4">
+									<div className="flex justify-between items-center mb-2">
+										<div className="text-xs font-medium text-gray-500">
+											{detectedVariables.length} variables will be substituted
+										</div>
+										<button
+											onClick={() => setShowFullPreview(!showFullPreview)}
+											className="text-xs text-text-secondary"
+										>
+											{showFullPreview ? 'Show Less' : 'Show All'}
+										</button>
 									</div>
-									<button
-										onClick={() => setShowFullPreview(!showFullPreview)}
-										className="text-xs text-blue-600 hover:text-blue-800 underline"
+									<div
+										className={`text-sm text-text-primary whitespace-pre-wrap break-words p-2 bg-green-50 ${
+											!showFullPreview ? 'line-clamp-2 overflow-hidden' : ''
+										}`}
+										style={
+											!showFullPreview
+												? {
+														display: '-webkit-box',
+														WebkitLineClamp: 2,
+														WebkitBoxOrient: 'vertical' as const,
+														overflow: 'hidden',
+												  }
+												: {}
+										}
 									>
-										{showFullPreview ? 'Show Less' : 'Show All'}
-									</button>
-								</div>
-								<div
-									className={`text-sm text-text-primary whitespace-pre-wrap break-words p-2 bg-amber-50 ${
-										!showFullPreview ? 'line-clamp-2 overflow-hidden' : ''
-									}`}
-									style={
-										!showFullPreview
-											? {
-													display: '-webkit-box',
-													WebkitLineClamp: 2,
-													WebkitBoxOrient: 'vertical' as const,
-													overflow: 'hidden',
-											  }
-											: {}
-									}
-								>
-									{activePromptId && activeVersionId
-										? substituteVariables(
-												activePromptId,
-												activeVersionId,
-												promptContent
-										  )
-										: promptContent}
+										{activePromptId && activeVersionId
+											? substituteVariables(
+													activePromptId,
+													activeVersionId,
+													promptContent
+											  )
+											: promptContent}
+									</div>
 								</div>
 							</div>
 						</div>
