@@ -220,26 +220,17 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		setDetectedVariables(variables)
 
 		// Automatically add detected variables to the store if they don't exist
-		if (activePromptId && activeVersionId && variables.length > 0) {
-			const currentVariables = getPromptVariables(
-				activePromptId,
-				activeVersionId
-			)
+		if (activePromptId && variables.length > 0) {
+			const currentVariables = getPromptVariables(activePromptId)
 
 			variables.forEach((variable) => {
 				// Only add if variable doesn't already exist
 				if (!(variable in currentVariables)) {
-					updatePromptVariable(activePromptId, activeVersionId, variable, '')
+					updatePromptVariable(activePromptId, variable, '')
 				}
 			})
 		}
-	}, [
-		promptContent,
-		activePromptId,
-		activeVersionId,
-		getPromptVariables,
-		updatePromptVariable,
-	])
+	}, [promptContent, activePromptId, getPromptVariables, updatePromptVariable])
 
 	const handleAddRow = () => {
 		if (activePromptId) {
@@ -764,13 +755,13 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 	// Variable helper functions
 	const getCurrentVariables = () => {
-		if (!activePromptId || !activeVersionId) return {}
-		return getPromptVariables(activePromptId, activeVersionId)
+		if (!activePromptId) return {}
+		return getPromptVariables(activePromptId)
 	}
 
 	const handleUpdateVariable = (key: string, value: string) => {
-		if (!activePromptId || !activeVersionId) return
-		updatePromptVariable(activePromptId, activeVersionId, key, value)
+		if (!activePromptId) return
+		updatePromptVariable(activePromptId, key, value)
 	}
 
 	return (
@@ -976,7 +967,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									</button>
 								</div>
 								<div
-									className={`text-sm text-text-primary whitespace-pre-wrap break-words p-2 bg-green-50 ${
+									className={`text-sm text-text-primary whitespace-pre-wrap break-words p-2 bg-amber-50 ${
 										!showFullPreview ? 'line-clamp-2 overflow-hidden' : ''
 									}`}
 									style={

@@ -22,8 +22,6 @@ interface PromptVersion {
 	title: string
 	content: string
 	timestamp: number
-	// Add variables to store key-value pairs for prompt variables
-	variables: Record<string, string>
 	// Move playground instances to prompt version level
 	playgroundInstances: PlaygroundInstance[]
 	// Store only responses at version level (rowId -> modelId -> response)
@@ -56,6 +54,8 @@ interface Prompt {
 	versions: PromptVersion[]
 	// Move input data to prompt level - shared across all versions
 	inputRows: InputRow[]
+	// Add variables to prompt level - shared across all versions
+	variables: Record<string, string>
 }
 
 interface SystemPromptState {
@@ -77,22 +77,10 @@ interface SystemPromptState {
 	) => void
 	revertPromptVersion: (promptId: string, versionId: string) => void
 	setClearChatMessages: (clearFn: () => void) => void
-	// Add variable management methods
-	getPromptVariables: (
-		promptId: string,
-		versionId: string
-	) => Record<string, string>
-	updatePromptVariable: (
-		promptId: string,
-		versionId: string,
-		key: string,
-		value: string
-	) => void
-	deletePromptVariable: (
-		promptId: string,
-		versionId: string,
-		key: string
-	) => void
+	// Update variable management methods to work at prompt level
+	getPromptVariables: (promptId: string) => Record<string, string>
+	updatePromptVariable: (promptId: string, key: string, value: string) => void
+	deletePromptVariable: (promptId: string, key: string) => void
 	// Function to substitute variables in prompt content
 	substituteVariables: (
 		promptId: string,
@@ -233,8 +221,6 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 					],
 					// Initialize empty responses
 					responses: {},
-					// Initialize empty variables
-					variables: {},
 				}
 				const newPrompt: Prompt = {
 					id: crypto.randomUUID(),
@@ -248,6 +234,8 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 							timestamp: Date.now(),
 						},
 					],
+					// Initialize empty variables
+					variables: {},
 				}
 				set((state) => ({
 					prompts: [...state.prompts, newPrompt],
@@ -330,8 +318,6 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 											playgroundInstances: newPlaygroundInstances,
 											// Initialize empty responses for new version
 											responses: {},
-											// Initialize empty variables for new version
-											variables: {},
 										},
 									],
 							  }
@@ -764,61 +750,35 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 					),
 				}))
 			},
-			// Add variable management methods
-			getPromptVariables: (promptId: string, versionId: string) => {
+			// Update variable management methods to work at prompt level
+			getPromptVariables: (promptId: string) => {
 				const state = get()
 				const prompt = state.prompts.find((p) => p.id === promptId)
-				const version = prompt?.versions.find((v) => v.versionId === versionId)
-				return version?.variables || {}
+				return prompt?.variables || {}
 			},
-			updatePromptVariable: (
-				promptId: string,
-				versionId: string,
-				key: string,
-				value: string
-			) => {
+			updatePromptVariable: (promptId: string, key: string, value: string) => {
 				set((state) => ({
 					prompts: state.prompts.map((prompt) =>
 						prompt.id === promptId
 							? {
 									...prompt,
-									versions: prompt.versions.map((version) =>
-										version.versionId === versionId
-											? {
-													...version,
-													variables: {
-														...version.variables,
-														[key]: value,
-													},
-											  }
-											: version
-									),
+									variables: {
+										...prompt.variables,
+										[key]: value,
+									},
 							  }
 							: prompt
 					),
 				}))
 			},
-			deletePromptVariable: (
-				promptId: string,
-				versionId: string,
-				key: string
-			) => {
+			deletePromptVariable: (promptId: string, key: string) => {
 				set((state) => ({
 					prompts: state.prompts.map((prompt) =>
 						prompt.id === promptId
 							? {
 									...prompt,
-									versions: prompt.versions.map((version) =>
-										version.versionId === versionId
-											? {
-													...version,
-													variables: Object.fromEntries(
-														Object.entries(version.variables).filter(
-															([k]) => k !== key
-														)
-													),
-											  }
-											: version
+									variables: Object.fromEntries(
+										Object.entries(prompt.variables).filter(([k]) => k !== key)
 									),
 							  }
 							: prompt
@@ -832,7 +792,7 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 				content: string
 			) => {
 				const state = get()
-				const variables = state.getPromptVariables(promptId, versionId)
+				const variables = state.getPromptVariables(promptId)
 				return content.replace(/\{\{(.*?)\}\}/g, (match, key) => {
 					const trimmedKey = key.trim()
 					return variables[trimmedKey] || match
