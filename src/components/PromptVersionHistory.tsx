@@ -48,7 +48,7 @@ const PromptVersionHistory: React.FC<PromptVersionHistoryProps> = ({
 	}, [activePrompt, activeVersionId, setActiveVersionId, revertPromptVersion])
 
 	if (!activePrompt || activePrompt.versions.length === 0) {
-		return <p className="text-text-muted">No versions available.</p>
+		return <p className="text-muted">No versions available.</p>
 	}
 
 	// Sort versions by timestamp in descending order (latest first)
@@ -124,13 +124,11 @@ const PromptVersionHistory: React.FC<PromptVersionHistoryProps> = ({
 												</div>
 											))}
 										{version.content.split('\n').length > 3 && (
-											<div className="text-text-muted italic text-xs">...</div>
+											<div className="text-muted italic text-xs">...</div>
 										)}
 									</div>
 								) : (
-									<div className="text-text-muted italic text-xs">
-										Empty prompt
-									</div>
+									<div className="text-muted italic text-xs">Empty prompt</div>
 								)}
 							</div>
 						</div>

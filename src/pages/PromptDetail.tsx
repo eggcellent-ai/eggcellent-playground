@@ -81,7 +81,7 @@ export default function PromptDetailPage() {
 			<div className="flex items-center justify-center min-h-screen bg-background">
 				<div className="text-center">
 					<div className="animate-spin h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-					<p className="text-text-muted">Loading prompt...</p>
+					<p className="text-muted">Loading prompt...</p>
 				</div>
 			</div>
 		)
@@ -92,7 +92,7 @@ export default function PromptDetailPage() {
 			<div className="flex items-center justify-center min-h-screen bg-background">
 				<div className="text-center">
 					<div className="animate-spin h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-					<p className="text-text-muted">Loading prompt content...</p>
+					<p className="text-muted">Loading prompt content...</p>
 				</div>
 			</div>
 		)

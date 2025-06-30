@@ -68,7 +68,7 @@ export default function PromptList() {
 						<div className="text-center py-12">
 							<div className="w-24 h-24 mx-auto mb-4 bg-neutral-hover flex items-center justify-center">
 								<DocumentTextIcon
-									className="w-12 h-12 text-text-muted"
+									className="w-12 h-12 text-muted"
 									aria-hidden="true"
 								/>
 							</div>
@@ -77,7 +77,7 @@ export default function PromptList() {
 									<p className="text-xl text-text-secondary mb-2">
 										No prompts yet
 									</p>
-									<p className="text-text-muted mb-6">
+									<p className="text-muted mb-6">
 										Create your first prompt to get started with AI
 										conversations
 									</p>
@@ -107,7 +107,7 @@ export default function PromptList() {
 											</h3>
 										</div>
 										<div className="flex items-start gap-3">
-											<div className="flex items-center gap-2 text-sm text-text-muted">
+											<div className="flex items-center gap-2 text-sm text-muted">
 												<span>
 													{prompt.versions.length} version
 													{prompt.versions.length !== 1 ? 's' : ''}

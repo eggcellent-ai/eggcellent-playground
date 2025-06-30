@@ -1123,7 +1123,7 @@ Examples of valid formats:
 														</div>
 														<button
 															onClick={() => handleRemoveModel(modelId)}
-															className="p-1 rounded-full text-text-muted hover:text-error hover:bg-error-light transition-colors ml-2"
+															className="p-1 rounded-full text-muted hover:text-error hover:bg-error-light transition-colors ml-2"
 															title="Remove model"
 														>
 															<XMarkIcon className="w-4 h-4" />
@@ -1141,14 +1141,14 @@ Examples of valid formats:
 													className="w-8 h-8 rounded-full border-2 border-dashed border-neutral hover:border-neutral-dark hover:bg-neutral-hover transition-colors flex items-center justify-center"
 													title="Add model"
 												>
-													<PlusIcon className="w-4 h-4 text-text-muted" />
+													<PlusIcon className="w-4 h-4 text-muted" />
 												</button>
 
 												{/* Model Dropdown */}
 												{showModelDropdown && (
 													<div className="absolute top-12 right-0 z-40 bg-surface-card shadow-lg border border-neutral min-w-48">
 														<div className="p-2">
-															<div className="text-xs font-medium text-text-muted mb-2 px-2">
+															<div className="text-xs font-medium text-muted mb-2 px-2">
 																Add Model
 															</div>
 															<div className="max-h-60 overflow-y-auto">
@@ -1171,7 +1171,7 @@ Examples of valid formats:
 																{AVAILABLE_MODELS.filter(
 																	(model) => !selectedModels.includes(model.id)
 																).length === 0 && (
-																	<div className="text-center py-3 text-text-muted text-xs">
+																	<div className="text-center py-3 text-muted text-xs">
 																		All models selected
 																	</div>
 																)}
@@ -1293,7 +1293,7 @@ Examples of valid formats:
 			) : (
 				// Show message when no prompt is selected
 				<div className="flex-1 flex items-center justify-center bg-surface-hover">
-					<div className="text-center text-text-muted">
+					<div className="text-center text-muted">
 						<h2 className="text-lg font-semibold mb-2 text-text-primary">
 							No Prompt Selected
 						</h2>

@@ -33,7 +33,7 @@ export default function MultiPanelLayout() {
 				</div>
 			) : (
 				<div className="flex-1 flex items-center justify-center bg-neutral-hover">
-					<div className="text-center text-text-muted">
+					<div className="text-center text-muted">
 						<h2 className="text-lg font-semibold mb-2">No Prompt Selected</h2>
 						<p>Select a prompt from the list to view and edit it</p>
 					</div>

@@ -155,13 +155,13 @@ export default function TableCell({
 			{/* Response Area */}
 			<div className="flex-1 min-h-24 text-sm">
 				{isLoading ? (
-					<div className="animate-pulse text-text-muted">Running prompt...</div>
+					<div className="animate-pulse text-muted">Running prompt...</div>
 				) : response ? (
 					<div className="whitespace-pre-wrap text-text-primary">
 						{response}
 					</div>
 				) : (
-					<div className="text-text-muted italic">Click Run to test</div>
+					<div className="text-muted">Click Run to test</div>
 				)}
 			</div>
 			{/* Controls */}
