@@ -776,7 +776,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 				<>
 					{/* Floating Bottom Control Panel - Only Title and Run Button */}
 					<div
-						className="fixed bottom-0 z-50 bg-white border-t border-neutral shadow-lg"
+						className="fixed bottom-0 z-30 bg-white border-t border-neutral shadow-lg"
 						style={{ left: '0rem', right: '0rem' }}
 					>
 						<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -977,7 +977,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										</button>
 									</div>
 									<div
-										className={`text-sm text-text-primary whitespace-pre-wrap break-words p-2 bg-green-50 ${
+										className={`text-sm text-text-primary whitespace-pre-wrap break-words p-2 bg-amber-50 ${
 											!showFullPreview ? 'line-clamp-2 overflow-hidden' : ''
 										}`}
 										style={
@@ -1146,7 +1146,7 @@ Examples of valid formats:
 
 												{/* Model Dropdown */}
 												{showModelDropdown && (
-													<div className="absolute top-12 right-0 z-50 bg-surface-card shadow-lg border border-neutral min-w-48">
+													<div className="absolute top-12 right-0 z-40 bg-surface-card shadow-lg border border-neutral min-w-48">
 														<div className="p-2">
 															<div className="text-xs font-medium text-text-muted mb-2 px-2">
 																Add Model
