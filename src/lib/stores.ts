@@ -22,6 +22,8 @@ interface PromptVersion {
 	title: string
 	content: string
 	timestamp: number
+	// Add variables to store key-value pairs for prompt variables
+	variables: Record<string, string>
 	// Move playground instances to prompt version level
 	playgroundInstances: PlaygroundInstance[]
 	// Store only responses at version level (rowId -> modelId -> response)
@@ -75,6 +77,28 @@ interface SystemPromptState {
 	) => void
 	revertPromptVersion: (promptId: string, versionId: string) => void
 	setClearChatMessages: (clearFn: () => void) => void
+	// Add variable management methods
+	getPromptVariables: (
+		promptId: string,
+		versionId: string
+	) => Record<string, string>
+	updatePromptVariable: (
+		promptId: string,
+		versionId: string,
+		key: string,
+		value: string
+	) => void
+	deletePromptVariable: (
+		promptId: string,
+		versionId: string,
+		key: string
+	) => void
+	// Function to substitute variables in prompt content
+	substituteVariables: (
+		promptId: string,
+		versionId: string,
+		content: string
+	) => string
 	// Updated conversation history methods to work with playground instances within versions
 	saveConversationHistory: (
 		promptId: string,
@@ -209,6 +233,8 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 					],
 					// Initialize empty responses
 					responses: {},
+					// Initialize empty variables
+					variables: {},
 				}
 				const newPrompt: Prompt = {
 					id: crypto.randomUUID(),
@@ -304,6 +330,8 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 											playgroundInstances: newPlaygroundInstances,
 											// Initialize empty responses for new version
 											responses: {},
+											// Initialize empty variables for new version
+											variables: {},
 										},
 									],
 							  }
@@ -736,6 +764,80 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 					),
 				}))
 			},
+			// Add variable management methods
+			getPromptVariables: (promptId: string, versionId: string) => {
+				const state = get()
+				const prompt = state.prompts.find((p) => p.id === promptId)
+				const version = prompt?.versions.find((v) => v.versionId === versionId)
+				return version?.variables || {}
+			},
+			updatePromptVariable: (
+				promptId: string,
+				versionId: string,
+				key: string,
+				value: string
+			) => {
+				set((state) => ({
+					prompts: state.prompts.map((prompt) =>
+						prompt.id === promptId
+							? {
+									...prompt,
+									versions: prompt.versions.map((version) =>
+										version.versionId === versionId
+											? {
+													...version,
+													variables: {
+														...version.variables,
+														[key]: value,
+													},
+											  }
+											: version
+									),
+							  }
+							: prompt
+					),
+				}))
+			},
+			deletePromptVariable: (
+				promptId: string,
+				versionId: string,
+				key: string
+			) => {
+				set((state) => ({
+					prompts: state.prompts.map((prompt) =>
+						prompt.id === promptId
+							? {
+									...prompt,
+									versions: prompt.versions.map((version) =>
+										version.versionId === versionId
+											? {
+													...version,
+													variables: Object.fromEntries(
+														Object.entries(version.variables).filter(
+															([k]) => k !== key
+														)
+													),
+											  }
+											: version
+									),
+							  }
+							: prompt
+					),
+				}))
+			},
+			// Function to substitute variables in prompt content
+			substituteVariables: (
+				promptId: string,
+				versionId: string,
+				content: string
+			) => {
+				const state = get()
+				const variables = state.getPromptVariables(promptId, versionId)
+				return content.replace(/\{\{(.*?)\}\}/g, (match, key) => {
+					const trimmedKey = key.trim()
+					return variables[trimmedKey] || match
+				})
+			},
 		}),
 		{
 			name: 'system-prompt-storage',
@@ -826,4 +928,15 @@ if (typeof window !== 'undefined') {
 			useApiKeyStore.getState().setAnthropicKey(anthropicKey)
 		}
 	}, 100)
+}
+
+// Utility function to detect variables in prompt content
+export const detectVariables = (content: string): string[] => {
+	const variableRegex = /\{\{(.*?)\}\}/g
+	const matches = content.match(variableRegex)
+	if (!matches) return []
+
+	return matches
+		.map((match) => match.replace(/\{\{|\}\}/g, '').trim())
+		.filter((variable, index, array) => array.indexOf(variable) === index) // Remove duplicates
 }

@@ -1,4 +1,5 @@
 import { useSystemPromptStore, AVAILABLE_MODELS } from '../lib/stores'
+import { detectVariables } from '../lib/stores'
 import {
 	PlusIcon,
 	XMarkIcon,
@@ -29,6 +30,9 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		updatePrompt,
 		updatePromptTitle,
 		prompts,
+		getPromptVariables,
+		updatePromptVariable,
+		substituteVariables,
 	} = useSystemPromptStore()
 
 	const { streamText, hasValidKeyForModel } = useAIService()
@@ -52,6 +56,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		message: string
 		isEmpty: boolean
 	}>({ isValid: true, message: '', isEmpty: true })
+	const [detectedVariables, setDetectedVariables] = useState<string[]>([])
 	const dropdownRef = useRef<HTMLDivElement>(null)
 
 	// Get table data for current version
@@ -206,6 +211,33 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		activeVersionId,
 		loadCurrentDataToJson,
 		validateJsonInput,
+	])
+
+	// Detect variables in prompt content
+	useEffect(() => {
+		const variables = detectVariables(promptContent)
+		setDetectedVariables(variables)
+
+		// Automatically add detected variables to the store if they don't exist
+		if (activePromptId && activeVersionId && variables.length > 0) {
+			const currentVariables = getPromptVariables(
+				activePromptId,
+				activeVersionId
+			)
+
+			variables.forEach((variable) => {
+				// Only add if variable doesn't already exist
+				if (!(variable in currentVariables)) {
+					updatePromptVariable(activePromptId, activeVersionId, variable, '')
+				}
+			})
+		}
+	}, [
+		promptContent,
+		activePromptId,
+		activeVersionId,
+		getPromptVariables,
+		updatePromptVariable,
 	])
 
 	const handleAddRow = () => {
@@ -434,7 +466,11 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					const messages: ChatMessage[] = [
 						{
 							role: 'system',
-							content: inputPromptContent,
+							content: substituteVariables(
+								activePromptId,
+								activeVersionId,
+								inputPromptContent
+							),
 						},
 					]
 
@@ -570,7 +606,11 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							const messages: ChatMessage[] = [
 								{
 									role: 'system',
-									content: inputPromptContent,
+									content: substituteVariables(
+										activePromptId,
+										activeVersionId,
+										inputPromptContent
+									),
 								},
 							]
 
@@ -708,6 +748,51 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		}
 	}, [showModelDropdown])
 
+	// Variable helper functions
+	const getCurrentVariables = () => {
+		if (!activePromptId || !activeVersionId) return {}
+		return getPromptVariables(activePromptId, activeVersionId)
+	}
+
+	const handleUpdateVariable = (key: string, value: string) => {
+		if (!activePromptId || !activeVersionId) return
+		updatePromptVariable(activePromptId, activeVersionId, key, value)
+	}
+
+	// Function to render prompt content with highlighted variables
+	const renderHighlightedPrompt = (content: string) => {
+		if (!content) return null
+
+		const parts = content.split(/(\{\{.*?\}\})/g)
+		return parts.map((part, index) => {
+			if (part.match(/\{\{.*?\}\}/)) {
+				// This is a variable
+				const variableName = part.replace(/\{\{|\}\}/g, '').trim()
+				const currentVariables = getCurrentVariables()
+				const hasValue = variableName in currentVariables
+
+				return (
+					<span
+						key={index}
+						className={`${
+							hasValue
+								? 'bg-green-100 text-green-800 border border-green-300'
+								: 'bg-orange-100 text-orange-800 border border-orange-300'
+						} px-1 py-0.5 rounded text-sm font-medium`}
+						title={
+							hasValue
+								? `Value: ${currentVariables[variableName]}`
+								: 'No value set'
+						}
+					>
+						{part}
+					</span>
+				)
+			}
+			return part
+		})
+	}
+
 	return (
 		<div className="flex flex-col w-full h-full overflow-hidden bg-white">
 			{/* Show table only if there's an active prompt version */}
@@ -786,6 +871,43 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 											}
 										}}
 									/>
+
+									{/* Variable Highlight Preview */}
+									{detectedVariables.length > 0 && (
+										<div className="mt-3 space-y-3">
+											{/* Highlighted Variables Preview */}
+											<div className="p-3 bg-neutral-50 border border-neutral-200 rounded">
+												<h4 className="text-xs font-medium text-text-muted mb-2">
+													Detected Variables:
+												</h4>
+												<div className="text-sm text-text-primary whitespace-pre-wrap break-words">
+													{renderHighlightedPrompt(promptContent)}
+												</div>
+											</div>
+
+											{/* Final Prompt Preview */}
+											<div className="p-3 bg-blue-50 border border-blue-200 rounded">
+												<h4 className="text-xs font-medium text-blue-700 mb-2">
+													Final Prompt (sent to AI):
+												</h4>
+												<div className="text-sm text-text-primary whitespace-pre-wrap break-words bg-white p-2 rounded border">
+													{activePromptId && activeVersionId
+														? substituteVariables(
+																activePromptId,
+																activeVersionId,
+																promptContent
+														  )
+														: promptContent}
+												</div>
+												{/* Show substitution summary */}
+												<div className="mt-2 text-xs text-blue-600">
+													{detectedVariables.length} variable(s) will be
+													substituted
+												</div>
+											</div>
+										</div>
+									)}
+
 									<div className="flex justify-end items-center gap-2 mt-3">
 										<button
 											onClick={() => setShowVersionHistory(!showVersionHistory)}
@@ -832,6 +954,86 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							</div>
 						)}
 					</div>
+
+					{/* ===== VARIABLES SECTION ===== */}
+					{detectedVariables.length > 0 && (
+						<div>
+							{/* Section Header */}
+							<div className="bg-neutral-50 px-2 pb-2 pt-8">
+								<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
+									Variables
+								</h2>
+							</div>
+
+							{/* Variables Display */}
+							<div className="border border-table">
+								<div className="p-4">
+									<h4 className="text-sm font-medium text-text-primary mb-3">
+										Variables in this Prompt:
+									</h4>
+									<div className="overflow-x-auto">
+										<table className="w-full text-sm border-collapse">
+											<thead>
+												<tr className="bg-neutral-50">
+													<th className="border border-neutral-200 px-3 py-2 text-left font-medium text-text-primary">
+														Variable
+													</th>
+													<th className="border border-neutral-200 px-3 py-2 text-left font-medium text-text-primary">
+														Current Value
+													</th>
+													<th className="border border-neutral-200 px-3 py-2 text-left font-medium text-text-primary">
+														Status
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												{detectedVariables.map((variable) => {
+													const currentVariables = getCurrentVariables()
+													const value = currentVariables[variable] || ''
+													const hasValue = value.trim() !== ''
+
+													return (
+														<tr key={variable} className="hover:bg-neutral-50">
+															<td className="border border-neutral-200 px-3 py-2 font-mono text-sm">
+																<code className="bg-neutral-100 px-1 py-0.5 rounded text-xs">
+																	{`{{${variable}}}`}
+																</code>
+															</td>
+															<td className="border border-neutral-200 px-3 py-2">
+																<input
+																	type="text"
+																	value={value}
+																	onChange={(e) =>
+																		handleUpdateVariable(
+																			variable,
+																			e.target.value
+																		)
+																	}
+																	placeholder="Enter value..."
+																	className="w-full px-2 py-1 text-sm border border-neutral-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+																/>
+															</td>
+															<td className="border border-neutral-200 px-3 py-2">
+																<span
+																	className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+																		hasValue
+																			? 'bg-green-100 text-green-800'
+																			: 'bg-orange-100 text-orange-800'
+																	}`}
+																>
+																	{hasValue ? '✓ Set' : '⚠ Empty'}
+																</span>
+															</td>
+														</tr>
+													)
+												})}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					)}
 
 					{/* ===== INPUT SECTION ===== */}
 					<div>
