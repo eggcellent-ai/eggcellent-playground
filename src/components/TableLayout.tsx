@@ -766,7 +766,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 	return (
 		<div
-			className="flex flex-col w-full h-full overflow-hidden bg-surface-card"
+			className="flex flex-col w-full h-full overflow-hidden"
 			style={{
 				paddingBottom: '80px', // Fixed padding for floating control panel
 			}}
@@ -913,7 +913,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							</div>
 
 							{/* Variables Display */}
-							<div className="p-4 border border-neutral">
+							<div className="p-4 border border-neutral bg-surface-card">
 								<div className="overflow-x-auto">
 									<table className="w-full text-sm border-collapse">
 										<tbody>
@@ -1014,7 +1014,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						</div>
 
 						{/* Bulk JSON Input */}
-						<div className="p-4 border border-neutral">
+						<div className="p-4 border border-neutral bg-surface-card">
 							<div className="mb-3 flex justify-start items-center gap-2">
 								<h3 className="text-sm font-semibold text-text-primary">
 									Bulk Input
@@ -1094,7 +1094,7 @@ Examples of valid formats:
 							<table className="w-full h-full table-fixed border-collapse border border-neutral">
 								<thead className="sticky top-0">
 									<tr>
-										<th className="p-3 text-left text-sm font-semibold w-1/3 bg-surface-card text-text-primary border-b border-r border-neutral">
+										<th className="p-3 text-left text-sm font-semibold w-1/3 text-text-primary border-b border-r border-neutral">
 											Input
 										</th>
 										{selectedModels.map((modelId, index) => {
@@ -1107,7 +1107,7 @@ Examples of valid formats:
 											return (
 												<th
 													key={modelId}
-													className={`p-3 text-left text-sm font-semibold bg-surface-card text-text-primary border-b border-neutral ${
+													className={`p-3 text-left text-sm font-semibold text-text-primary border-b border-neutral ${
 														index < selectedModels.length - 1
 															? 'border-r border-neutral'
 															: ''
