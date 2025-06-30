@@ -765,21 +765,22 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	}
 
 	return (
-		<div className="flex flex-col w-full h-full overflow-hidden bg-surface-card">
+		<div
+			className="flex flex-col w-full h-full overflow-hidden bg-surface-card"
+			style={{
+				paddingBottom: '80px', // Fixed padding for floating control panel
+			}}
+		>
 			{/* Show table only if there's an active prompt version */}
 			{activePromptId && activeVersionId ? (
 				<>
-					{/* ===== SYSTEM PROMPT SECTION ===== */}
-					<div>
-						{/* Section Header */}
-						<div className="bg-neutral-50 px-2 pb-2 pt-8">
-							<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
-								System Prompt
-							</h2>
-						</div>
-						<div className="border border-neutral">
-							{/* Prompt Title and Run All Button */}
-							<div className="flex justify-between items-center gap-2 p-4">
+					{/* Floating Bottom Control Panel - Only Title and Run Button */}
+					<div
+						className="fixed bottom-0 z-50 bg-white border-t border-neutral shadow-lg"
+						style={{ left: '0rem', right: '0rem' }}
+					>
+						<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+							<div className="flex justify-between items-center gap-2 p-4 bg-surface-card">
 								<div className="flex-1">
 									<input
 										type="text"
@@ -804,9 +805,20 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									{runningAllTable ? 'Running All...' : 'Run Table'}
 								</button>
 							</div>
+						</div>
+					</div>
 
+					{/* ===== SYSTEM PROMPT SECTION ===== */}
+					<div>
+						{/* Section Header */}
+						<div className="bg-neutral-50 px-2 pb-2 pt-8">
+							<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
+								System Prompt
+							</h2>
+						</div>
+						<div className="border border-neutral">
 							{/* Prompt Editor */}
-							<div className="border-t border-neutral bg-surface-card">
+							<div className="bg-surface-card">
 								<div className="p-4 relative">
 									{/* Expand/Collapse Icon - Top Right */}
 									<button
