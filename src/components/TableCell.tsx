@@ -176,7 +176,7 @@ export default function TableCell({
 				{hasRun && (
 					<button
 						onClick={handleClear}
-						className="px-3 py-1 border border-neutral-300 text-neutral-700 text-xs hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
+						className="px-3 py-1 border border-neutral text-text-secondary text-xs hover:border-neutral-dark hover:bg-neutral-hover transition-colors"
 					>
 						Clear
 					</button>

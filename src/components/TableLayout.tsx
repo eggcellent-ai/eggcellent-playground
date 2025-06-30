@@ -765,7 +765,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	}
 
 	return (
-		<div className="flex flex-col w-full h-full overflow-hidden bg-white">
+		<div className="flex flex-col w-full h-full overflow-hidden bg-surface-card">
 			{/* Show table only if there's an active prompt version */}
 			{activePromptId && activeVersionId ? (
 				<>
@@ -777,7 +777,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 								System Prompt
 							</h2>
 						</div>
-						<div className="border border-table">
+						<div className="border border-neutral">
 							{/* Prompt Title and Run All Button */}
 							<div className="flex justify-between items-center gap-2 p-4">
 								<div className="flex-1">
@@ -798,7 +798,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 											(row) => row.input.trim() || (row.images || []).length > 0
 										)
 									}
-									className="px-5 py-2 bg-green hover:bg-app text-white text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+									className="px-5 py-2 bg-primary hover:bg-secondary text-white text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
 								>
 									<PlayIcon className="w-4 h-4" />
 									{runningAllTable ? 'Running All...' : 'Run Table'}
@@ -806,12 +806,12 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							</div>
 
 							{/* Prompt Editor */}
-							<div className="border-t border-table bg-surface-card">
+							<div className="border-t border-neutral bg-surface-card">
 								<div className="p-4 relative">
 									{/* Expand/Collapse Icon - Top Right */}
 									<button
 										onClick={() => setIsEditorExpanded(!isEditorExpanded)}
-										className="absolute top-2 right-2 p-1 text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors z-10"
+										className="absolute top-2 right-2 p-1 text-text-secondary hover:text-text-primary hover:bg-neutral-hover transition-colors z-10"
 										title={
 											isEditorExpanded ? 'Collapse editor' : 'Expand editor'
 										}
@@ -848,8 +848,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 											onClick={() => setShowVersionHistory(!showVersionHistory)}
 											className={`px-4 py-2 text-sm border transition-colors ${
 												showVersionHistory
-													? 'bg-neutral-300 border-neutral-300 text-black'
-													: 'border-neutral-300 text-text-secondary hover:border-neutral-400 hover:bg-neutral-50'
+													? 'bg-neutral border-neutral text-text-primary'
+													: 'border-neutral text-text-secondary hover:border-neutral-dark hover:bg-neutral-hover'
 											}`}
 										>
 											{showVersionHistory
@@ -862,8 +862,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 											onClick={handleSavePrompt}
 											className={`px-4 py-2 text-sm border ${
 												updateSuccess
-													? 'bg-green-600 border-green-600 text-white'
-													: 'bg-neutral-900 border-neutral-900 text-white hover:bg-neutral-800'
+													? 'bg-success border-success text-white'
+													: 'bg-neutral-dark border-neutral-dark text-white hover:bg-primary'
 											} transition-colors flex items-center gap-1`}
 										>
 											{updateSuccess ? (
@@ -881,7 +881,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						</div>
 						{/* Version History */}
 						{showVersionHistory && (
-							<div className="border-t border-table p-4">
+							<div className="border-t border-neutral p-4">
 								<h3 className="text-sm font-semibold mb-3 text-text-primary">
 									Version History
 								</h3>
@@ -901,7 +901,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							</div>
 
 							{/* Variables Display */}
-							<div className="p-4 border border-table">
+							<div className="p-4 border border-neutral">
 								<div className="overflow-x-auto">
 									<table className="w-full text-sm border-collapse">
 										<tbody>
@@ -912,18 +912,18 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 												return (
 													<tr key={variable} className="hover:bg-neutral-50">
-														<td className="border border-table px-3 py-2 font-mono text-sm">
+														<td className="border border-neutral px-3 py-2 font-mono text-sm">
 															<code
 																className={`px-1 py-0.5 rounded text-xs ${
 																	hasValue
-																		? 'bg-green-100 text-green-800'
-																		: 'bg-orange-100 text-orange-800'
+																		? 'bg-success-light text-success-dark'
+																		: 'bg-warning-light text-warning-dark'
 																}`}
 															>
 																{`{{${variable}}}`}
 															</code>
 														</td>
-														<td className="border border-table px-3 py-2">
+														<td className="border border-neutral px-3 py-2">
 															<input
 																type="text"
 																value={value}
@@ -931,15 +931,15 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 																	handleUpdateVariable(variable, e.target.value)
 																}
 																placeholder="Enter value..."
-																className="w-full px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+																className="w-full px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-secondary"
 															/>
 														</td>
-														<td className="border border-table px-3 py-2">
+														<td className="border border-neutral px-3 py-2">
 															<span
 																className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
 																	hasValue
-																		? 'bg-green-100 text-green-800'
-																		: 'bg-orange-100 text-orange-800'
+																		? 'bg-success-light text-success-dark'
+																		: 'bg-warning-light text-warning-dark'
 																}`}
 															>
 																{hasValue ? '✓ Set' : '⚠ Empty'}
@@ -1002,7 +1002,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						</div>
 
 						{/* Bulk JSON Input */}
-						<div className="p-4 border border-table">
+						<div className="p-4 border border-neutral">
 							<div className="mb-3 flex justify-start items-center gap-2">
 								<h3 className="text-sm font-semibold text-text-primary">
 									Bulk Input
@@ -1011,8 +1011,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									<div
 										className={`text-xs px-2 py-1 ${
 											jsonValidationStatus.isValid
-												? 'text-green-700'
-												: 'text-red-700 border-red-200'
+												? 'text-success-dark'
+												: 'text-error-dark border-error'
 										}`}
 									>
 										{jsonValidationStatus.isValid ? '✅' : '❌'}{' '}
@@ -1034,10 +1034,10 @@ Examples of valid formats:
 {"items": ["Item 1", "Item 2"]}`}
 										className={`w-full h-32 p-3 border text-sm resize-none bg-surface-input transition-colors focus:ring-none ${
 											jsonValidationStatus.isEmpty
-												? 'border-table'
+												? 'border-neutral'
 												: jsonValidationStatus.isValid
-												? 'border-table focus:ring-green-500'
-												: 'border-red-300 focus:ring-red-500'
+												? 'border-neutral focus:ring-success'
+												: 'border-error focus:ring-error'
 										}`}
 									/>
 								</div>
@@ -1046,7 +1046,7 @@ Examples of valid formats:
 									<div>
 										<button
 											onClick={handleAddRow}
-											className="flex items-center px-4 py-2 text-sm text-neutral-900 hover:text-neutral-700 hover:bg-neutral-50 transition-colors border border-table"
+											className="flex items-center px-4 py-2 text-sm text-neutral-dark hover:text-text-primary hover:bg-neutral-hover transition-colors border border-neutral"
 										>
 											<PlusIcon className="w-4 h-4 mr-2" />
 											Add Single Input
@@ -1058,7 +1058,7 @@ Examples of valid formats:
 											disabled={
 												!jsonInputValue.trim() || !jsonValidationStatus.isValid
 											}
-											className="px-4 py-2 bg-blue-600 text-white text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+											className="px-4 py-2 bg-secondary text-white text-sm hover:bg-secondary-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 										>
 											Update Inputs
 										</button>
@@ -1079,10 +1079,10 @@ Examples of valid formats:
 
 						{/* Results Table */}
 						<div className="flex-1 overflow-auto bg-surface-card">
-							<table className="w-full h-full table-fixed border-collapse border border-table">
+							<table className="w-full h-full table-fixed border-collapse border border-neutral">
 								<thead className="sticky top-0">
 									<tr>
-										<th className="p-3 text-left text-sm font-semibold w-1/3 bg-surface-card text-text-primary border-b border-r border-table">
+										<th className="p-3 text-left text-sm font-semibold w-1/3 bg-surface-card text-text-primary border-b border-r border-neutral">
 											Input
 										</th>
 										{selectedModels.map((modelId, index) => {
@@ -1095,9 +1095,9 @@ Examples of valid formats:
 											return (
 												<th
 													key={modelId}
-													className={`p-3 text-left text-sm font-semibold bg-surface-card text-text-primary border-b border-table ${
+													className={`p-3 text-left text-sm font-semibold bg-surface-card text-text-primary border-b border-neutral ${
 														index < selectedModels.length - 1
-															? 'border-r border-table'
+															? 'border-r border-neutral'
 															: ''
 													}`}
 													style={{ width: columnWidth }}
@@ -1111,7 +1111,7 @@ Examples of valid formats:
 														</div>
 														<button
 															onClick={() => handleRemoveModel(modelId)}
-															className="p-1 rounded-full text-text-muted hover:text-red-500 hover:bg-red-50 transition-colors ml-2"
+															className="p-1 rounded-full text-text-muted hover:text-error hover:bg-error-light transition-colors ml-2"
 															title="Remove model"
 														>
 															<XMarkIcon className="w-4 h-4" />
@@ -1120,23 +1120,23 @@ Examples of valid formats:
 												</th>
 											)
 										})}
-										<th className="p-3 text-center text-sm font-semibold w-16 bg-surface-card text-text-primary border-b border-l border-table relative">
+										<th className="p-3 text-center text-sm font-semibold w-16 bg-surface-card text-text-primary border-b border-l border-neutral relative">
 											<div ref={dropdownRef}>
 												<button
 													onClick={() =>
 														setShowModelDropdown(!showModelDropdown)
 													}
-													className="w-8 h-8 rounded-full border-2 border-dashed border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50 transition-colors flex items-center justify-center"
+													className="w-8 h-8 rounded-full border-2 border-dashed border-neutral hover:border-neutral-dark hover:bg-neutral-hover transition-colors flex items-center justify-center"
 													title="Add model"
 												>
-													<PlusIcon className="w-4 h-4 text-neutral-500" />
+													<PlusIcon className="w-4 h-4 text-text-muted" />
 												</button>
 
 												{/* Model Dropdown */}
 												{showModelDropdown && (
-													<div className="absolute top-12 right-0 z-50 bg-white shadow-lg border border-gray-200 min-w-48">
+													<div className="absolute top-12 right-0 z-50 bg-surface-card shadow-lg border border-neutral min-w-48">
 														<div className="p-2">
-															<div className="text-xs font-medium text-gray-500 mb-2 px-2">
+															<div className="text-xs font-medium text-text-muted mb-2 px-2">
 																Add Model
 															</div>
 															<div className="max-h-60 overflow-y-auto">
@@ -1146,12 +1146,12 @@ Examples of valid formats:
 																	<button
 																		key={model.id}
 																		onClick={() => handleAddModel(model.id)}
-																		className="w-full text-left p-2 hover:bg-gray-50 transition-colors"
+																		className="w-full text-left p-2 hover:bg-neutral-hover transition-colors"
 																	>
-																		<div className="font-medium text-gray-900 text-sm">
+																		<div className="font-medium text-text-primary text-sm">
 																			{model.name}
 																		</div>
-																		<div className="text-xs text-gray-500">
+																		<div className="text-xs text-text-secondary">
 																			{model.provider}
 																		</div>
 																	</button>
@@ -1159,7 +1159,7 @@ Examples of valid formats:
 																{AVAILABLE_MODELS.filter(
 																	(model) => !selectedModels.includes(model.id)
 																).length === 0 && (
-																	<div className="text-center py-3 text-gray-500 text-xs">
+																	<div className="text-center py-3 text-text-muted text-xs">
 																		All models selected
 																	</div>
 																)}
@@ -1183,9 +1183,9 @@ Examples of valid formats:
 											},
 											rowIndex: number
 										) => (
-											<tr key={row.id} className="hover:bg-surface-hover">
+											<tr key={row.id} className="hover:bg-neutral-hover">
 												<td
-													className={`p-3 align-top border-r border-table ${
+													className={`p-3 align-top border-r border-neutral ${
 														rowIndex < tableData.length - 1 ? 'border-b' : ''
 													}`}
 												>
@@ -1228,7 +1228,7 @@ Examples of valid formats:
 															{tableData.length > 1 && (
 																<button
 																	onClick={() => handleRemoveRow(row.id)}
-																	className="px-3 py-1 border border-neutral-300 text-neutral-700 text-xs hover:border-neutral-400 hover:bg-neutral-50 transition-colors"
+																	className="px-3 py-1 border border-neutral text-text-secondary text-xs hover:border-neutral-dark hover:bg-neutral-hover transition-colors"
 																	title="Remove row"
 																>
 																	Remove
@@ -1240,11 +1240,11 @@ Examples of valid formats:
 												{selectedModels.map((modelId, colIndex) => (
 													<td
 														key={`${row.id}-${modelId}`}
-														className={`p-3 align-top border-table ${
+														className={`p-3 align-top border-neutral ${
 															rowIndex < tableData.length - 1 ? 'border-b' : ''
 														} ${
 															colIndex < selectedModels.length - 1
-																? 'border-r border-table'
+																? 'border-r border-neutral'
 																: ''
 														}`}
 													>
@@ -1264,7 +1264,7 @@ Examples of valid formats:
 												))}
 												{/* Add Model Column - Empty Cell */}
 												<td
-													className={`p-3 align-top border-l border-table ${
+													className={`p-3 align-top border-l border-neutral ${
 														rowIndex < tableData.length - 1 ? 'border-b' : ''
 													}`}
 												>

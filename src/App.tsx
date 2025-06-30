@@ -7,7 +7,7 @@ import PromptDetailPage from './pages/PromptDetail'
 function App() {
 	return (
 		<Router>
-			<div className="min-h-screen bg-surface-background">
+			<div className="min-h-screen bg-background">
 				<Header />
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 					<Routes>

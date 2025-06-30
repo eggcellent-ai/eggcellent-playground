@@ -92,7 +92,7 @@ export default function ApiKeySettings({
 				</div>
 
 				{/* Warning Message */}
-				<div className="mb-8 p-4 bg-amber-50 border border-amber-200">
+				<div className="mb-8 p-4 bg-warning-light border border-warning">
 					<div className="flex gap-3">
 						<ExclamationTriangleIcon className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
 						<div className="text-sm text-amber-800 leading-relaxed">
@@ -119,7 +119,7 @@ export default function ApiKeySettings({
 								value={tempOpenaiKey}
 								onChange={(e) => setTempOpenaiKey(e.target.value)}
 								placeholder="sk-..."
-								className="w-full px-4 py-3 pr-12 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-colors"
+								className="w-full px-4 py-3 pr-12 border border-neutral focus:ring-2 focus:ring-secondary focus:border-secondary text-sm transition-colors"
 							/>
 							<button
 								type="button"
@@ -160,7 +160,7 @@ export default function ApiKeySettings({
 								value={tempAnthropicKey}
 								onChange={(e) => setTempAnthropicKey(e.target.value)}
 								placeholder="sk-ant-..."
-								className="w-full px-4 py-3 pr-12 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-colors"
+								className="w-full px-4 py-3 pr-12 border border-neutral focus:ring-2 focus:ring-secondary focus:border-secondary text-sm transition-colors"
 							/>
 							<button
 								type="button"

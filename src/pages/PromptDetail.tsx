@@ -1,101 +1,97 @@
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { useSystemPromptStore } from '../lib/stores'
-import { useEffect, useState } from 'react'
 import TableLayout from '../components/TableLayout'
+import { useEffect, useState } from 'react'
 
 export default function PromptDetailPage() {
-	const params = useParams()
-	const navigate = useNavigate()
-	const promptId = params.id as string
+	const { id: promptId } = useParams<{ id: string }>()
+	const prompts = useSystemPromptStore((state) => state.prompts)
+	const setActivePromptId = useSystemPromptStore(
+		(state) => state.setActivePromptId
+	)
+	const setActiveVersionId = useSystemPromptStore(
+		(state) => state.setActiveVersionId
+	)
 
-	const {
-		prompts,
-		activePromptId,
-		activeVersionId,
-		setActivePromptId,
-		hasHydrated,
-	} = useSystemPromptStore()
+	const [hasHydrated, setHasHydrated] = useState(false)
+	const [shouldShowLoading, setShouldShowLoading] = useState(true)
 
-	const [inputPromptContent, setInputPromptContent] = useState('')
-	const [isLoadingPrompt, setIsLoadingPrompt] = useState(true)
-	const currentPrompt = prompts.find((p) => p.id === promptId)
+	// Find the current prompt
+	const currentPrompt = prompts.find((prompt) => prompt.id === promptId)
 
+	// Track hydration state
 	useEffect(() => {
-		// Only update active prompt if it's different and we have a valid prompt
-		if (
-			hasHydrated &&
-			promptId &&
-			currentPrompt &&
-			activePromptId !== promptId
-		) {
-			setIsLoadingPrompt(true) // Start loading when switching prompts
-			setInputPromptContent('') // Clear old content to prevent flash
+		// Wait a bit before allowing navigation to ensure store is hydrated
+		const timer = setTimeout(() => {
+			setHasHydrated(true)
+		}, 100)
+
+		return () => clearTimeout(timer)
+	}, [])
+
+	// Set active prompt when component mounts or promptId changes
+	useEffect(() => {
+		if (promptId && hasHydrated) {
 			setActivePromptId(promptId)
-		}
-	}, [hasHydrated, promptId, currentPrompt, activePromptId, setActivePromptId])
 
-	// Handle initial loading state
-	useEffect(() => {
-		// If we've hydrated but don't have a current prompt, we're not loading anymore
-		if (hasHydrated && promptId && !currentPrompt) {
-			setIsLoadingPrompt(false)
-		}
-	}, [hasHydrated, promptId, currentPrompt])
-
-	// Sync editor content with active prompt content - only when switching prompts/versions
-	useEffect(() => {
-		if (activePromptId && activeVersionId && activePromptId === promptId) {
-			// Only set content if the active prompt matches the current page
-			const prompt = prompts.find((p) => p.id === activePromptId)
-			const version = prompt?.versions.find(
-				(v) => v.versionId === activeVersionId
-			)
-			const content = version?.content || ''
-			setInputPromptContent(content)
-			setIsLoadingPrompt(false) // Content is ready
-		} else {
-			// Clear content if prompt doesn't match or no active prompt
-			if (activePromptId !== promptId) {
-				setInputPromptContent('')
-			}
-			if (hasHydrated && promptId && !currentPrompt) {
-				setIsLoadingPrompt(false) // No content to load for non-existent prompt
+			// If prompt exists and has versions, set the latest version as active
+			if (currentPrompt && currentPrompt.versions.length > 0) {
+				// Sort by timestamp to get the latest version
+				const sortedVersions = [...currentPrompt.versions].sort(
+					(a, b) => b.timestamp - a.timestamp
+				)
+				const latestVersion = sortedVersions[0]
+				if (latestVersion) {
+					setActiveVersionId(latestVersion.versionId)
+				}
 			}
 		}
-	}, [activePromptId, activeVersionId, hasHydrated, promptId, currentPrompt]) // eslint-disable-line react-hooks/exhaustive-deps
+	}, [
+		promptId,
+		hasHydrated,
+		currentPrompt,
+		setActivePromptId,
+		setActiveVersionId,
+	])
 
-	// If prompt doesn't exist after hydration, redirect to home
+	// Set up loading state timing
 	useEffect(() => {
-		if (hasHydrated && promptId && !currentPrompt) {
-			navigate('/')
-		}
-	}, [hasHydrated, promptId, currentPrompt, navigate])
+		// Show loading for a brief moment even if data is available for better UX
+		const timer = setTimeout(() => {
+			setShouldShowLoading(false)
+		}, 300)
 
-	// Show loading state only while store is hydrating
+		return () => clearTimeout(timer)
+	}, [currentPrompt])
+
+	// Get the content for the input prompt (latest version content)
+	const inputPromptContent = currentPrompt?.versions.length
+		? (() => {
+				// Sort by timestamp to get the latest version
+				const sortedVersions = [...currentPrompt.versions].sort(
+					(a, b) => b.timestamp - a.timestamp
+				)
+				return sortedVersions[0]?.content || ''
+		  })()
+		: ''
+
+	// Show loading state while hydrating or briefly after data loads
 	if (!hasHydrated) {
 		return (
-			<div className="flex items-center justify-center min-h-screen bg-surface-background">
+			<div className="flex items-center justify-center min-h-screen bg-background">
 				<div className="text-center">
-					<div className="animate-spin h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
+					<div className="animate-spin h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
 					<p className="text-text-muted">Loading prompt...</p>
 				</div>
 			</div>
 		)
 	}
 
-	// Show loading while prompt content is being prepared or if content doesn't match current prompt
-	const shouldShowLoading =
-		hasHydrated &&
-		(isLoadingPrompt ||
-			!activePromptId ||
-			activePromptId !== promptId ||
-			!activeVersionId)
-
 	if (shouldShowLoading && currentPrompt) {
 		return (
-			<div className="flex items-center justify-center min-h-screen bg-surface-background">
+			<div className="flex items-center justify-center min-h-screen bg-background">
 				<div className="text-center">
-					<div className="animate-spin h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
+					<div className="animate-spin h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
 					<p className="text-text-muted">Loading prompt content...</p>
 				</div>
 			</div>
@@ -105,7 +101,7 @@ export default function PromptDetailPage() {
 	// Show "not found" only if we've hydrated and the prompt definitely doesn't exist
 	if (hasHydrated && promptId && !currentPrompt) {
 		return (
-			<div className="flex items-center justify-center min-h-screen bg-surface-background">
+			<div className="flex items-center justify-center min-h-screen bg-background">
 				<div className="text-center">
 					<h1 className="text-2xl font-bold text-text-primary mb-4">
 						Prompt Not Found
@@ -115,7 +111,7 @@ export default function PromptDetailPage() {
 					</p>
 					<Link
 						to="/"
-						className="text-primary-600 hover:text-primary-700 underline"
+						className="text-primary hover:text-primary-dark underline"
 					>
 						← Back to Home
 					</Link>
@@ -125,7 +121,7 @@ export default function PromptDetailPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-surface-background">
+		<div className="min-h-screen bg-background">
 			<div className="max-w-full mx-auto h-full">
 				{/* Content - Vertical Split Layout */}
 				<div className="flex flex-col h-screen">

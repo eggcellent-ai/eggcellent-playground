@@ -5,44 +5,55 @@ const config: Config = {
 	theme: {
 		extend: {
 			colors: {
-				// App semantic colors
+				// Base colors
 				background: 'var(--background)',
 				foreground: 'var(--foreground)',
-				textMain: 'var(--color-text-main)',
-				textSub: 'var(--color-text-sub)',
-				app: 'var(--color-app)',
-				border: 'var(--color-border)',
-				page: 'var(--color-background)',
-				button: 'var(--color-button)',
-				green: {
-					DEFAULT: 'var(--color-green)',
-					light: 'var(--color-green-light)',
-					border: 'var(--color-green-border)',
-				},
-				pink: 'var(--color-pink)',
 
-				// Legacy colors (keeping for compatibility)
+				// Semantic colors
 				primary: {
-					DEFAULT: 'var(--color-green)',
-					hover: 'var(--color-app)',
+					DEFAULT: 'var(--primary)',
+					light: 'var(--primary-light)',
+					dark: 'var(--primary-dark)',
+				},
+				secondary: {
+					DEFAULT: 'var(--secondary)',
+					light: 'var(--secondary-light)',
+					dark: 'var(--secondary-dark)',
+				},
+				neutral: {
+					DEFAULT: 'var(--neutral)',
+					light: 'var(--neutral-light)',
+					dark: 'var(--neutral-dark)',
+					hover: 'var(--neutral-hover)',
+				},
+				success: {
+					DEFAULT: 'var(--success)',
+					light: 'var(--success-light)',
+					dark: 'var(--success-dark)',
+				},
+				error: {
+					DEFAULT: 'var(--error)',
+					light: 'var(--error-light)',
+					dark: 'var(--error-dark)',
+				},
+				warning: {
+					DEFAULT: 'var(--warning)',
+					light: 'var(--warning-light)',
+					dark: 'var(--warning-dark)',
 				},
 
-				// Surface colors (keeping for compatibility)
-				surface: {
-					background: 'var(--surface-background)',
-					foreground: 'var(--surface-foreground)',
-					card: 'var(--surface-card)',
-					hover: 'var(--surface-hover)',
-					border: 'var(--surface-border)',
-					input: 'var(--surface-input)',
-				},
-
-				// Text colors (keeping for compatibility)
+				// Text colors
 				text: {
 					primary: 'var(--text-primary)',
 					secondary: 'var(--text-secondary)',
 					muted: 'var(--text-muted)',
 					inverse: 'var(--text-inverse)',
+				},
+
+				// Surface colors
+				surface: {
+					card: 'var(--surface-card)',
+					input: 'var(--surface-input)',
 				},
 			},
 			fontFamily: {

@@ -76,8 +76,8 @@ const PromptVersionHistory: React.FC<PromptVersionHistoryProps> = ({
 					}}
 					className={`p-3 border cursor-pointer transition-all duration-200 group ${
 						activeVersionId === version.versionId
-							? 'bg-success-100 border-success-500'
-							: 'border-table hover:border-secondary-300'
+							? 'bg-success-light border-success'
+							: 'border-neutral hover:border-secondary'
 					}`}
 				>
 					<div className="relative flex items-start">
