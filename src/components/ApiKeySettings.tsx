@@ -126,7 +126,7 @@ export default function ApiKeySettings({
 	const [showKeys, setShowKeys] = useState<Record<string, boolean>>({})
 	const [saveSuccess, setSaveSuccess] = useState(false)
 
-	// Load keys from localStorage on mount
+	// Load keys from localStorage when modal opens
 	useEffect(() => {
 		if (isOpen) {
 			const keys: Record<string, string> = {}
@@ -134,45 +134,8 @@ export default function ApiKeySettings({
 				keys[provider.key] = provider.getKey()
 			})
 			setTempKeys(keys)
-
-			// Update the store with loaded keys
-			PROVIDERS.forEach((provider) => {
-				const key = provider.getKey()
-				if (key) {
-					// Safely call the setter method
-					switch (provider.setStoreKey) {
-						case 'setOpenaiKey':
-							store.setOpenaiKey(key)
-							break
-						case 'setAnthropicKey':
-							store.setAnthropicKey(key)
-							break
-						case 'setXaiKey':
-							store.setXaiKey(key)
-							break
-						case 'setGoogleKey':
-							store.setGoogleKey(key)
-							break
-						case 'setMistralKey':
-							store.setMistralKey(key)
-							break
-						case 'setGroqKey':
-							store.setGroqKey(key)
-							break
-						case 'setDeepseekKey':
-							store.setDeepseekKey(key)
-							break
-						case 'setTogetheraiKey':
-							store.setTogetheraiKey(key)
-							break
-						case 'setPerplexityKey':
-							store.setPerplexityKey(key)
-							break
-					}
-				}
-			})
 		}
-	}, [isOpen, store])
+	}, [isOpen])
 
 	const handleKeyChange = (providerKey: string, value: string) => {
 		setTempKeys((prev) => ({
