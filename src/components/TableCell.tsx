@@ -170,7 +170,7 @@ export default function TableCell({
 				</div>
 
 				{/* Controls */}
-				<div className="flex justify-between items-center p-2 bg-neutral-hover/50">
+				<div className="flex justify-between items-center p-2 bg-neutral-hover/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
 					<div className="flex space-x-2">
 						<button
 							onClick={handleRun}
