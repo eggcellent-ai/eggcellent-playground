@@ -238,10 +238,10 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		[setJsonValidationStatus]
 	)
 
-	// Sync title content when version changes
+	// Sync title content when prompt or version changes
 	useEffect(() => {
 		setTitleContent(currentTitle)
-	}, [currentTitle])
+	}, [currentTitle, activePromptId, activeVersionId])
 
 	// Auto-load current data to JSON input when version changes
 	useEffect(() => {
