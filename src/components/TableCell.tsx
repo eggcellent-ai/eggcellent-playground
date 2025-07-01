@@ -155,13 +155,13 @@ export default function TableCell({
 
 	return (
 		<>
-			<div className="flex flex-col h-64 justify-between group">
+			<div className="flex flex-col h-64 justify-between group w-full max-w-[300px]">
 				{/* Response Area - Fixed height with scrolling */}
-				<div className="flex-1 overflow-y-auto text-sm min-h-0">
+				<div className="flex-1 overflow-y-auto text-sm min-h-0 break-words">
 					{isLoading || isRowRunning ? (
 						<div className="animate-pulse text-muted">Running prompt...</div>
 					) : response ? (
-						<div className="whitespace-pre-wrap text-text-primary">
+						<div className="whitespace-pre-wrap text-text-primary break-words">
 							{response}
 						</div>
 					) : (
@@ -170,7 +170,7 @@ export default function TableCell({
 				</div>
 
 				{/* Controls */}
-				<div className="flex justify-between items-center p-2 bg-neutral-hover/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+				<div className="flex justify-between items-center p-2 bg-neutral-hover/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-wrap gap-1">
 					<div className="flex space-x-2">
 						<button
 							onClick={handleRun}
@@ -193,7 +193,7 @@ export default function TableCell({
 					{response && !isLoading && !isRowRunning && (
 						<button
 							onClick={() => setShowFullModal(true)}
-							className="px-2 py-1 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-colors"
+							className="px-2 py-1 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-colors shrink-0"
 						>
 							View Full
 						</button>

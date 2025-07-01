@@ -1145,163 +1145,178 @@ Examples of valid formats:
 
 						{/* Results Table */}
 						<div className="flex-1 overflow-auto bg-surface-card">
-							<table className="w-full h-full table-fixed border-collapse border border-neutral">
-								<thead className="sticky top-0">
-									<tr>
-										<th className="p-3 text-left text-sm font-semibold w-1/3 text-text-primary border-b border-r border-neutral">
-											Input
-										</th>
-										{selectedModels.map((modelId, index) => {
-											const model = AVAILABLE_MODELS.find(
-												(m) => m.id === modelId
-											)
-											const columnWidth = `${Math.floor(
-												60 / selectedModels.length
-											)}%`
-											return (
-												<th
-													key={modelId}
-													className={`p-3 text-left text-sm font-semibold text-text-primary border-b border-neutral ${
-														index < selectedModels.length - 1
-															? 'border-r border-neutral'
-															: ''
-													}`}
-													style={{ width: columnWidth }}
-												>
-													<div className="flex items-center justify-between">
-														<div>
-															{model?.name}
-															<span className="block text-xs font-normal text-text-secondary">
-																{model?.provider}
-															</span>
-														</div>
-														<button
-															onClick={() => handleRemoveModel(modelId)}
-															className="p-1 rounded-full text-muted hover:text-error hover:bg-error-light transition-colors ml-2"
-															title="Remove model"
-														>
-															<XMarkIcon className="w-4 h-4" />
-														</button>
-													</div>
-												</th>
-											)
-										})}
-										<th className="p-3 text-center text-sm font-semibold w-16 bg-surface-card text-text-primary border-b border-l border-neutral relative">
-											<button
-												onClick={() => setShowModelModal(true)}
-												className="w-8 h-8 rounded-full border-2 border-dashed border-neutral hover:border-neutral-dark hover:bg-neutral-hover transition-colors flex items-center justify-center"
-												title="Add models"
+							<div className="overflow-x-auto min-w-full">
+								<table
+									className="w-full h-full border-collapse border border-neutral"
+									style={{ minWidth: `${400 + selectedModels.length * 300}px` }}
+								>
+									<thead className="sticky top-0">
+										<tr>
+											<th
+												className="p-3 text-left text-sm font-semibold text-text-primary border-b border-r border-neutral"
+												style={{ width: '300px', minWidth: '300px' }}
 											>
-												<PlusIcon className="w-4 h-4 text-muted" />
-											</button>
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									{tableData.map(
-										(
-											row: {
-												id: string
-												input: string
-												images: UploadedImage[]
-												timestamp: number
-												responses: Record<string, string>
-											},
-											rowIndex: number
-										) => (
-											<tr key={row.id}>
-												<td
-													className={`p-3 align-top border-r border-neutral ${
-														rowIndex < tableData.length - 1 ? 'border-b' : ''
-													}`}
-												>
-													<div className="space-y-3">
-														<InputComponent
-															value={row.input}
-															images={row.images || []}
-															onChange={(value, images) =>
-																handleUpdateRowInput(row.id, value, images)
-															}
-															placeholder="Enter your test input..."
-															rows={3}
-															showImageUpload={true}
-														/>
-
-														{/* Action Buttons */}
-														<div className="flex gap-2">
-															{/* Run All Models Button */}
-															<button
-																onClick={() =>
-																	handleRunAllModels(
-																		row.id,
-																		row.input,
-																		row.images || []
-																	)
-																}
-																disabled={
-																	!(
-																		row.input.trim() ||
-																		(row.images || []).length > 0
-																	) || runningRows.has(row.id)
-																}
-																className="px-3 py-1 bg-neutral-900 text-white text-xs hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
-															>
-																<PlayIcon className="w-3 h-3" />
-																{runningRows.has(row.id) ? 'Running...' : 'Run'}
-															</button>
-
-															{/* Remove Row Button */}
-															{tableData.length > 1 && (
-																<button
-																	onClick={() => handleRemoveRow(row.id)}
-																	className="px-3 py-1 border border-neutral text-text-secondary text-xs hover:border-neutral-dark hover:bg-neutral-hover transition-colors"
-																	title="Remove row"
-																>
-																	Remove
-																</button>
-															)}
-														</div>
-													</div>
-												</td>
-												{selectedModels.map((modelId, colIndex) => (
-													<td
-														key={`${row.id}-${modelId}`}
-														className={`p-3 align-top border-neutral ${
-															rowIndex < tableData.length - 1 ? 'border-b' : ''
-														} ${
-															colIndex < selectedModels.length - 1
+												Input
+											</th>
+											{selectedModels.map((modelId, index) => {
+												const model = AVAILABLE_MODELS.find(
+													(m) => m.id === modelId
+												)
+												return (
+													<th
+														key={modelId}
+														className={`p-3 text-left text-sm font-semibold text-text-primary border-b border-neutral ${
+															index < selectedModels.length - 1
 																? 'border-r border-neutral'
 																: ''
 														}`}
+														style={{ width: '300px', minWidth: '300px' }}
 													>
-														<TableCell
-															key={`${row.id}-${modelId}-${
-																row.responses[modelId] || 'empty'
-															}`}
-															rowId={row.id}
-															modelId={modelId}
-															input={row.input}
-															images={row.images || []}
-															systemPrompt={inputPromptContent}
-															activePromptId={activePromptId}
-															activeVersionId={activeVersionId}
-															isRowRunning={runningRows.has(row.id)}
-														/>
-													</td>
-												))}
-												{/* Add Model Column - Empty Cell */}
-												<td
-													className={`p-3 align-top border-l border-neutral ${
-														rowIndex < tableData.length - 1 ? 'border-b' : ''
-													}`}
+														<div className="flex items-center justify-between">
+															<div>
+																{model?.name}
+																<span className="block text-xs font-normal text-text-secondary">
+																	{model?.provider}
+																</span>
+															</div>
+															<button
+																onClick={() => handleRemoveModel(modelId)}
+																className="p-1 rounded-full text-muted hover:text-error hover:bg-error-light transition-colors ml-2"
+																title="Remove model"
+															>
+																<XMarkIcon className="w-4 h-4" />
+															</button>
+														</div>
+													</th>
+												)
+											})}
+											<th
+												className="p-3 text-center text-sm font-semibold bg-surface-card text-text-primary border-b border-l border-neutral relative"
+												style={{ width: '60px', minWidth: '60px' }}
+											>
+												<button
+													onClick={() => setShowModelModal(true)}
+													className="w-8 h-8 rounded-full border-2 border-dashed border-neutral hover:border-neutral-dark hover:bg-neutral-hover transition-colors flex items-center justify-center"
+													title="Add models"
 												>
-													{/* Empty cell for add model column */}
-												</td>
-											</tr>
-										)
-									)}
-								</tbody>
-							</table>
+													<PlusIcon className="w-4 h-4 text-muted" />
+												</button>
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{tableData.map(
+											(
+												row: {
+													id: string
+													input: string
+													images: UploadedImage[]
+													timestamp: number
+													responses: Record<string, string>
+												},
+												rowIndex: number
+											) => (
+												<tr key={row.id}>
+													<td
+														className={`p-3 align-top border-r border-neutral ${
+															rowIndex < tableData.length - 1 ? 'border-b' : ''
+														}`}
+														style={{ width: '300px', minWidth: '300px' }}
+													>
+														<div className="space-y-3">
+															<InputComponent
+																value={row.input}
+																images={row.images || []}
+																onChange={(value, images) =>
+																	handleUpdateRowInput(row.id, value, images)
+																}
+																placeholder="Enter your test input..."
+																rows={3}
+																showImageUpload={true}
+															/>
+
+															{/* Action Buttons */}
+															<div className="flex gap-2">
+																{/* Run All Models Button */}
+																<button
+																	onClick={() =>
+																		handleRunAllModels(
+																			row.id,
+																			row.input,
+																			row.images || []
+																		)
+																	}
+																	disabled={
+																		!(
+																			row.input.trim() ||
+																			(row.images || []).length > 0
+																		) || runningRows.has(row.id)
+																	}
+																	className="px-3 py-1 bg-neutral-900 text-white text-xs hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+																>
+																	<PlayIcon className="w-3 h-3" />
+																	{runningRows.has(row.id)
+																		? 'Running...'
+																		: 'Run'}
+																</button>
+
+																{/* Remove Row Button */}
+																{tableData.length > 1 && (
+																	<button
+																		onClick={() => handleRemoveRow(row.id)}
+																		className="px-3 py-1 border border-neutral text-text-secondary text-xs hover:border-neutral-dark hover:bg-neutral-hover transition-colors"
+																		title="Remove row"
+																	>
+																		Remove
+																	</button>
+																)}
+															</div>
+														</div>
+													</td>
+													{selectedModels.map((modelId, colIndex) => (
+														<td
+															key={`${row.id}-${modelId}`}
+															className={`p-3 align-top border-neutral ${
+																rowIndex < tableData.length - 1
+																	? 'border-b'
+																	: ''
+															} ${
+																colIndex < selectedModels.length - 1
+																	? 'border-r border-neutral'
+																	: ''
+															}`}
+															style={{ width: '300px', minWidth: '300px' }}
+														>
+															<TableCell
+																key={`${row.id}-${modelId}-${
+																	row.responses[modelId] || 'empty'
+																}`}
+																rowId={row.id}
+																modelId={modelId}
+																input={row.input}
+																images={row.images || []}
+																systemPrompt={inputPromptContent}
+																activePromptId={activePromptId}
+																activeVersionId={activeVersionId}
+																isRowRunning={runningRows.has(row.id)}
+															/>
+														</td>
+													))}
+													{/* Add Model Column - Empty Cell */}
+													<td
+														className={`p-3 align-top border-l border-neutral ${
+															rowIndex < tableData.length - 1 ? 'border-b' : ''
+														}`}
+														style={{ width: '60px', minWidth: '60px' }}
+													>
+														{/* Empty cell for add model column */}
+													</td>
+												</tr>
+											)
+										)}
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
 
