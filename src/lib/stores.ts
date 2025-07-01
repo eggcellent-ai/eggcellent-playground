@@ -136,7 +136,7 @@ interface SystemPromptState {
 		promptId: string | null,
 		versionId: string | null
 	) => TableRow[]
-	addTableRow: (promptId: string) => void
+	addTableRow: (promptId: string, initialInput?: string) => void
 	removeTableRow: (promptId: string, rowId: string) => void
 	updateTableRowInput: (
 		promptId: string,
@@ -225,11 +225,11 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 				const newPrompt: Prompt = {
 					id: crypto.randomUUID(),
 					versions: [newVersion],
-					// Initialize with one default input row at prompt level
+					// Initialize with one default input row with example content
 					inputRows: [
 						{
 							id: crypto.randomUUID(),
-							input: '',
+							input: 'example input',
 							images: [],
 							timestamp: Date.now(),
 						},
@@ -648,10 +648,10 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 					responses: version?.responses[inputRow.id] || {},
 				}))
 			},
-			addTableRow: (promptId: string) => {
+			addTableRow: (promptId: string, initialInput?: string) => {
 				const newRow: InputRow = {
 					id: crypto.randomUUID(),
-					input: '',
+					input: initialInput || '',
 					images: [],
 					timestamp: Date.now(),
 				}

@@ -260,35 +260,10 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	// Initialize table with example input if empty
 	useEffect(() => {
 		if (activePromptId && activeVersionId && tableData.length === 0) {
-			// Add a row with example input
-			addTableRow(activePromptId)
-
-			// Use setTimeout to ensure row is created before updating
-			setTimeout(() => {
-				const currentTableData = getTableData(activePromptId, activeVersionId)
-				if (currentTableData.length > 0) {
-					const newRow = currentTableData[0]
-					updateTableRowInput(activePromptId, newRow.id, 'example input', [])
-
-					// Refresh JSON input after initialization
-					setTimeout(() => {
-						const updatedDataJson = loadCurrentDataToJson()
-						setJsonInputValue(updatedDataJson)
-						validateJsonInput(updatedDataJson)
-					}, 10)
-				}
-			}, 10)
+			// Add a row with example input directly
+			addTableRow(activePromptId, 'example input')
 		}
-	}, [
-		activePromptId,
-		activeVersionId,
-		tableData.length,
-		addTableRow,
-		updateTableRowInput,
-		getTableData,
-		loadCurrentDataToJson,
-		validateJsonInput,
-	])
+	}, [activePromptId, activeVersionId, tableData.length, addTableRow])
 
 	// Detect variables in prompt content
 	useEffect(() => {
@@ -360,43 +335,30 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 				}
 
 				// Create rows for all items
-				jsonData.forEach((item, index) => {
-					// Add new row for each item
-					addTableRow(activePromptId!)
-
-					// Use timeout to ensure row is created before updating
-					setTimeout(() => {
-						const currentTableData = getTableData(
-							activePromptId,
-							activeVersionId
-						)
-						if (currentTableData.length > index) {
-							const targetRow = currentTableData[index] // Get the row we just created
-
-							// Determine the input value based on item type
-							let inputValue: string
-							if (typeof item === 'string') {
-								inputValue = item
-							} else if (typeof item === 'object' && item !== null) {
-								// For objects, try to use common properties or stringify
-								if (item.input) {
-									inputValue = item.input
-								} else if (item.text) {
-									inputValue = item.text
-								} else if (item.message) {
-									inputValue = item.message
-								} else if (item.content) {
-									inputValue = item.content
-								} else {
-									inputValue = JSON.stringify(item)
-								}
-							} else {
-								inputValue = String(item)
-							}
-
-							updateTableRowInput(activePromptId!, targetRow.id, inputValue, [])
+				jsonData.forEach((item) => {
+					// Determine the input value based on item type
+					let inputValue: string
+					if (typeof item === 'string') {
+						inputValue = item
+					} else if (typeof item === 'object' && item !== null) {
+						// For objects, try to use common properties or stringify
+						if (item.input) {
+							inputValue = item.input
+						} else if (item.text) {
+							inputValue = item.text
+						} else if (item.message) {
+							inputValue = item.message
+						} else if (item.content) {
+							inputValue = item.content
+						} else {
+							inputValue = JSON.stringify(item)
 						}
-					}, 10 * (index + 1)) // Stagger the updates
+					} else {
+						inputValue = String(item)
+					}
+
+					// Add new row with the input value directly
+					addTableRow(activePromptId!, inputValue)
 				})
 
 				// JSON input remains visible after saving
@@ -410,26 +372,10 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 				for (const prop of arrayProps) {
 					if (Array.isArray(jsonData[prop])) {
 						const arrayData = jsonData[prop]
-						arrayData.forEach((item: unknown, index: number) => {
-							addTableRow(activePromptId!)
-
-							setTimeout(() => {
-								const currentTableData = getTableData(
-									activePromptId,
-									activeVersionId
-								)
-								if (currentTableData.length > index) {
-									const targetRow = currentTableData[index]
-									const inputValue =
-										typeof item === 'string' ? item : JSON.stringify(item)
-									updateTableRowInput(
-										activePromptId!,
-										targetRow.id,
-										inputValue,
-										[]
-									)
-								}
-							}, 10 * (index + 1))
+						arrayData.forEach((item: unknown) => {
+							const inputValue =
+								typeof item === 'string' ? item : JSON.stringify(item)
+							addTableRow(activePromptId!, inputValue)
 						})
 
 						return
@@ -445,26 +391,10 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 				)
 
 				if (values.length > 0) {
-					values.forEach((value, index) => {
-						addTableRow(activePromptId!)
-
-						setTimeout(() => {
-							const currentTableData = getTableData(
-								activePromptId,
-								activeVersionId
-							)
-							if (currentTableData.length > index) {
-								const targetRow = currentTableData[index]
-								const inputValue =
-									typeof value === 'string' ? value : JSON.stringify(value)
-								updateTableRowInput(
-									activePromptId!,
-									targetRow.id,
-									inputValue,
-									[]
-								)
-							}
-						}, 10 * (index + 1))
+					values.forEach((value) => {
+						const inputValue =
+							typeof value === 'string' ? value : JSON.stringify(value)
+						addTableRow(activePromptId!, inputValue)
 					})
 
 					return
