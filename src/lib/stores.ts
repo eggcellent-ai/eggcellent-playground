@@ -208,7 +208,7 @@ export const AVAILABLE_MODELS = [
 		provider: 'Anthropic',
 	},
 
-	// xAI Models
+	// xAI Models (Note: Direct xAI API may not be publicly available yet)
 	{ id: 'grok-beta', name: 'Grok Beta', provider: 'xAI' },
 	{ id: 'grok-vision-beta', name: 'Grok Vision Beta', provider: 'xAI' },
 

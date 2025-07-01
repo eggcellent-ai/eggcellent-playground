@@ -78,7 +78,16 @@ export function useAIService() {
 
 				case 'xai':
 					if (!xaiKey) throw new Error('xAI API key required')
-					return createXai({ apiKey: xaiKey })(modelId)
+					console.warn(
+						'xAI API access may be limited or in beta. If you encounter 404 errors, the API may not be publicly available yet.'
+					)
+					try {
+						return createXai({ apiKey: xaiKey })(modelId)
+					} catch {
+						throw new Error(
+							'xAI API may not be publicly available yet. The service returned a 404 error, suggesting the API endpoint is not accessible. Consider using OpenRouter or another proxy service for xAI models.'
+						)
+					}
 
 				default:
 					throw new Error(
@@ -134,6 +143,18 @@ export function useAIService() {
 					`Error with ${providerName} provider for model ${modelId}:`,
 					error
 				)
+
+				// Provide specific error message for xAI 404 errors
+				if (
+					providerName === 'xai' &&
+					error instanceof Error &&
+					error.message.includes('404')
+				) {
+					throw new Error(
+						`xAI API is currently not publicly available. The endpoint returned a 404 error. Please try using an alternative provider like OpenRouter for xAI models, or use other available models.`
+					)
+				}
+
 				throw new Error(
 					`Failed to generate text with ${providerName} (${modelId}): ${
 						error instanceof Error ? error.message : 'Unknown error'
@@ -175,6 +196,18 @@ export function useAIService() {
 					`Error with ${providerName} provider for model ${modelId}:`,
 					error
 				)
+
+				// Provide specific error message for xAI 404 errors
+				if (
+					providerName === 'xai' &&
+					error instanceof Error &&
+					error.message.includes('404')
+				) {
+					throw new Error(
+						`xAI API is currently not publicly available. The endpoint returned a 404 error. Please try using an alternative provider like OpenRouter for xAI models, or use other available models.`
+					)
+				}
+
 				throw new Error(
 					`Failed to stream text with ${providerName} (${modelId}): ${
 						error instanceof Error ? error.message : 'Unknown error'
