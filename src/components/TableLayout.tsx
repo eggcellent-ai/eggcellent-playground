@@ -33,14 +33,14 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		getPromptVariables,
 		updatePromptVariable,
 		substituteVariables,
+		getSelectedModels,
+		updateSelectedModels,
 	} = useSystemPromptStore()
 
 	const { streamText, hasValidKeyForModel } = useAIService()
 
-	const [selectedModels, setSelectedModels] = useState<string[]>([
-		AVAILABLE_MODELS[0].id,
-		AVAILABLE_MODELS[1].id,
-	])
+	// Get selected models from store
+	const selectedModels = getSelectedModels(activePromptId, activeVersionId)
 	const [runningRows, setRunningRows] = useState<Set<string>>(new Set())
 	const [runningAllTable, setRunningAllTable] = useState(false)
 	const [showVersionHistory, setShowVersionHistory] = useState(false)
@@ -406,20 +406,22 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	}
 
 	const handleRemoveModel = (modelId: string) => {
-		setSelectedModels((prev) => {
-			// Don't allow removing the last model
-			if (prev.length <= 1) return prev
-			return prev.filter((id) => id !== modelId)
-		})
+		// Don't allow removing the last model
+		if (selectedModels.length <= 1) return
+
+		const newModels = selectedModels.filter((id) => id !== modelId)
+		if (activePromptId && activeVersionId) {
+			updateSelectedModels(activePromptId, activeVersionId, newModels)
+		}
 	}
 
 	const handleAddModel = (modelId: string) => {
-		setSelectedModels((prev) => {
-			if (!prev.includes(modelId)) {
-				return [...prev, modelId]
+		if (!selectedModels.includes(modelId)) {
+			const newModels = [...selectedModels, modelId]
+			if (activePromptId && activeVersionId) {
+				updateSelectedModels(activePromptId, activeVersionId, newModels)
 			}
-			return prev
-		})
+		}
 		setShowModelDropdown(false)
 	}
 

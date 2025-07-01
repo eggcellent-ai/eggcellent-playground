@@ -26,6 +26,8 @@ interface PromptVersion {
 	playgroundInstances: PlaygroundInstance[]
 	// Store only responses at version level (rowId -> modelId -> response)
 	responses: Record<string, Record<string, string>>
+	// Store selected models for table layout
+	selectedModels?: string[]
 }
 
 // New interface for input data at prompt level
@@ -156,6 +158,16 @@ interface SystemPromptState {
 		rowId: string,
 		modelId: string,
 		response: string
+	) => void
+	// Selected models management
+	getSelectedModels: (
+		promptId: string | null,
+		versionId: string | null
+	) => string[]
+	updateSelectedModels: (
+		promptId: string,
+		versionId: string,
+		models: string[]
 	) => void
 }
 
@@ -332,6 +344,8 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 					],
 					// Initialize empty responses
 					responses: {},
+					// Initialize with default models
+					selectedModels: [AVAILABLE_MODELS[0].id, AVAILABLE_MODELS[1].id],
 				}
 				const newPrompt: Prompt = {
 					id: crypto.randomUUID(),
@@ -429,6 +443,11 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 											playgroundInstances: newPlaygroundInstances,
 											// Initialize empty responses for new version
 											responses: {},
+											// Copy selected models from current version or use defaults
+											selectedModels: currentVersion?.selectedModels || [
+												AVAILABLE_MODELS[0].id,
+												AVAILABLE_MODELS[1].id,
+											],
 										},
 									],
 							  }
@@ -921,6 +940,43 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 				})
 
 				return result
+			},
+			// Selected models management
+			getSelectedModels: (
+				promptId: string | null,
+				versionId: string | null
+			): string[] => {
+				if (!promptId || !versionId)
+					return [AVAILABLE_MODELS[0].id, AVAILABLE_MODELS[1].id]
+				const state = get()
+				const prompt = state.prompts.find((p) => p.id === promptId)
+				const version = prompt?.versions.find((v) => v.versionId === versionId)
+				return (
+					version?.selectedModels || [
+						AVAILABLE_MODELS[0].id,
+						AVAILABLE_MODELS[1].id,
+					]
+				)
+			},
+			updateSelectedModels: (
+				promptId: string,
+				versionId: string,
+				models: string[]
+			) => {
+				set((state) => ({
+					prompts: state.prompts.map((prompt) =>
+						prompt.id === promptId
+							? {
+									...prompt,
+									versions: prompt.versions.map((version) =>
+										version.versionId === versionId
+											? { ...version, selectedModels: models }
+											: version
+									),
+							  }
+							: prompt
+					),
+				}))
 			},
 		}),
 		{
