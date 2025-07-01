@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { createOpenAI } from '@ai-sdk/openai'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
+import { createXai } from '@ai-sdk/xai'
 import { streamText, generateText } from 'ai'
 import type { CoreMessage } from 'ai'
 import { useApiKeyStore } from './stores'
@@ -54,7 +55,7 @@ const getModelProvider = (modelId: string): string => {
 
 // React hook for AI service using proper AI SDK
 export function useAIService() {
-	const { openaiKey, anthropicKey, googleKey, getKeyForProvider } =
+	const { openaiKey, anthropicKey, googleKey, xaiKey, getKeyForProvider } =
 		useApiKeyStore()
 
 	// Get the appropriate provider/model for a given model ID
@@ -75,13 +76,17 @@ export function useAIService() {
 					if (!googleKey) throw new Error('Google API key required')
 					return createGoogleGenerativeAI({ apiKey: googleKey })(modelId)
 
+				case 'xai':
+					if (!xaiKey) throw new Error('xAI API key required')
+					return createXai({ apiKey: xaiKey })(modelId)
+
 				default:
 					throw new Error(
-						`Provider ${providerName} not yet supported. Currently supporting OpenAI, Anthropic, and Google.`
+						`Provider ${providerName} not yet supported. Currently supporting OpenAI, Anthropic, Google, and xAI.`
 					)
 			}
 		},
-		[openaiKey, anthropicKey, googleKey]
+		[openaiKey, anthropicKey, googleKey, xaiKey]
 	)
 
 	const hasValidKeyForModel = useCallback(
