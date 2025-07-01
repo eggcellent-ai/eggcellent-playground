@@ -13,7 +13,7 @@ interface ApiKeySettingsProps {
 	onClose: () => void
 }
 
-// Provider configuration
+// Provider configuration - Currently supporting providers that are actively integrated
 const PROVIDERS = [
 	{
 		key: 'openai',
@@ -29,90 +29,13 @@ const PROVIDERS = [
 	{
 		key: 'anthropic',
 		name: 'Anthropic',
-		description: 'Claude models (Claude 3.5 Sonnet, Haiku, etc.)',
+		description: 'Claude models (Claude 3.5 Sonnet, Haiku, Opus, etc.)',
 		placeholder: 'sk-ant-...',
 		getUrl: 'https://console.anthropic.com/settings/keys',
 		getKey: () => apiKeyStorage.getAnthropicKey(),
 		setKey: (key: string) => apiKeyStorage.setAnthropicKey(key),
 		storeKey: 'anthropicKey',
 		setStoreKey: 'setAnthropicKey',
-	},
-	{
-		key: 'xai',
-		name: 'xAI',
-		description: 'Grok models (Grok Beta, Grok Vision Beta)',
-		placeholder: 'xai-...',
-		getUrl: 'https://console.x.ai/team/api-keys',
-		getKey: () => apiKeyStorage.getXaiKey(),
-		setKey: (key: string) => apiKeyStorage.setXaiKey(key),
-		storeKey: 'xaiKey',
-		setStoreKey: 'setXaiKey',
-	},
-	{
-		key: 'google',
-		name: 'Google',
-		description: 'Gemini models (Gemini 1.5 Pro, Flash, etc.)',
-		placeholder: 'AI...',
-		getUrl: 'https://console.cloud.google.com/apis/credentials',
-		getKey: () => apiKeyStorage.getGoogleKey(),
-		setKey: (key: string) => apiKeyStorage.setGoogleKey(key),
-		storeKey: 'googleKey',
-		setStoreKey: 'setGoogleKey',
-	},
-	{
-		key: 'mistral',
-		name: 'Mistral',
-		description: 'Mistral models (Mistral Large, Medium, Mixtral, etc.)',
-		placeholder: '...',
-		getUrl: 'https://console.mistral.ai/api-keys',
-		getKey: () => apiKeyStorage.getMistralKey(),
-		setKey: (key: string) => apiKeyStorage.setMistralKey(key),
-		storeKey: 'mistralKey',
-		setStoreKey: 'setMistralKey',
-	},
-	{
-		key: 'groq',
-		name: 'Groq',
-		description: 'Fast inference models (Llama, Mixtral, Gemma)',
-		placeholder: 'gsk_...',
-		getUrl: 'https://console.groq.com/keys',
-		getKey: () => apiKeyStorage.getGroqKey(),
-		setKey: (key: string) => apiKeyStorage.setGroqKey(key),
-		storeKey: 'groqKey',
-		setStoreKey: 'setGroqKey',
-	},
-	{
-		key: 'deepseek',
-		name: 'DeepSeek',
-		description: 'DeepSeek Chat and Coder models',
-		placeholder: 'sk-...',
-		getUrl: 'https://platform.deepseek.com/api_keys',
-		getKey: () => apiKeyStorage.getDeepseekKey(),
-		setKey: (key: string) => apiKeyStorage.setDeepseekKey(key),
-		storeKey: 'deepseekKey',
-		setStoreKey: 'setDeepseekKey',
-	},
-	{
-		key: 'togetherai',
-		name: 'Together.ai',
-		description: 'Open source models (Llama, Mistral, RedPajama)',
-		placeholder: '...',
-		getUrl: 'https://api.together.xyz/settings/api-keys',
-		getKey: () => apiKeyStorage.getTogetheraiKey(),
-		setKey: (key: string) => apiKeyStorage.setTogetheraiKey(key),
-		storeKey: 'togetheraiKey',
-		setStoreKey: 'setTogetheraiKey',
-	},
-	{
-		key: 'perplexity',
-		name: 'Perplexity',
-		description: 'Perplexity Sonar models with web search',
-		placeholder: 'pplx-...',
-		getUrl: 'https://www.perplexity.ai/settings/api',
-		getKey: () => apiKeyStorage.getPerplexityKey(),
-		setKey: (key: string) => apiKeyStorage.setPerplexityKey(key),
-		storeKey: 'perplexityKey',
-		setStoreKey: 'setPerplexityKey',
 	},
 ] as const
 
@@ -163,27 +86,6 @@ export default function ApiKeySettings({
 				case 'setAnthropicKey':
 					store.setAnthropicKey(key)
 					break
-				case 'setXaiKey':
-					store.setXaiKey(key)
-					break
-				case 'setGoogleKey':
-					store.setGoogleKey(key)
-					break
-				case 'setMistralKey':
-					store.setMistralKey(key)
-					break
-				case 'setGroqKey':
-					store.setGroqKey(key)
-					break
-				case 'setDeepseekKey':
-					store.setDeepseekKey(key)
-					break
-				case 'setTogetheraiKey':
-					store.setTogetheraiKey(key)
-					break
-				case 'setPerplexityKey':
-					store.setPerplexityKey(key)
-					break
 			}
 		})
 
@@ -212,27 +114,6 @@ export default function ApiKeySettings({
 				break
 			case 'anthropicKey':
 				currentKey = store.anthropicKey
-				break
-			case 'xaiKey':
-				currentKey = store.xaiKey
-				break
-			case 'googleKey':
-				currentKey = store.googleKey
-				break
-			case 'mistralKey':
-				currentKey = store.mistralKey
-				break
-			case 'groqKey':
-				currentKey = store.groqKey
-				break
-			case 'deepseekKey':
-				currentKey = store.deepseekKey
-				break
-			case 'togetheraiKey':
-				currentKey = store.togetheraiKey
-				break
-			case 'perplexityKey':
-				currentKey = store.perplexityKey
 				break
 		}
 		const tempKey = tempKeys[provider.key] || ''

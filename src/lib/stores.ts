@@ -172,6 +172,7 @@ interface SystemPromptState {
 }
 
 // Available models configuration
+// Currently supporting OpenAI and Anthropic models that are working reliably
 export const AVAILABLE_MODELS = [
 	// OpenAI Models
 	{ id: 'gpt-4o', name: 'GPT-4o', provider: 'OpenAI' },
@@ -207,97 +208,10 @@ export const AVAILABLE_MODELS = [
 		name: 'Claude 3 Haiku',
 		provider: 'Anthropic',
 	},
-
-	// xAI Models
-	{ id: 'grok-beta', name: 'Grok Beta', provider: 'xAI' },
-	{ id: 'grok-vision-beta', name: 'Grok Vision Beta', provider: 'xAI' },
-
-	// Google Models
-	{ id: 'gemini-1.5-pro-latest', name: 'Gemini 1.5 Pro', provider: 'Google' },
-	{
-		id: 'gemini-1.5-flash-latest',
-		name: 'Gemini 1.5 Flash',
-		provider: 'Google',
-	},
-	{ id: 'gemini-pro', name: 'Gemini Pro', provider: 'Google' },
-
-	// Mistral Models
-	{ id: 'mistral-large-latest', name: 'Mistral Large', provider: 'Mistral' },
-	{ id: 'mistral-medium-latest', name: 'Mistral Medium', provider: 'Mistral' },
-	{ id: 'mistral-small-latest', name: 'Mistral Small', provider: 'Mistral' },
-	{ id: 'open-mistral-7b', name: 'Mistral 7B', provider: 'Mistral' },
-	{ id: 'open-mixtral-8x7b', name: 'Mixtral 8x7B', provider: 'Mistral' },
-	{ id: 'open-mixtral-8x22b', name: 'Mixtral 8x22B', provider: 'Mistral' },
-
-	// Groq Models (Fast Inference)
-	{ id: 'llama-3.1-70b-versatile', name: 'Llama 3.1 70B', provider: 'Groq' },
-	{ id: 'llama-3.1-8b-instant', name: 'Llama 3.1 8B', provider: 'Groq' },
-	{ id: 'mixtral-8x7b-32768', name: 'Mixtral 8x7B', provider: 'Groq' },
-	{ id: 'gemma-7b-it', name: 'Gemma 7B', provider: 'Groq' },
-
-	// DeepSeek Models
-	{ id: 'deepseek-chat', name: 'DeepSeek Chat', provider: 'DeepSeek' },
-	{ id: 'deepseek-coder', name: 'DeepSeek Coder', provider: 'DeepSeek' },
-
-	// Together.ai Models
-	{
-		id: 'meta-llama/Llama-2-70b-chat-hf',
-		name: 'Llama 2 70B Chat',
-		provider: 'Together.ai',
-	},
-	{
-		id: 'meta-llama/Llama-2-13b-chat-hf',
-		name: 'Llama 2 13B Chat',
-		provider: 'Together.ai',
-	},
-	{
-		id: 'meta-llama/Llama-2-7b-chat-hf',
-		name: 'Llama 2 7B Chat',
-		provider: 'Together.ai',
-	},
-	{
-		id: 'meta-llama/Meta-Llama-3-70B-Instruct',
-		name: 'Llama 3 70B Instruct',
-		provider: 'Together.ai',
-	},
-	{
-		id: 'meta-llama/Meta-Llama-3-8B-Instruct',
-		name: 'Llama 3 8B Instruct',
-		provider: 'Together.ai',
-	},
-	{
-		id: 'mistralai/Mixtral-8x7B-Instruct-v0.1',
-		name: 'Mixtral 8x7B Instruct',
-		provider: 'Together.ai',
-	},
-	{
-		id: 'mistralai/Mistral-7B-Instruct-v0.1',
-		name: 'Mistral 7B Instruct',
-		provider: 'Together.ai',
-	},
-	{
-		id: 'togethercomputer/RedPajama-INCITE-Chat-3B-v1',
-		name: 'RedPajama Chat 3B',
-		provider: 'Together.ai',
-	},
-
-	// Perplexity Models
-	{
-		id: 'llama-3.1-sonar-small-128k-online',
-		name: 'Sonar Small Online',
-		provider: 'Perplexity',
-	},
-	{
-		id: 'llama-3.1-sonar-large-128k-online',
-		name: 'Sonar Large Online',
-		provider: 'Perplexity',
-	},
-	{
-		id: 'llama-3.1-sonar-huge-128k-online',
-		name: 'Sonar Huge Online',
-		provider: 'Perplexity',
-	},
 ] as const
+
+// Note: Additional providers (Google, xAI, Mistral, Groq, etc.) will be added in future updates
+// as their AI SDK integrations stabilize. The infrastructure is already in place.
 
 export const useSystemPromptStore = create<SystemPromptState>()(
 	persist(
