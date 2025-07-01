@@ -84,7 +84,7 @@ interface SystemPromptState {
 	// Function to substitute variables in prompt content
 	substituteVariables: (
 		promptId: string,
-		versionId: string,
+		_versionId: string,
 		content: string
 	) => string
 	// Updated conversation history methods to work with playground instances within versions
@@ -899,7 +899,7 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 			// Function to substitute variables in prompt content
 			substituteVariables: (
 				promptId: string,
-				versionId: string,
+				_versionId: string,
 				content: string
 			) => {
 				const state = get()
