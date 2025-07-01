@@ -60,6 +60,49 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	const [showFullPreview, setShowFullPreview] = useState(false)
 	const dropdownRef = useRef<HTMLDivElement>(null)
 
+	// Table validation function
+	const getTableValidation = () => {
+		const validationMessages: string[] = []
+
+		// Check if there are any input rows
+		if (!tableData || tableData.length === 0) {
+			validationMessages.push('No input rows available')
+		} else {
+			// Check if any rows have content
+			const rowsWithContent = tableData.filter(
+				(row) => row.input.trim() || (row.images || []).length > 0
+			)
+
+			if (rowsWithContent.length === 0) {
+				validationMessages.push('All input rows are empty')
+			}
+		}
+
+		// Check if any models are selected
+		if (selectedModels.length === 0) {
+			validationMessages.push('No models selected')
+		}
+
+		// Check if selected models have valid API keys
+		const modelsWithoutKeys = selectedModels.filter(
+			(modelId) => !hasValidKeyForModel(modelId)
+		)
+		if (modelsWithoutKeys.length > 0) {
+			const modelNames = modelsWithoutKeys
+				.map((modelId) => {
+					const model = AVAILABLE_MODELS.find((m) => m.id === modelId)
+					return model?.name || modelId
+				})
+				.join(', ')
+			validationMessages.push(`Missing API keys for: ${modelNames}`)
+		}
+
+		return {
+			isValid: validationMessages.length === 0,
+			messages: validationMessages,
+		}
+	}
+
 	// Get table data for current version
 	const tableData = getTableData(activePromptId, activeVersionId)
 
@@ -210,6 +253,39 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	}, [
 		activePromptId,
 		activeVersionId,
+		loadCurrentDataToJson,
+		validateJsonInput,
+	])
+
+	// Initialize table with example input if empty
+	useEffect(() => {
+		if (activePromptId && activeVersionId && tableData.length === 0) {
+			// Add a row with example input
+			addTableRow(activePromptId)
+
+			// Use setTimeout to ensure row is created before updating
+			setTimeout(() => {
+				const currentTableData = getTableData(activePromptId, activeVersionId)
+				if (currentTableData.length > 0) {
+					const newRow = currentTableData[0]
+					updateTableRowInput(activePromptId, newRow.id, 'example input', [])
+
+					// Refresh JSON input after initialization
+					setTimeout(() => {
+						const updatedDataJson = loadCurrentDataToJson()
+						setJsonInputValue(updatedDataJson)
+						validateJsonInput(updatedDataJson)
+					}, 10)
+				}
+			}, 10)
+		}
+	}, [
+		activePromptId,
+		activeVersionId,
+		tableData.length,
+		addTableRow,
+		updateTableRowInput,
+		getTableData,
 		loadCurrentDataToJson,
 		validateJsonInput,
 	])
@@ -790,6 +866,32 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										className="text-lg font-semibold text-text-primary bg-transparent border-none outline-none focus:outline-none w-full"
 										placeholder="Enter prompt title..."
 									/>
+									{/* Validation Messages */}
+									{(() => {
+										const validation = getTableValidation()
+										if (!validation.isValid && validation.messages.length > 0) {
+											return (
+												<div className="mt-2 text-sm text-error-dark">
+													<div className="flex items-start gap-2">
+														<span className="text-error-dark">⚠️</span>
+														<div>
+															<div className="font-medium">
+																Cannot run table:
+															</div>
+															<ul className="list-disc list-inside space-y-1">
+																{validation.messages.map((message, index) => (
+																	<li key={index} className="text-xs">
+																		{message}
+																	</li>
+																))}
+															</ul>
+														</div>
+													</div>
+												</div>
+											)
+										}
+										return null
+									})()}
 								</div>
 								<button
 									onClick={handleRunAllTable}
@@ -797,6 +899,10 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										runningAllTable ||
 										!tableData.some(
 											(row) => row.input.trim() || (row.images || []).length > 0
+										) ||
+										selectedModels.length === 0 ||
+										selectedModels.some(
+											(modelId) => !hasValidKeyForModel(modelId)
 										)
 									}
 									className="px-5 py-2 bg-primary hover:bg-secondary text-white text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
