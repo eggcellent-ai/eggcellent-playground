@@ -8,10 +8,11 @@ import {
 } from '@heroicons/react/24/outline'
 import { PlayIcon } from '@heroicons/react/24/solid'
 import { CheckIcon } from '@heroicons/react/24/solid'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import InputComponent, { type UploadedImage } from './InputComponent'
 import TableCell from './TableCell'
 import PromptVersionHistory from './PromptVersionHistory'
+import ModelSelectionModal from './ModelSelectionModal'
 import { useAIService, type ChatMessage } from '../lib/aiService'
 
 interface TableLayoutProps {
@@ -49,7 +50,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	const [isEditorExpanded, setIsEditorExpanded] = useState(false)
 	const [updateSuccess, setUpdateSuccess] = useState(false)
 	const [titleContent, setTitleContent] = useState('')
-	const [showModelDropdown, setShowModelDropdown] = useState(false)
+	const [showModelModal, setShowModelModal] = useState(false)
 	const [jsonInputValue, setJsonInputValue] = useState('')
 	const [jsonValidationStatus, setJsonValidationStatus] = useState<{
 		isValid: boolean
@@ -58,7 +59,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	}>({ isValid: true, message: '', isEmpty: true })
 	const [detectedVariables, setDetectedVariables] = useState<string[]>([])
 	const [showFullPreview, setShowFullPreview] = useState(false)
-	const dropdownRef = useRef<HTMLDivElement>(null)
 
 	// Table validation function
 	const getTableValidation = () => {
@@ -422,7 +422,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 				updateSelectedModels(activePromptId, activeVersionId, newModels)
 			}
 		}
-		setShowModelDropdown(false)
 	}
 
 	const handleRunAllModels = async (
@@ -741,25 +740,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		setPromptContent(inputPromptContent)
 	}, [inputPromptContent])
 
-	// Close dropdown when clicking outside
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				dropdownRef.current &&
-				!dropdownRef.current.contains(event.target as Node)
-			) {
-				setShowModelDropdown(false)
-			}
-		}
-
-		if (showModelDropdown) {
-			document.addEventListener('mousedown', handleClickOutside)
-		}
-
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside)
-		}
-	}, [showModelDropdown])
+	// No longer needed - modal handles its own backdrop clicks
 
 	// Variable helper functions
 	const getCurrentVariables = () => {
@@ -1206,53 +1187,13 @@ Examples of valid formats:
 											)
 										})}
 										<th className="p-3 text-center text-sm font-semibold w-16 bg-surface-card text-text-primary border-b border-l border-neutral relative">
-											<div ref={dropdownRef}>
-												<button
-													onClick={() =>
-														setShowModelDropdown(!showModelDropdown)
-													}
-													className="w-8 h-8 rounded-full border-2 border-dashed border-neutral hover:border-neutral-dark hover:bg-neutral-hover transition-colors flex items-center justify-center"
-													title="Add model"
-												>
-													<PlusIcon className="w-4 h-4 text-muted" />
-												</button>
-
-												{/* Model Dropdown */}
-												{showModelDropdown && (
-													<div className="absolute top-12 right-0 z-40 bg-surface-card shadow-lg border border-neutral min-w-48">
-														<div className="p-2">
-															<div className="text-xs font-medium text-muted mb-2 px-2">
-																Add Model
-															</div>
-															<div className="max-h-60 overflow-y-auto">
-																{AVAILABLE_MODELS.filter(
-																	(model) => !selectedModels.includes(model.id)
-																).map((model) => (
-																	<button
-																		key={model.id}
-																		onClick={() => handleAddModel(model.id)}
-																		className="w-full text-left p-2 hover:bg-neutral-hover transition-colors"
-																	>
-																		<div className="font-medium text-text-primary text-sm">
-																			{model.name}
-																		</div>
-																		<div className="text-xs text-text-secondary">
-																			{model.provider}
-																		</div>
-																	</button>
-																))}
-																{AVAILABLE_MODELS.filter(
-																	(model) => !selectedModels.includes(model.id)
-																).length === 0 && (
-																	<div className="text-center py-3 text-muted text-xs">
-																		All models selected
-																	</div>
-																)}
-															</div>
-														</div>
-													</div>
-												)}
-											</div>
+											<button
+												onClick={() => setShowModelModal(true)}
+												className="w-8 h-8 rounded-full border-2 border-dashed border-neutral hover:border-neutral-dark hover:bg-neutral-hover transition-colors flex items-center justify-center"
+												title="Add models"
+											>
+												<PlusIcon className="w-4 h-4 text-muted" />
+											</button>
 										</th>
 									</tr>
 								</thead>
@@ -1363,6 +1304,14 @@ Examples of valid formats:
 							</table>
 						</div>
 					</div>
+
+					{/* Model Selection Modal */}
+					<ModelSelectionModal
+						isOpen={showModelModal}
+						onClose={() => setShowModelModal(false)}
+						selectedModels={selectedModels}
+						onAddModel={handleAddModel}
+					/>
 				</>
 			) : (
 				// Show message when no prompt is selected
