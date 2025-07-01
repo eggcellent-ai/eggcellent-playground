@@ -1266,7 +1266,7 @@ Examples of valid formats:
 											},
 											rowIndex: number
 										) => (
-											<tr key={row.id} className="hover:bg-neutral-hover">
+											<tr key={row.id}>
 												<td
 													className={`p-3 align-top border-r border-neutral ${
 														rowIndex < tableData.length - 1 ? 'border-b' : ''
