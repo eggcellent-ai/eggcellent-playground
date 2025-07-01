@@ -770,6 +770,34 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		updatePromptVariable(activePromptId, key, value)
 	}
 
+	// Function to detect which format(s) a variable is using in the prompt content
+	const getVariableFormats = (variableName: string): string[] => {
+		const formats: string[] = []
+
+		// Check for {{variable}} format
+		const curlyBracePattern = new RegExp(
+			`\\{\\{\\s*${variableName.replace(
+				/[.*+?^${}()|[\]\\]/g,
+				'\\$&'
+			)}\\s*\\}\\}`,
+			'g'
+		)
+		if (curlyBracePattern.test(promptContent)) {
+			formats.push(`{{${variableName}}}`)
+		}
+
+		// Check for ${variable} format
+		const dollarBracePattern = new RegExp(
+			`\\$\\{\\s*${variableName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\}`,
+			'g'
+		)
+		if (dollarBracePattern.test(promptContent)) {
+			formats.push(`\${${variableName}}`)
+		}
+
+		return formats
+	}
+
 	return (
 		<div
 			className="flex flex-col w-full h-full overflow-hidden"
@@ -803,18 +831,14 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 											return (
 												<div className="mt-2 text-sm text-error-dark">
 													<div className="flex items-start gap-2">
-														<span className="text-error-dark">⚠️</span>
 														<div>
-															<div className="font-medium">
-																Cannot run table:
-															</div>
-															<ul className="list-disc list-inside space-y-1">
+															<div className="space-y-1">
 																{validation.messages.map((message, index) => (
-																	<li key={index} className="text-xs">
+																	<div key={index} className="text-xs">
 																		{message}
-																	</li>
+																	</div>
 																))}
-															</ul>
+															</div>
 														</div>
 													</div>
 												</div>
@@ -957,19 +981,30 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 												const currentVariables = getCurrentVariables()
 												const value = currentVariables[variable] || ''
 												const hasValue = value.trim() !== ''
+												const formats = getVariableFormats(variable)
 
 												return (
 													<tr key={variable} className="hover:bg-neutral-50">
 														<td className="border border-neutral px-3 py-2 font-mono text-sm">
-															<code
-																className={`px-1 py-0.5 rounded text-xs ${
-																	hasValue
-																		? 'bg-success-light text-success-dark'
-																		: 'bg-warning-light text-warning-dark'
-																}`}
-															>
-																{`{{${variable}}}`}
-															</code>
+															<div className="flex flex-wrap gap-1">
+																{formats.map((format, index) => (
+																	<code
+																		key={index}
+																		className={`px-1 py-0.5 rounded text-xs ${
+																			hasValue
+																				? 'bg-success-light text-success-dark'
+																				: 'bg-warning-light text-warning-dark'
+																		}`}
+																	>
+																		{format}
+																	</code>
+																))}
+																{formats.length === 0 && (
+																	<code className="px-1 py-0.5 rounded text-xs bg-warning-light text-warning-dark">
+																		{`{{${variable}}}`}
+																	</code>
+																)}
+															</div>
 														</td>
 														<td className="border border-neutral px-3 py-2">
 															<input

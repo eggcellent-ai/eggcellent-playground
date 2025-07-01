@@ -793,10 +793,23 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 			) => {
 				const state = get()
 				const variables = state.getPromptVariables(promptId)
-				return content.replace(/\{\{(.*?)\}\}/g, (match, key) => {
+
+				// Replace both {{variable}} and ${variable} formats
+				let result = content
+
+				// Replace {{variable}} format
+				result = result.replace(/\{\{(.*?)\}\}/g, (match, key) => {
 					const trimmedKey = key.trim()
 					return variables[trimmedKey] || match
 				})
+
+				// Replace ${variable} format
+				result = result.replace(/\$\{([^}]*)\}/g, (match, key) => {
+					const trimmedKey = key.trim()
+					return variables[trimmedKey] || match
+				})
+
+				return result
 			},
 		}),
 		{
@@ -892,11 +905,20 @@ if (typeof window !== 'undefined') {
 
 // Utility function to detect variables in prompt content
 export const detectVariables = (content: string): string[] => {
-	const variableRegex = /\{\{(.*?)\}\}/g
-	const matches = content.match(variableRegex)
-	if (!matches) return []
+	// Detect both {{variable}} and ${variable} formats
+	const curlyBraceRegex = /\{\{(.*?)\}\}/g
+	const dollarBraceRegex = /\$\{([^}]*)\}/g
 
-	return matches
-		.map((match) => match.replace(/\{\{|\}\}/g, '').trim())
-		.filter((variable, index, array) => array.indexOf(variable) === index) // Remove duplicates
+	const curlyBraceMatches = content.match(curlyBraceRegex) || []
+	const dollarBraceMatches = content.match(dollarBraceRegex) || []
+
+	const allVariables = [
+		...curlyBraceMatches.map((match) => match.replace(/\{\{|\}\}/g, '').trim()),
+		...dollarBraceMatches.map((match) => match.replace(/\$\{|\}/g, '').trim()),
+	]
+
+	// Remove duplicates and empty strings
+	return allVariables
+		.filter((variable) => variable.length > 0)
+		.filter((variable, index, array) => array.indexOf(variable) === index)
 }
