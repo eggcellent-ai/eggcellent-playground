@@ -27,6 +27,7 @@ export default function TableCell({
 	const [response, setResponse] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
 	const [hasRun, setHasRun] = useState(false)
+	const [showFullModal, setShowFullModal] = useState(false)
 
 	const { getTableCellResponse, updateTableCellResponse } =
 		useSystemPromptStore()
@@ -153,37 +154,95 @@ export default function TableCell({
 	}
 
 	return (
-		<div className="flex flex-col h-full min-h-40 justify-between group">
-			{/* Response Area */}
-			<div className="flex-1 min-h-24 text-sm">
-				{isLoading || isRowRunning ? (
-					<div className="animate-pulse text-muted">Running prompt...</div>
-				) : response ? (
-					<div className="whitespace-pre-wrap text-text-primary">
-						{response}
+		<>
+			<div className="flex flex-col h-64 justify-between group">
+				{/* Response Area - Fixed height with scrolling */}
+				<div className="flex-1 overflow-y-auto text-sm min-h-0">
+					{isLoading || isRowRunning ? (
+						<div className="animate-pulse text-muted">Running prompt...</div>
+					) : response ? (
+						<div className="whitespace-pre-wrap text-text-primary">
+							{response}
+						</div>
+					) : (
+						<div className="text-muted">Click Run to test</div>
+					)}
+				</div>
+
+				{/* Controls */}
+				<div className="flex justify-between items-center p-2 bg-neutral-hover/50">
+					<div className="flex space-x-2">
+						<button
+							onClick={handleRun}
+							disabled={isLoading || isRowRunning}
+							className="px-3 py-1 bg-neutral-900 text-white text-xs hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+						>
+							{isLoading || isRowRunning ? 'Running...' : 'Run'}
+						</button>
+						{hasRun && (
+							<button
+								onClick={handleClear}
+								className="px-3 py-1 border border-neutral text-text-secondary text-xs hover:border-neutral-dark hover:bg-neutral-hover transition-colors"
+							>
+								Clear
+							</button>
+						)}
 					</div>
-				) : (
-					<div className="text-muted">Click Run to test</div>
-				)}
+
+					{/* View Full button - only show if we have content */}
+					{response && !isLoading && !isRowRunning && (
+						<button
+							onClick={() => setShowFullModal(true)}
+							className="px-2 py-1 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-colors"
+						>
+							View Full
+						</button>
+					)}
+				</div>
 			</div>
-			{/* Controls */}
-			<div className="flex space-x-2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-				<button
-					onClick={handleRun}
-					disabled={isLoading || isRowRunning}
-					className="px-3 py-1 bg-neutral-900 text-white text-xs hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+
+			{/* Full Response Modal */}
+			{showFullModal && (
+				<div
+					className="fixed inset-0 bg-white/50 flex items-center justify-center z-50 p-4"
+					onClick={() => setShowFullModal(false)}
 				>
-					{isLoading || isRowRunning ? 'Running...' : 'Run'}
-				</button>
-				{hasRun && (
-					<button
-						onClick={handleClear}
-						className="px-3 py-1 border border-neutral text-text-secondary text-xs hover:border-neutral-dark hover:bg-neutral-hover transition-colors"
+					<div
+						className="bg-white rounded-lg shadow-lg max-w-4xl max-h-[90vh] w-full flex flex-col"
+						onClick={(e) => e.stopPropagation()}
 					>
-						Clear
-					</button>
-				)}
-			</div>
-		</div>
+						{/* Modal Header */}
+						<div className="flex justify-between items-center p-4 border-b border-neutral-light">
+							<h3 className="text-lg font-medium text-text-primary">
+								Full Response - {modelId}
+							</h3>
+							<button
+								onClick={() => setShowFullModal(false)}
+								className="text-text-secondary hover:text-text-primary text-xl leading-none"
+							>
+								×
+							</button>
+						</div>
+
+						{/* Modal Content */}
+						<div className="flex-1 overflow-y-auto p-4">
+							<div className="whitespace-pre-wrap text-text-primary text-sm leading-relaxed">
+								{response}
+							</div>
+						</div>
+
+						{/* Modal Footer */}
+						<div className="flex justify-end p-4 border-t border-neutral-light">
+							<button
+								onClick={() => setShowFullModal(false)}
+								className="px-4 py-2 bg-neutral-900 text-white text-sm hover:bg-neutral-800 transition-colors"
+							>
+								Close
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+		</>
 	)
 }
