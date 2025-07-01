@@ -7,58 +7,75 @@ import { useApiKeyStore } from './stores'
 
 export type ChatMessage = CoreMessage
 
+// Model provider mapping
+const getModelProvider = (modelId: string): string => {
+	if (modelId.startsWith('gpt-') || modelId.startsWith('o1-')) return 'openai'
+	if (modelId.startsWith('claude-')) return 'anthropic'
+
+	// For now, we'll support the most reliable providers
+	// More providers can be added as the AI SDK stabilizes their APIs
+	return 'openai' // Default fallback
+}
+
 // React hook for AI service using proper AI SDK
 export function useAIService() {
-	const { openaiKey, anthropicKey } = useApiKeyStore()
+	const { openaiKey, anthropicKey, getKeyForProvider } = useApiKeyStore()
 
 	// Create AI providers with user's API keys
 	const providers = useMemo(() => {
-		const openaiProvider = openaiKey
-			? createOpenAI({ apiKey: openaiKey })
-			: null
-		const anthropicProvider = anthropicKey
-			? createAnthropic({ apiKey: anthropicKey })
-			: null
-		return { openaiProvider, anthropicProvider }
+		return {
+			openai: openaiKey ? createOpenAI({ apiKey: openaiKey }) : null,
+			anthropic: anthropicKey
+				? createAnthropic({ apiKey: anthropicKey })
+				: null,
+		}
 	}, [openaiKey, anthropicKey])
 
 	const hasValidKeyForModel = useCallback(
 		(modelId: string): boolean => {
-			if (modelId.startsWith('gpt-')) {
-				return Boolean(openaiKey && openaiKey.trim())
-			} else if (modelId.startsWith('claude-')) {
-				return Boolean(anthropicKey && anthropicKey.trim())
-			}
-			return false
+			const provider = getModelProvider(modelId)
+			const key = getKeyForProvider(provider)
+			return Boolean(key && key.trim())
 		},
-		[openaiKey, anthropicKey]
+		[getKeyForProvider]
+	)
+
+	const getProviderAndModel = useCallback(
+		(modelId: string) => {
+			const providerName = getModelProvider(modelId)
+			const provider = providers[providerName as keyof typeof providers]
+
+			if (!provider) {
+				throw new Error(
+					`Provider ${providerName} not available or API key missing`
+				)
+			}
+
+			return { provider, providerName }
+		},
+		[providers]
 	)
 
 	const generateAIText = useCallback(
 		async (messages: ChatMessage[], modelId: string): Promise<string> => {
-			if (modelId.startsWith('gpt-')) {
-				if (!providers.openaiProvider) {
-					throw new Error('OpenAI API key is required for GPT models')
-				}
+			const { provider, providerName } = getProviderAndModel(modelId)
+
+			try {
 				const result = await generateText({
-					model: providers.openaiProvider(modelId),
+					model: provider(modelId),
 					messages,
 				})
 				return result.text
-			} else if (modelId.startsWith('claude-')) {
-				if (!providers.anthropicProvider) {
-					throw new Error('Anthropic API key is required for Claude models')
-				}
-				const result = await generateText({
-					model: providers.anthropicProvider(modelId),
-					messages,
-				})
-				return result.text
-			} else {
-				throw new Error(`Unsupported model: ${modelId}`)
+			} catch (error) {
+				console.error(`Error with ${providerName} provider:`, error)
+				throw new Error(
+					`Failed to generate text with ${providerName}: ${
+						error instanceof Error ? error.message : 'Unknown error'
+					}`
+				)
 			}
 		},
-		[providers]
+		[getProviderAndModel]
 	)
 
 	const streamAIText = useCallback(
@@ -67,12 +84,11 @@ export function useAIService() {
 			modelId: string,
 			onUpdate?: (text: string) => void
 		): Promise<string> => {
-			if (modelId.startsWith('gpt-')) {
-				if (!providers.openaiProvider) {
-					throw new Error('OpenAI API key is required for GPT models')
-				}
+			const { provider, providerName } = getProviderAndModel(modelId)
+
+			try {
 				const result = streamText({
-					model: providers.openaiProvider(modelId),
+					model: provider(modelId),
 					messages,
 				})
 
@@ -84,37 +100,26 @@ export function useAIService() {
 					}
 				}
 				return fullText
-			} else if (modelId.startsWith('claude-')) {
-				if (!providers.anthropicProvider) {
-					throw new Error('Anthropic API key is required for Claude models')
-				}
-				const result = streamText({
-					model: providers.anthropicProvider(modelId),
-					messages,
-				})
-
-				let fullText = ''
-				for await (const textPart of result.textStream) {
-					fullText += textPart
-					if (onUpdate) {
-						onUpdate(fullText)
-					}
-				}
-				return fullText
-			} else {
-				throw new Error(`Unsupported model: ${modelId}`)
+			} catch (error) {
+				console.error(`Error with ${providerName} provider:`, error)
+				throw new Error(
+					`Failed to stream text with ${providerName}: ${
+						error instanceof Error ? error.message : 'Unknown error'
+					}`
+				)
 			}
 		},
-		[providers]
+		[getProviderAndModel]
 	)
 
 	return {
 		generateText: generateAIText,
 		streamText: streamAIText,
 		hasValidKeyForModel,
+		providers,
+		// Legacy compatibility
 		openaiKey,
 		anthropicKey,
-		providers,
 	}
 }
 
@@ -128,7 +133,7 @@ export function useAICompletion(modelId: string) {
 	const complete = useCallback(
 		async (prompt: string) => {
 			if (!hasValidKeyForModel(modelId)) {
-				setError('API key required for this model')
+				setError(`API key required for ${getModelProvider(modelId)} provider`)
 				return
 			}
 
@@ -169,7 +174,7 @@ export function useAIStream(modelId: string) {
 	const stream = useCallback(
 		async (messages: ChatMessage[]) => {
 			if (!hasValidKeyForModel(modelId)) {
-				setError('API key required for this model')
+				setError(`API key required for ${getModelProvider(modelId)} provider`)
 				return
 			}
 

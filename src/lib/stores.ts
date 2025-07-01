@@ -161,18 +161,129 @@ interface SystemPromptState {
 
 // Available models configuration
 export const AVAILABLE_MODELS = [
-	{ id: 'gpt-4o', name: 'GPT-4o', provider: 'openai' },
-	{ id: 'gpt-4o-mini', name: 'GPT-4o Mini', provider: 'openai' },
-	{ id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', provider: 'openai' },
+	// OpenAI Models
+	{ id: 'gpt-4o', name: 'GPT-4o', provider: 'OpenAI' },
+	{ id: 'gpt-4o-mini', name: 'GPT-4o Mini', provider: 'OpenAI' },
+	{ id: 'gpt-4-turbo', name: 'GPT-4 Turbo', provider: 'OpenAI' },
+	{ id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', provider: 'OpenAI' },
+	{ id: 'o1-preview', name: 'o1 Preview', provider: 'OpenAI' },
+	{ id: 'o1-mini', name: 'o1 Mini', provider: 'OpenAI' },
+
+	// Anthropic Models
 	{
 		id: 'claude-3-5-sonnet-20241022',
 		name: 'Claude 3.5 Sonnet',
-		provider: 'anthropic',
+		provider: 'Anthropic',
 	},
 	{
 		id: 'claude-3-5-haiku-20241022',
 		name: 'Claude 3.5 Haiku',
-		provider: 'anthropic',
+		provider: 'Anthropic',
+	},
+	{
+		id: 'claude-3-opus-20240229',
+		name: 'Claude 3 Opus',
+		provider: 'Anthropic',
+	},
+	{
+		id: 'claude-3-sonnet-20240229',
+		name: 'Claude 3 Sonnet',
+		provider: 'Anthropic',
+	},
+	{
+		id: 'claude-3-haiku-20240307',
+		name: 'Claude 3 Haiku',
+		provider: 'Anthropic',
+	},
+
+	// xAI Models
+	{ id: 'grok-beta', name: 'Grok Beta', provider: 'xAI' },
+	{ id: 'grok-vision-beta', name: 'Grok Vision Beta', provider: 'xAI' },
+
+	// Google Models
+	{ id: 'gemini-1.5-pro-latest', name: 'Gemini 1.5 Pro', provider: 'Google' },
+	{
+		id: 'gemini-1.5-flash-latest',
+		name: 'Gemini 1.5 Flash',
+		provider: 'Google',
+	},
+	{ id: 'gemini-pro', name: 'Gemini Pro', provider: 'Google' },
+
+	// Mistral Models
+	{ id: 'mistral-large-latest', name: 'Mistral Large', provider: 'Mistral' },
+	{ id: 'mistral-medium-latest', name: 'Mistral Medium', provider: 'Mistral' },
+	{ id: 'mistral-small-latest', name: 'Mistral Small', provider: 'Mistral' },
+	{ id: 'open-mistral-7b', name: 'Mistral 7B', provider: 'Mistral' },
+	{ id: 'open-mixtral-8x7b', name: 'Mixtral 8x7B', provider: 'Mistral' },
+	{ id: 'open-mixtral-8x22b', name: 'Mixtral 8x22B', provider: 'Mistral' },
+
+	// Groq Models (Fast Inference)
+	{ id: 'llama-3.1-70b-versatile', name: 'Llama 3.1 70B', provider: 'Groq' },
+	{ id: 'llama-3.1-8b-instant', name: 'Llama 3.1 8B', provider: 'Groq' },
+	{ id: 'mixtral-8x7b-32768', name: 'Mixtral 8x7B', provider: 'Groq' },
+	{ id: 'gemma-7b-it', name: 'Gemma 7B', provider: 'Groq' },
+
+	// DeepSeek Models
+	{ id: 'deepseek-chat', name: 'DeepSeek Chat', provider: 'DeepSeek' },
+	{ id: 'deepseek-coder', name: 'DeepSeek Coder', provider: 'DeepSeek' },
+
+	// Together.ai Models
+	{
+		id: 'meta-llama/Llama-2-70b-chat-hf',
+		name: 'Llama 2 70B Chat',
+		provider: 'Together.ai',
+	},
+	{
+		id: 'meta-llama/Llama-2-13b-chat-hf',
+		name: 'Llama 2 13B Chat',
+		provider: 'Together.ai',
+	},
+	{
+		id: 'meta-llama/Llama-2-7b-chat-hf',
+		name: 'Llama 2 7B Chat',
+		provider: 'Together.ai',
+	},
+	{
+		id: 'meta-llama/Meta-Llama-3-70B-Instruct',
+		name: 'Llama 3 70B Instruct',
+		provider: 'Together.ai',
+	},
+	{
+		id: 'meta-llama/Meta-Llama-3-8B-Instruct',
+		name: 'Llama 3 8B Instruct',
+		provider: 'Together.ai',
+	},
+	{
+		id: 'mistralai/Mixtral-8x7B-Instruct-v0.1',
+		name: 'Mixtral 8x7B Instruct',
+		provider: 'Together.ai',
+	},
+	{
+		id: 'mistralai/Mistral-7B-Instruct-v0.1',
+		name: 'Mistral 7B Instruct',
+		provider: 'Together.ai',
+	},
+	{
+		id: 'togethercomputer/RedPajama-INCITE-Chat-3B-v1',
+		name: 'RedPajama Chat 3B',
+		provider: 'Together.ai',
+	},
+
+	// Perplexity Models
+	{
+		id: 'llama-3.1-sonar-small-128k-online',
+		name: 'Sonar Small Online',
+		provider: 'Perplexity',
+	},
+	{
+		id: 'llama-3.1-sonar-large-128k-online',
+		name: 'Sonar Large Online',
+		provider: 'Perplexity',
+	},
+	{
+		id: 'llama-3.1-sonar-huge-128k-online',
+		name: 'Sonar Huge Online',
+		provider: 'Perplexity',
 	},
 ] as const
 
@@ -826,10 +937,25 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 interface ApiKeyStore {
 	openaiKey: string
 	anthropicKey: string
+	xaiKey: string
+	googleKey: string
+	mistralKey: string
+	groqKey: string
+	deepseekKey: string
+	togetheraiKey: string
+	perplexityKey: string
 	setOpenaiKey: (key: string) => void
 	setAnthropicKey: (key: string) => void
+	setXaiKey: (key: string) => void
+	setGoogleKey: (key: string) => void
+	setMistralKey: (key: string) => void
+	setGroqKey: (key: string) => void
+	setDeepseekKey: (key: string) => void
+	setTogetheraiKey: (key: string) => void
+	setPerplexityKey: (key: string) => void
 	clearKeys: () => void
 	hasValidKeys: () => boolean
+	getKeyForProvider: (provider: string) => string
 }
 
 // Utility functions for localStorage API key management
@@ -858,10 +984,101 @@ export const apiKeyStorage = {
 			localStorage.removeItem('eggcellent_anthropic_key')
 		}
 	},
+	getXaiKey: (): string => {
+		if (typeof window === 'undefined') return ''
+		return localStorage.getItem('eggcellent_xai_key') || ''
+	},
+	setXaiKey: (key: string) => {
+		if (typeof window === 'undefined') return
+		if (key.trim()) {
+			localStorage.setItem('eggcellent_xai_key', key.trim())
+		} else {
+			localStorage.removeItem('eggcellent_xai_key')
+		}
+	},
+	getGoogleKey: (): string => {
+		if (typeof window === 'undefined') return ''
+		return localStorage.getItem('eggcellent_google_key') || ''
+	},
+	setGoogleKey: (key: string) => {
+		if (typeof window === 'undefined') return
+		if (key.trim()) {
+			localStorage.setItem('eggcellent_google_key', key.trim())
+		} else {
+			localStorage.removeItem('eggcellent_google_key')
+		}
+	},
+	getMistralKey: (): string => {
+		if (typeof window === 'undefined') return ''
+		return localStorage.getItem('eggcellent_mistral_key') || ''
+	},
+	setMistralKey: (key: string) => {
+		if (typeof window === 'undefined') return
+		if (key.trim()) {
+			localStorage.setItem('eggcellent_mistral_key', key.trim())
+		} else {
+			localStorage.removeItem('eggcellent_mistral_key')
+		}
+	},
+	getGroqKey: (): string => {
+		if (typeof window === 'undefined') return ''
+		return localStorage.getItem('eggcellent_groq_key') || ''
+	},
+	setGroqKey: (key: string) => {
+		if (typeof window === 'undefined') return
+		if (key.trim()) {
+			localStorage.setItem('eggcellent_groq_key', key.trim())
+		} else {
+			localStorage.removeItem('eggcellent_groq_key')
+		}
+	},
+	getDeepseekKey: (): string => {
+		if (typeof window === 'undefined') return ''
+		return localStorage.getItem('eggcellent_deepseek_key') || ''
+	},
+	setDeepseekKey: (key: string) => {
+		if (typeof window === 'undefined') return
+		if (key.trim()) {
+			localStorage.setItem('eggcellent_deepseek_key', key.trim())
+		} else {
+			localStorage.removeItem('eggcellent_deepseek_key')
+		}
+	},
+	getTogetheraiKey: (): string => {
+		if (typeof window === 'undefined') return ''
+		return localStorage.getItem('eggcellent_togetherai_key') || ''
+	},
+	setTogetheraiKey: (key: string) => {
+		if (typeof window === 'undefined') return
+		if (key.trim()) {
+			localStorage.setItem('eggcellent_togetherai_key', key.trim())
+		} else {
+			localStorage.removeItem('eggcellent_togetherai_key')
+		}
+	},
+	getPerplexityKey: (): string => {
+		if (typeof window === 'undefined') return ''
+		return localStorage.getItem('eggcellent_perplexity_key') || ''
+	},
+	setPerplexityKey: (key: string) => {
+		if (typeof window === 'undefined') return
+		if (key.trim()) {
+			localStorage.setItem('eggcellent_perplexity_key', key.trim())
+		} else {
+			localStorage.removeItem('eggcellent_perplexity_key')
+		}
+	},
 	clearAll: () => {
 		if (typeof window === 'undefined') return
 		localStorage.removeItem('eggcellent_openai_key')
 		localStorage.removeItem('eggcellent_anthropic_key')
+		localStorage.removeItem('eggcellent_xai_key')
+		localStorage.removeItem('eggcellent_google_key')
+		localStorage.removeItem('eggcellent_mistral_key')
+		localStorage.removeItem('eggcellent_groq_key')
+		localStorage.removeItem('eggcellent_deepseek_key')
+		localStorage.removeItem('eggcellent_togetherai_key')
+		localStorage.removeItem('eggcellent_perplexity_key')
 	},
 }
 
@@ -869,6 +1086,13 @@ export const apiKeyStorage = {
 export const useApiKeyStore = create<ApiKeyStore>()((set, get) => ({
 	openaiKey: '',
 	anthropicKey: '',
+	xaiKey: '',
+	googleKey: '',
+	mistralKey: '',
+	groqKey: '',
+	deepseekKey: '',
+	togetheraiKey: '',
+	perplexityKey: '',
 	setOpenaiKey: (key: string) => {
 		apiKeyStorage.setOpenAIKey(key)
 		set({ openaiKey: key })
@@ -877,15 +1101,88 @@ export const useApiKeyStore = create<ApiKeyStore>()((set, get) => ({
 		apiKeyStorage.setAnthropicKey(key)
 		set({ anthropicKey: key })
 	},
+	setXaiKey: (key: string) => {
+		apiKeyStorage.setXaiKey(key)
+		set({ xaiKey: key })
+	},
+	setGoogleKey: (key: string) => {
+		apiKeyStorage.setGoogleKey(key)
+		set({ googleKey: key })
+	},
+	setMistralKey: (key: string) => {
+		apiKeyStorage.setMistralKey(key)
+		set({ mistralKey: key })
+	},
+	setGroqKey: (key: string) => {
+		apiKeyStorage.setGroqKey(key)
+		set({ groqKey: key })
+	},
+	setDeepseekKey: (key: string) => {
+		apiKeyStorage.setDeepseekKey(key)
+		set({ deepseekKey: key })
+	},
+	setTogetheraiKey: (key: string) => {
+		apiKeyStorage.setTogetheraiKey(key)
+		set({ togetheraiKey: key })
+	},
+	setPerplexityKey: (key: string) => {
+		apiKeyStorage.setPerplexityKey(key)
+		set({ perplexityKey: key })
+	},
 	clearKeys: () => {
 		apiKeyStorage.clearAll()
-		set({ openaiKey: '', anthropicKey: '' })
+		set({
+			openaiKey: '',
+			anthropicKey: '',
+			xaiKey: '',
+			googleKey: '',
+			mistralKey: '',
+			groqKey: '',
+			deepseekKey: '',
+			togetheraiKey: '',
+			perplexityKey: '',
+		})
 	},
 	hasValidKeys: () => {
 		// Return false during SSR to prevent hydration mismatch
 		if (typeof window === 'undefined') return false
 		const state = get()
-		return Boolean(state.openaiKey.trim() || state.anthropicKey.trim())
+		return Boolean(
+			state.openaiKey.trim() ||
+				state.anthropicKey.trim() ||
+				state.xaiKey.trim() ||
+				state.googleKey.trim() ||
+				state.mistralKey.trim() ||
+				state.groqKey.trim() ||
+				state.deepseekKey.trim() ||
+				state.togetheraiKey.trim() ||
+				state.perplexityKey.trim()
+		)
+	},
+	getKeyForProvider: (provider: string) => {
+		const state = get()
+		switch (provider.toLowerCase()) {
+			case 'openai':
+				return state.openaiKey
+			case 'anthropic':
+				return state.anthropicKey
+			case 'xai':
+				return state.xaiKey
+			case 'google':
+				return state.googleKey
+			case 'mistral':
+				return state.mistralKey
+			case 'groq':
+				return state.groqKey
+			case 'deepseek':
+				return state.deepseekKey
+			case 'together.ai':
+				return state.togetheraiKey
+			case 'perplexity':
+				return state.perplexityKey
+			default:
+				return ''
+		}
 	},
 }))
 
@@ -895,11 +1192,24 @@ if (typeof window !== 'undefined') {
 	setTimeout(() => {
 		const openaiKey = apiKeyStorage.getOpenAIKey()
 		const anthropicKey = apiKeyStorage.getAnthropicKey()
+		const xaiKey = apiKeyStorage.getXaiKey()
+		const googleKey = apiKeyStorage.getGoogleKey()
+		const mistralKey = apiKeyStorage.getMistralKey()
+		const groqKey = apiKeyStorage.getGroqKey()
+		const deepseekKey = apiKeyStorage.getDeepseekKey()
+		const togetheraiKey = apiKeyStorage.getTogetheraiKey()
+		const perplexityKey = apiKeyStorage.getPerplexityKey()
 
-		if (openaiKey || anthropicKey) {
-			useApiKeyStore.getState().setOpenaiKey(openaiKey)
-			useApiKeyStore.getState().setAnthropicKey(anthropicKey)
-		}
+		const store = useApiKeyStore.getState()
+		if (openaiKey) store.setOpenaiKey(openaiKey)
+		if (anthropicKey) store.setAnthropicKey(anthropicKey)
+		if (xaiKey) store.setXaiKey(xaiKey)
+		if (googleKey) store.setGoogleKey(googleKey)
+		if (mistralKey) store.setMistralKey(mistralKey)
+		if (groqKey) store.setGroqKey(groqKey)
+		if (deepseekKey) store.setDeepseekKey(deepseekKey)
+		if (togetheraiKey) store.setTogetheraiKey(togetheraiKey)
+		if (perplexityKey) store.setPerplexityKey(perplexityKey)
 	}, 100)
 }
 
