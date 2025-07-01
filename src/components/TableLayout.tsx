@@ -1342,6 +1342,7 @@ Examples of valid formats:
 															systemPrompt={inputPromptContent}
 															activePromptId={activePromptId}
 															activeVersionId={activeVersionId}
+															isRowRunning={runningRows.has(row.id)}
 														/>
 													</td>
 												))}

@@ -11,6 +11,7 @@ interface TableCellProps {
 	systemPrompt: string
 	activePromptId: string | null
 	activeVersionId: string | null
+	isRowRunning?: boolean
 }
 
 export default function TableCell({
@@ -21,6 +22,7 @@ export default function TableCell({
 	systemPrompt,
 	activePromptId,
 	activeVersionId,
+	isRowRunning = false,
 }: TableCellProps) {
 	const [response, setResponse] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
@@ -53,7 +55,7 @@ export default function TableCell({
 	const handleRun = async () => {
 		// Allow if there's either text input or images
 		const hasContent = input.trim() || images.length > 0
-		if (!hasContent || isLoading) return
+		if (!hasContent || isLoading || isRowRunning) return
 
 		// Check if we have a valid API key for this model
 		if (!hasValidKeyForModel(modelId)) {
@@ -154,7 +156,7 @@ export default function TableCell({
 		<div className="flex flex-col h-full min-h-40 justify-between group">
 			{/* Response Area */}
 			<div className="flex-1 min-h-24 text-sm">
-				{isLoading ? (
+				{isLoading || isRowRunning ? (
 					<div className="animate-pulse text-muted">Running prompt...</div>
 				) : response ? (
 					<div className="whitespace-pre-wrap text-text-primary">
@@ -168,10 +170,10 @@ export default function TableCell({
 			<div className="flex space-x-2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
 				<button
 					onClick={handleRun}
-					disabled={isLoading}
+					disabled={isLoading || isRowRunning}
 					className="px-3 py-1 bg-neutral-900 text-white text-xs hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 				>
-					{isLoading ? 'Running...' : 'Run'}
+					{isLoading || isRowRunning ? 'Running...' : 'Run'}
 				</button>
 				{hasRun && (
 					<button
