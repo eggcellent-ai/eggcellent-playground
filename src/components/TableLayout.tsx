@@ -1124,7 +1124,7 @@ Examples of valid formats:
 											disabled={
 												!jsonInputValue.trim() || !jsonValidationStatus.isValid
 											}
-											className="px-4 py-2 bg-secondary text-white text-sm hover:bg-secondary-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+											className="px-4 py-2 bg-neutral-dark text-white text-sm hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 										>
 											Update Inputs
 										</button>
