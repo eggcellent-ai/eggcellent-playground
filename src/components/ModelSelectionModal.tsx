@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react'
-import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import { AVAILABLE_MODELS } from '../lib/stores'
 
 interface ModelSelectionModalProps {
@@ -7,19 +6,6 @@ interface ModelSelectionModalProps {
 	onClose: () => void
 	selectedModels: string[]
 	onAddModel: (modelId: string) => void
-}
-
-// Provider icons - using emojis for now, can be replaced with actual SVG icons
-const PROVIDER_ICONS: Record<string, string> = {
-	openai: '🤖',
-	anthropic: '🏛️',
-	google: '🔍',
-	xai: '🚀',
-	mistral: '🌊',
-	groq: '⚡',
-	deepseek: '🌊',
-	togetherai: '🤝',
-	perplexity: '🔮',
 }
 
 const PROVIDER_DESCRIPTIONS: Record<string, string> = {
@@ -104,7 +90,7 @@ export default function ModelSelectionModal({
 
 			{/* Modal */}
 			<div className="relative min-h-screen flex items-center justify-center p-4">
-				<div className="relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+				<div className="relative bg-white shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
 					{/* Header */}
 					<div className="flex items-center justify-between p-6 border-b border-neutral">
 						<div>
@@ -118,22 +104,21 @@ export default function ModelSelectionModal({
 						</div>
 						<button
 							onClick={onClose}
-							className="p-2 hover:bg-neutral-hover rounded-full transition-colors"
+							className="p-2 hover:bg-neutral-hover transition-colors"
 						>
-							<XMarkIcon className="w-5 h-5 text-text-secondary" />
+							<span className="text-text-secondary">✕</span>
 						</button>
 					</div>
 
 					{/* Search Bar */}
 					<div className="p-6 border-b border-neutral">
 						<div className="relative">
-							<MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-secondary" />
 							<input
 								type="text"
 								placeholder="Search models or providers..."
 								value={searchQuery}
 								onChange={(e) => setSearchQuery(e.target.value)}
-								className="w-full pl-10 pr-4 py-3 border border-neutral rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary text-text-primary placeholder-text-muted"
+								className="w-full pl-4 pr-4 py-3 border border-neutral focus:ring-2 focus:ring-secondary focus:border-secondary text-text-primary placeholder-text-muted"
 								autoFocus
 							/>
 						</div>
@@ -159,9 +144,6 @@ export default function ModelSelectionModal({
 										<div key={provider} className="space-y-3">
 											{/* Provider Header */}
 											<div className="flex items-center gap-3 pb-2 border-b border-neutral-light">
-												<span className="text-2xl">
-													{PROVIDER_ICONS[provider] || '🤖'}
-												</span>
 												<div>
 													<h3 className="font-semibold text-text-primary capitalize">
 														{provider}
@@ -172,7 +154,7 @@ export default function ModelSelectionModal({
 													</p>
 												</div>
 												<div className="ml-auto">
-													<span className="text-xs font-medium text-text-secondary bg-neutral-light px-2 py-1 rounded">
+													<span className="text-xs font-medium text-text-secondary bg-neutral-light px-2 py-1">
 														{models.length} model
 														{models.length !== 1 ? 's' : ''}
 													</span>
@@ -188,7 +170,7 @@ export default function ModelSelectionModal({
 															onAddModel(model.id)
 															// Don't close modal, allow multiple selections
 														}}
-														className="p-4 border border-neutral rounded-lg hover:border-secondary hover:bg-secondary-light transition-all text-left group"
+														className="p-4 border border-neutral hover:border-secondary hover:bg-secondary-light transition-all text-left group"
 													>
 														<div className="flex items-start justify-between">
 															<div className="flex-1 min-w-0">
@@ -199,18 +181,11 @@ export default function ModelSelectionModal({
 																	Advanced AI model
 																</p>
 															</div>
-															<div className="ml-2 flex-shrink-0">
-																<div className="w-8 h-8 bg-neutral-light rounded-full flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-colors">
-																	<span className="text-sm">
-																		{PROVIDER_ICONS[provider] || '🤖'}
-																	</span>
-																</div>
-															</div>
 														</div>
 
 														{/* Model metadata */}
 														<div className="mt-3 flex items-center gap-2 text-xs text-text-secondary">
-															<span className="bg-neutral-light px-2 py-1 rounded">
+															<span className="bg-neutral-light px-2 py-1">
 																{provider}
 															</span>
 														</div>
@@ -232,7 +207,7 @@ export default function ModelSelectionModal({
 						</div>
 						<button
 							onClick={onClose}
-							className="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary-dark transition-colors"
+							className="px-4 py-2 bg-secondary text-white hover:bg-secondary-dark transition-colors"
 						>
 							Done
 						</button>
