@@ -70,7 +70,12 @@ export function useAIService() {
 
 				case 'anthropic':
 					if (!anthropicKey) throw new Error('Anthropic API key required')
-					return createAnthropic({ apiKey: anthropicKey })(modelId)
+					return createAnthropic({
+						apiKey: anthropicKey,
+						headers: {
+							'anthropic-dangerous-direct-browser-access': 'true',
+						},
+					})(modelId)
 
 				case 'google':
 					if (!googleKey) throw new Error('Google API key required')
