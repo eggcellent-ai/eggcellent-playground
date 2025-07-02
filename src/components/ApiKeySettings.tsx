@@ -6,7 +6,7 @@ import {
 	EyeSlashIcon,
 	KeyIcon,
 } from '@heroicons/react/24/outline'
-import { CheckIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid'
+import { ExclamationTriangleIcon } from '@heroicons/react/24/solid'
 
 interface ApiKeySettingsProps {
 	isOpen: boolean
@@ -123,9 +123,8 @@ export default function ApiKeySettings({
 }: ApiKeySettingsProps) {
 	const store = useApiKeyStore()
 
-	const [tempKeys, setTempKeys] = useState<Record<string, string>>({})
+	const [currentKeys, setCurrentKeys] = useState<Record<string, string>>({})
 	const [showKeys, setShowKeys] = useState<Record<string, boolean>>({})
-	const [saveSuccess, setSaveSuccess] = useState(false)
 
 	// Load keys from localStorage when modal opens
 	useEffect(() => {
@@ -134,15 +133,54 @@ export default function ApiKeySettings({
 			PROVIDERS.forEach((provider) => {
 				keys[provider.key] = provider.getKey()
 			})
-			setTempKeys(keys)
+			setCurrentKeys(keys)
 		}
 	}, [isOpen])
 
 	const handleKeyChange = (providerKey: string, value: string) => {
-		setTempKeys((prev) => ({
+		// Update local state
+		setCurrentKeys((prev) => ({
 			...prev,
 			[providerKey]: value,
 		}))
+
+		// Find the provider and auto-save
+		const provider = PROVIDERS.find((p) => p.key === providerKey)
+		if (provider) {
+			// Save to localStorage
+			provider.setKey(value)
+
+			// Update Zustand store
+			switch (provider.setStoreKey) {
+				case 'setOpenaiKey':
+					store.setOpenaiKey(value)
+					break
+				case 'setAnthropicKey':
+					store.setAnthropicKey(value)
+					break
+				case 'setXaiKey':
+					store.setXaiKey(value)
+					break
+				case 'setGoogleKey':
+					store.setGoogleKey(value)
+					break
+				case 'setMistralKey':
+					store.setMistralKey(value)
+					break
+				case 'setGroqKey':
+					store.setGroqKey(value)
+					break
+				case 'setDeepseekKey':
+					store.setDeepseekKey(value)
+					break
+				case 'setTogetheraiKey':
+					store.setTogetheraiKey(value)
+					break
+				case 'setPerplexityKey':
+					store.setPerplexityKey(value)
+					break
+			}
+		}
 	}
 
 	const toggleShowKey = (providerKey: string) => {
@@ -152,97 +190,19 @@ export default function ApiKeySettings({
 		}))
 	}
 
-	const handleSave = () => {
-		PROVIDERS.forEach((provider) => {
-			const key = tempKeys[provider.key] || ''
-			provider.setKey(key)
-			// Safely call the setter method
-			switch (provider.setStoreKey) {
-				case 'setOpenaiKey':
-					store.setOpenaiKey(key)
-					break
-				case 'setAnthropicKey':
-					store.setAnthropicKey(key)
-					break
-				case 'setXaiKey':
-					store.setXaiKey(key)
-					break
-				case 'setGoogleKey':
-					store.setGoogleKey(key)
-					break
-				case 'setMistralKey':
-					store.setMistralKey(key)
-					break
-				case 'setGroqKey':
-					store.setGroqKey(key)
-					break
-				case 'setDeepseekKey':
-					store.setDeepseekKey(key)
-					break
-				case 'setTogetheraiKey':
-					store.setTogetheraiKey(key)
-					break
-				case 'setPerplexityKey':
-					store.setPerplexityKey(key)
-					break
-			}
-		})
-
-		setSaveSuccess(true)
-		setTimeout(() => {
-			setSaveSuccess(false)
-			onClose()
-		}, 1000)
-	}
-
 	const handleClear = () => {
 		store.clearKeys()
 		const clearedKeys: Record<string, string> = {}
 		PROVIDERS.forEach((provider) => {
 			clearedKeys[provider.key] = ''
+			provider.setKey('') // Also clear from localStorage
 		})
-		setTempKeys(clearedKeys)
-		setSaveSuccess(false)
+		setCurrentKeys(clearedKeys)
 	}
 
-	const hasChanges = PROVIDERS.some((provider) => {
-		let currentKey = ''
-		switch (provider.storeKey) {
-			case 'openaiKey':
-				currentKey = store.openaiKey
-				break
-			case 'anthropicKey':
-				currentKey = store.anthropicKey
-				break
-			case 'xaiKey':
-				currentKey = store.xaiKey
-				break
-			case 'googleKey':
-				currentKey = store.googleKey
-				break
-			case 'mistralKey':
-				currentKey = store.mistralKey
-				break
-			case 'groqKey':
-				currentKey = store.groqKey
-				break
-			case 'deepseekKey':
-				currentKey = store.deepseekKey
-				break
-			case 'togetheraiKey':
-				currentKey = store.togetheraiKey
-				break
-			case 'perplexityKey':
-				currentKey = store.perplexityKey
-				break
-		}
-		const tempKey = tempKeys[provider.key] || ''
-		return currentKey !== tempKey
-	})
-
 	const hasAnyKeys = PROVIDERS.some((provider) => {
-		const tempKey = tempKeys[provider.key] || ''
-		return tempKey.trim() !== ''
+		const currentKey = currentKeys[provider.key] || ''
+		return currentKey.trim() !== ''
 	})
 
 	if (!isOpen) return null
@@ -282,8 +242,7 @@ export default function ApiKeySettings({
 							<ExclamationTriangleIcon className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
 							<div className="text-sm text-amber-800 leading-relaxed">
 								<strong>Security Notice:</strong> API keys are stored locally in
-								your browser. They are not sent to our servers except when
-								making API calls to the respective providers.
+								your browser. They are not sent to our servers.
 							</div>
 						</div>
 					</div>
@@ -294,7 +253,7 @@ export default function ApiKeySettings({
 							<div
 								key={provider.key}
 								className={`border border-gray-200 p-4 ${
-									tempKeys[provider.key]?.trim() ? 'bg-green-50' : 'bg-white'
+									currentKeys[provider.key]?.trim() ? 'bg-green-50' : 'bg-white'
 								}`}
 							>
 								<div className="mb-3">
@@ -303,7 +262,9 @@ export default function ApiKeySettings({
 											{provider.name}
 										</label>
 										<span className="text-xs text-gray-500">
-											{tempKeys[provider.key]?.trim() ? '✅ Set' : '⚠️ Empty'}
+											{currentKeys[provider.key]?.trim()
+												? '✅ Set'
+												: '⚠️ Empty'}
 										</span>
 									</div>
 									<p className="text-xs text-gray-500 mb-3">
@@ -314,7 +275,7 @@ export default function ApiKeySettings({
 								<div className="relative mb-3">
 									<input
 										type={showKeys[provider.key] ? 'text' : 'password'}
-										value={tempKeys[provider.key] || ''}
+										value={currentKeys[provider.key] || ''}
 										onChange={(e) =>
 											handleKeyChange(provider.key, e.target.value)
 										}
@@ -347,34 +308,13 @@ export default function ApiKeySettings({
 					</div>
 
 					{/* Actions */}
-					<div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+					<div className="flex justify-end items-center mt-8 pt-6 border-t border-gray-200">
 						<button
 							onClick={handleClear}
 							disabled={!hasAnyKeys}
 							className="px-4 py-2 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-red-50"
 						>
 							Clear All Keys
-						</button>
-
-						<button
-							onClick={handleSave}
-							disabled={!hasChanges}
-							className={`px-6 py-2 text-sm transition-colors flex items-center gap-2 ${
-								saveSuccess
-									? 'bg-green-600 text-white'
-									: hasChanges
-									? 'bg-blue-600 text-white hover:bg-blue-700'
-									: 'bg-gray-300 text-gray-500 cursor-not-allowed'
-							}`}
-						>
-							{saveSuccess ? (
-								<>
-									<CheckIcon className="w-4 h-4" />
-									Saved!
-								</>
-							) : (
-								'Save Keys'
-							)}
 						</button>
 					</div>
 				</div>
