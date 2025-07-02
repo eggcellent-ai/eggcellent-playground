@@ -291,7 +291,12 @@ export default function ApiKeySettings({
 					{/* Provider Grid */}
 					<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 						{PROVIDERS.map((provider) => (
-							<div key={provider.key} className="border border-gray-200 p-4">
+							<div
+								key={provider.key}
+								className={`border border-gray-200 p-4 ${
+									tempKeys[provider.key]?.trim() ? 'bg-green-50' : 'bg-white'
+								}`}
+							>
 								<div className="mb-3">
 									<div className="flex items-center justify-between mb-1">
 										<label className="text-sm font-medium text-gray-700">
