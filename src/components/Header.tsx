@@ -1,29 +1,12 @@
 import { useLocation, Link } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { KeyIcon } from '@heroicons/react/24/outline'
 import ApiKeySettings from './ApiKeySettings'
-import { useApiKeyStore } from '../lib/stores'
 
 export default function Header() {
 	const location = useLocation()
 	const isHomePage = location.pathname === '/'
 	const [showApiKeySettings, setShowApiKeySettings] = useState(false)
-	const [hasKeys, setHasKeys] = useState(false)
-	const [mounted, setMounted] = useState(false)
-	const { hasValidKeys } = useApiKeyStore()
-
-	// Prevent hydration mismatch by only showing key status after mount
-	useEffect(() => {
-		setMounted(true)
-		setHasKeys(hasValidKeys())
-	}, [hasValidKeys])
-
-	// Update key status when store changes
-	useEffect(() => {
-		if (mounted) {
-			setHasKeys(hasValidKeys())
-		}
-	}, [hasValidKeys, mounted])
 
 	return (
 		<>
@@ -61,17 +44,11 @@ export default function Header() {
 						<div className="pr-6">
 							<button
 								onClick={() => setShowApiKeySettings(true)}
-								className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors ${
-									mounted && hasKeys
-										? 'bg-success-light text-success-dark border border-success hover:bg-success'
-										: 'bg-warning-light text-warning-dark border border-warning hover:bg-warning'
-								}`}
+								className="flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200"
 								title="Configure API Keys"
 							>
 								<KeyIcon className="w-4 h-4" />
-								<span className="hidden sm:inline">
-									{mounted && hasKeys ? 'API Keys Set' : 'Setup API Keys'}
-								</span>
+								<span className="hidden sm:inline">Setup API Keys</span>
 								<span className="sm:hidden">Keys</span>
 							</button>
 						</div>
