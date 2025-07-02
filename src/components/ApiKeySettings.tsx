@@ -218,7 +218,7 @@ export default function ApiKeySettings({
 			{/* Modal */}
 			<div className="relative bg-white shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
 				{/* Header */}
-				<div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
+				<div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 z-10">
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-4">
 							<KeyIcon className="w-6 h-6 text-blue-600" />
@@ -242,7 +242,7 @@ export default function ApiKeySettings({
 							<ExclamationTriangleIcon className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
 							<div className="text-sm text-amber-800 leading-relaxed">
 								<strong>Security Notice:</strong> API keys are stored locally in
-								your browser. They are not sent to our servers.
+								your browser.
 							</div>
 						</div>
 					</div>
