@@ -9,10 +9,15 @@ export const AVAILABLE_MODELS = [
 	// OpenAI Models
 	{ id: 'gpt-4o', name: 'GPT-4o', provider: 'OpenAI' },
 	{ id: 'gpt-4o-mini', name: 'GPT-4o Mini', provider: 'OpenAI' },
+	{ id: 'gpt-4o-audio-preview', name: 'GPT-4o Audio', provider: 'OpenAI' },
 	{ id: 'gpt-4-turbo', name: 'GPT-4 Turbo', provider: 'OpenAI' },
 	{ id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', provider: 'OpenAI' },
-	{ id: 'o1-preview', name: 'o1 Preview', provider: 'OpenAI' },
+	{ id: 'o4-mini', name: 'o4 Mini', provider: 'OpenAI' },
+	{ id: 'o3', name: 'o3', provider: 'OpenAI' },
+	{ id: 'o3-mini', name: 'o3 Mini', provider: 'OpenAI' },
+	{ id: 'o1', name: 'o1', provider: 'OpenAI' },
 	{ id: 'o1-mini', name: 'o1 Mini', provider: 'OpenAI' },
+	{ id: 'o1-preview', name: 'o1 Preview', provider: 'OpenAI' },
 
 	// Anthropic Models
 	{
