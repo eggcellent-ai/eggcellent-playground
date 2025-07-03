@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 import { AVAILABLE_MODELS } from '../lib/stores'
 import type { UploadedImage } from './InputComponent'
 
@@ -49,7 +50,7 @@ export default function FullScreenResponseView({
 		>
 			{/* Modal Header */}
 			<div
-				className="flex justify-between items-center p-4 bg-white border-b"
+				className="flex justify-between items-center p-4 bg-neutral-100 border-b border-neutral"
 				onClick={(e) => e.stopPropagation()}
 			>
 				<h2 className="text-xl font-semibold text-text-primary">
@@ -57,9 +58,9 @@ export default function FullScreenResponseView({
 				</h2>
 				<button
 					onClick={onClose}
-					className="text-text-secondary hover:text-text-primary text-2xl leading-none p-2"
+					className="text-text-secondary hover:text-text-primary p-2"
 				>
-					×
+					<XMarkIcon className="w-6 h-6" />
 				</button>
 			</div>
 
