@@ -6,9 +6,9 @@ import ModelSelectionModal from './ModelSelectionModal'
 
 // Import logos
 import googleLogo from '../assets/logos/google.svg'
-// import openaiLogo from '../assets/logos/openai.svg'
-// import anthropicLogo from '../assets/logos/anthropic.svg'
-// import xaiLogo from '../assets/logos/xai.svg'
+import openaiLogo from '../assets/logos/openai.svg'
+import anthropicLogo from '../assets/logos/anthropic.svg'
+import xaiLogo from '../assets/logos/grok.svg'
 // import mistralLogo from '../assets/logos/mistral.svg'
 // import groqLogo from '../assets/logos/groq.svg'
 // import deepseekLogo from '../assets/logos/deepseek.svg'
@@ -17,9 +17,9 @@ import googleLogo from '../assets/logos/google.svg'
 
 const PROVIDER_LOGOS: Record<string, string> = {
 	Google: googleLogo,
-	// openai: openaiLogo,
-	// anthropic: anthropicLogo,
-	// xai: xaiLogo,
+	OpenAI: openaiLogo,
+	Anthropic: anthropicLogo,
+	xAI: xaiLogo,
 	// mistral: mistralLogo,
 	// groq: groqLogo,
 	// deepseek: deepseekLogo,
@@ -90,7 +90,7 @@ export default function ModelSelectionSection({
 								return (
 									<div
 										key={modelId}
-										className="bg-surface-input border border-neutral p-4 flex items-start justify-between group relative"
+										className="bg-surface-input border border-neutral p-4 flex items-center justify-between group relative h-20"
 									>
 										<button
 											onClick={() => onRemoveModel(modelId)}
@@ -123,9 +123,9 @@ export default function ModelSelectionSection({
 													<div className="font-medium text-text-primary truncate">
 														{model?.name || modelId}
 													</div>
-													<div className="text-xs text-text-secondary">
+													{/* <div className="text-xs text-text-secondary">
 														{model?.provider}
-													</div>
+													</div> */}
 												</div>
 											</div>
 											{!status.hasValidKey && (
@@ -143,7 +143,7 @@ export default function ModelSelectionSection({
 							})}
 							<button
 								onClick={() => setShowModelModal(true)}
-								className="border border-neutral p-3 flex items-center justify-center gap-2 hover:border-neutral-dark hover:bg-neutral-hover transition-colors text-text-secondary text-sm"
+								className="border border-neutral p-3 flex items-center justify-center gap-2 hover:border-neutral-dark hover:bg-neutral-hover transition-colors text-text-secondary text-sm h-20"
 							>
 								<PlusIcon className="w-5 h-5" />
 								<span>Add Model</span>
