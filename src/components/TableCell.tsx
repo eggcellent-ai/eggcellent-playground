@@ -213,7 +213,7 @@ export default function TableCell({
 						onClick={(e) => e.stopPropagation()}
 					>
 						{/* Modal Header */}
-						<div className="flex justify-between items-center p-4 border border-neutral bg-neutral">
+						<div className="flex justify-between items-center border border-neutral bg-neutral">
 							<div className="flex-1">
 								{(() => {
 									const model = AVAILABLE_MODELS.find((m) => m.id === modelId)
@@ -231,12 +231,6 @@ export default function TableCell({
 									)
 								})()}
 							</div>
-							<button
-								onClick={() => setShowFullModal(false)}
-								className="text-text-secondary hover:text-text-primary text-xl leading-none"
-							>
-								×
-							</button>
 						</div>
 
 						{/* Modal Content */}
