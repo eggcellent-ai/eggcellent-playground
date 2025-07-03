@@ -10,18 +10,6 @@ interface ModelSelectionModalProps {
 	onAddModel: (modelId: string) => void
 }
 
-const PROVIDER_DESCRIPTIONS: Record<string, string> = {
-	openai: 'Advanced language models including GPT-4 and o1',
-	anthropic: 'Constitutional AI with Claude models',
-	google: 'Gemini models with multimodal capabilities',
-	xai: 'Grok models with real-time information',
-	mistral: 'Efficient open-source language models',
-	groq: 'Ultra-fast inference for open models',
-	deepseek: 'Advanced reasoning and coding models',
-	togetherai: 'Open-source models via API',
-	perplexity: 'Search-augmented language models',
-}
-
 export default function ModelSelectionModal({
 	isOpen,
 	onClose,
@@ -148,23 +136,9 @@ export default function ModelSelectionModal({
 									return (
 										<div key={provider} className="space-y-3">
 											{/* Provider Header */}
-											<div className="flex items-center gap-3 pb-2">
-												<div>
-													<h3 className="font-semibold text-text-primary capitalize">
-														{provider}
-													</h3>
-													<p className="text-xs text-text-secondary">
-														{PROVIDER_DESCRIPTIONS[provider.toLowerCase()] ||
-															'Advanced AI models'}
-													</p>
-												</div>
-												<div className="ml-auto">
-													<span className="text-xs font-medium text-text-secondary bg-neutral-light px-2 py-1">
-														{models.length} model
-														{models.length !== 1 ? 's' : ''}
-													</span>
-												</div>
-											</div>
+											<h3 className="font-semibold text-text-primary capitalize pl-2">
+												{provider}
+											</h3>
 
 											{/* Models Grid */}
 											<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">

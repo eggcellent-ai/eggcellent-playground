@@ -5,29 +5,6 @@ import { useAIService } from '../lib/aiService'
 import ModelSelectionModal from './ModelSelectionModal'
 import ModelItem from './ModelItem'
 
-// Import logos
-import googleLogo from '../assets/logos/google.svg'
-import openaiLogo from '../assets/logos/openai.svg'
-import anthropicLogo from '../assets/logos/anthropic.svg'
-import xaiLogo from '../assets/logos/grok.svg'
-// import mistralLogo from '../assets/logos/mistral.svg'
-// import groqLogo from '../assets/logos/groq.svg'
-// import deepseekLogo from '../assets/logos/deepseek.svg'
-// import togetherLogo from '../assets/logos/together.svg'
-// import perplexityLogo from '../assets/logos/perplexity.svg'
-
-const PROVIDER_LOGOS: Record<string, string> = {
-	Google: googleLogo,
-	OpenAI: openaiLogo,
-	Anthropic: anthropicLogo,
-	xAI: xaiLogo,
-	// mistral: mistralLogo,
-	// groq: groqLogo,
-	// deepseek: deepseekLogo,
-	// togetherai: togetherLogo,
-	// perplexity: perplexityLogo,
-}
-
 interface ModelSelectionSectionProps {
 	selectedModels: string[]
 	onAddModel: (modelId: string) => void
