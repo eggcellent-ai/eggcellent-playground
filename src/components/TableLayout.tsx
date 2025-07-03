@@ -2,7 +2,6 @@ import { useSystemPromptStore, AVAILABLE_MODELS } from '../lib/stores'
 import { detectVariables } from '../lib/stores'
 import {
 	PlusIcon,
-	XMarkIcon,
 	ArrowsPointingOutIcon,
 	ArrowsPointingInIcon,
 } from '@heroicons/react/24/outline'
@@ -12,8 +11,8 @@ import { useState, useEffect, useCallback } from 'react'
 import InputComponent, { type UploadedImage } from './InputComponent'
 import TableCell from './TableCell'
 import PromptVersionHistory from './PromptVersionHistory'
-import ModelSelectionModal from './ModelSelectionModal'
 import FullScreenResponseView from './FullScreenResponseView'
+import ModelSelectionSection from './ModelSelectionSection'
 import { useAIService, type ChatMessage } from '../lib/aiService'
 
 interface TableLayoutProps {
@@ -51,7 +50,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	const [isEditorExpanded, setIsEditorExpanded] = useState(false)
 	const [updateSuccess, setUpdateSuccess] = useState(false)
 	const [titleContent, setTitleContent] = useState('')
-	const [showModelModal, setShowModelModal] = useState(false)
 	const [jsonInputValue, setJsonInputValue] = useState('')
 	const [jsonValidationStatus, setJsonValidationStatus] = useState<{
 		isValid: boolean
@@ -1077,6 +1075,13 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						</div>
 					)}
 
+					{/* ===== MODELS SECTION ===== */}
+					<ModelSelectionSection
+						selectedModels={selectedModels}
+						onAddModel={handleAddModel}
+						onRemoveModel={handleRemoveModel}
+					/>
+
 					{/* ===== INPUT SECTION ===== */}
 					<div>
 						{/* Section Header */}
@@ -1167,7 +1172,7 @@ Examples of valid formats:
 							<div className="overflow-x-auto min-w-full">
 								<table
 									className="w-full h-full border-collapse border border-neutral"
-									style={{ minWidth: `${400 + selectedModels.length * 300}px` }}
+									style={{ minWidth: `${300 + selectedModels.length * 300}px` }}
 								>
 									<thead className="sticky top-0">
 										<tr>
@@ -1191,36 +1196,15 @@ Examples of valid formats:
 														}`}
 														style={{ width: '300px', minWidth: '300px' }}
 													>
-														<div className="flex items-center justify-between">
-															<div>
-																{model?.name}
-																<span className="block text-xs font-normal text-text-secondary">
-																	{model?.provider}
-																</span>
-															</div>
-															<button
-																onClick={() => handleRemoveModel(modelId)}
-																className="p-1 rounded-full text-muted hover:text-error hover:bg-error-light transition-colors ml-2"
-																title="Remove model"
-															>
-																<XMarkIcon className="w-4 h-4" />
-															</button>
+														<div>
+															{model?.name}
+															<span className="block text-xs font-normal text-text-secondary">
+																{model?.provider}
+															</span>
 														</div>
 													</th>
 												)
 											})}
-											<th
-												className="p-3 text-center text-sm font-semibold bg-surface-card text-text-primary border-b border-l border-neutral relative"
-												style={{ width: '60px', minWidth: '60px' }}
-											>
-												<button
-													onClick={() => setShowModelModal(true)}
-													className="w-8 h-8 rounded-full border-2 border-dashed border-neutral hover:border-neutral-dark hover:bg-neutral-hover transition-colors flex items-center justify-center"
-													title="Add models"
-												>
-													<PlusIcon className="w-4 h-4 text-muted" />
-												</button>
-											</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -1321,15 +1305,6 @@ Examples of valid formats:
 															/>
 														</td>
 													))}
-													{/* Add Model Column - Empty Cell */}
-													<td
-														className={`p-3 align-top border-l border-neutral ${
-															rowIndex < tableData.length - 1 ? 'border-b' : ''
-														}`}
-														style={{ width: '60px', minWidth: '60px' }}
-													>
-														{/* Empty cell for add model column */}
-													</td>
 												</tr>
 											)
 										)}
@@ -1338,14 +1313,6 @@ Examples of valid formats:
 							</div>
 						</div>
 					</div>
-
-					{/* Model Selection Modal */}
-					<ModelSelectionModal
-						isOpen={showModelModal}
-						onClose={() => setShowModelModal(false)}
-						selectedModels={selectedModels}
-						onAddModel={handleAddModel}
-					/>
 
 					{/* Full Screen Responses Modal */}
 					<FullScreenResponseView
