@@ -79,20 +79,20 @@ export default function ModelItem({
 				</button>
 			)}
 			<div className="flex gap-4 items-start justify-between w-full">
-				<div className="flex gap-4 items-center">
+				<div className="flex gap-4 items-center min-w-0">
 					{PROVIDER_LOGOS[model.provider] && (
 						<img
 							src={PROVIDER_LOGOS[model.provider]}
 							alt={`${model.provider} logo`}
-							className="w-8 h-8 object-contain"
+							className="w-8 h-8 object-contain flex-shrink-0"
 							onError={(e) => {
 								// Hide the image if it fails to load
 								;(e.target as HTMLImageElement).style.display = 'none'
 							}}
 						/>
 					)}
-					<div>
-						<div className="font-medium text-text-primary truncate">
+					<div className="min-w-0">
+						<div className="font-medium text-text-primary truncate max-w-full">
 							{model.name}
 						</div>
 						{showStatus && !status.hasValidKey && (
