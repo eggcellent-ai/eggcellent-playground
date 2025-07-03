@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { AVAILABLE_MODELS } from '../lib/stores'
+import ModelItem from './ModelItem'
 
 interface ModelSelectionModalProps {
 	isOpen: boolean
@@ -153,7 +154,7 @@ export default function ModelSelectionModal({
 														{provider}
 													</h3>
 													<p className="text-xs text-text-secondary">
-														{PROVIDER_DESCRIPTIONS[provider] ||
+														{PROVIDER_DESCRIPTIONS[provider.toLowerCase()] ||
 															'Advanced AI models'}
 													</p>
 												</div>
@@ -168,32 +169,14 @@ export default function ModelSelectionModal({
 											{/* Models Grid */}
 											<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
 												{models.map((model) => (
-													<button
+													<ModelItem
 														key={model.id}
+														model={model}
 														onClick={() => {
 															onAddModel(model.id)
 															// Don't close modal, allow multiple selections
 														}}
-														className="p-4 border border-neutral hover:border-secondary hover:bg-secondary-light transition-all text-left group"
-													>
-														<div className="flex items-start justify-between">
-															<div className="flex-1 min-w-0">
-																<h4 className="font-medium text-text-primary group-hover:text-secondary truncate">
-																	{model.name}
-																</h4>
-																<p className="text-xs text-text-secondary mt-1 line-clamp-2">
-																	Advanced AI model
-																</p>
-															</div>
-														</div>
-
-														{/* Model metadata */}
-														<div className="mt-3 flex items-center gap-2 text-xs text-text-secondary">
-															<span className="bg-neutral-light px-2 py-1">
-																{provider}
-															</span>
-														</div>
-													</button>
+													/>
 												))}
 											</div>
 										</div>

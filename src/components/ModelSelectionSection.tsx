@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { PlusIcon } from '@heroicons/react/24/outline'
 import { AVAILABLE_MODELS } from '../lib/stores'
 import { useAIService } from '../lib/aiService'
 import ModelSelectionModal from './ModelSelectionModal'
+import ModelItem from './ModelItem'
 
 // Import logos
 import googleLogo from '../assets/logos/google.svg'
@@ -46,17 +47,6 @@ export default function ModelSelectionSection({
 		setShowModelModal(false)
 	}
 
-	const getModelStatus = (modelId: string) => {
-		const hasValidKey = hasValidKeyForModel(modelId)
-		return {
-			hasValidKey,
-			statusText: hasValidKey ? 'Ready' : 'API Key Required',
-			statusColor: hasValidKey
-				? 'bg-success-light text-success-dark'
-				: 'bg-warning-light text-warning-dark',
-		}
-	}
-
 	return (
 		<div>
 			{/* Section Header */}
@@ -85,60 +75,18 @@ export default function ModelSelectionSection({
 						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
 							{selectedModels.map((modelId) => {
 								const model = AVAILABLE_MODELS.find((m) => m.id === modelId)
-								const status = getModelStatus(modelId)
+								if (!model) return null
 
 								return (
-									<div
+									<ModelItem
 										key={modelId}
-										className="bg-surface-input border border-neutral p-4 flex items-center justify-between group relative h-20"
-									>
-										<button
-											onClick={() => onRemoveModel(modelId)}
-											disabled={selectedModels.length <= 1}
-											className="absolute inset-0 flex items-center justify-center bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity text-text-secondary gap-2 disabled:cursor-not-allowed disabled:opacity-0"
-											title={
-												selectedModels.length <= 1
-													? 'Cannot remove the last model'
-													: 'Remove model'
-											}
-										>
-											<TrashIcon className="w-5 h-5" />
-											<span className="text-sm font-medium">Remove</span>
-										</button>
-										<div className="flex gap-4 items-start justify-between w-full">
-											<div className="flex gap-4 items-center">
-												{model?.provider && PROVIDER_LOGOS[model.provider] && (
-													<img
-														src={PROVIDER_LOGOS[model.provider]}
-														alt={`${model.provider} logo`}
-														className="w-8 h-8 object-contain"
-														onError={(e) => {
-															// Hide the image if it fails to load
-															;(e.target as HTMLImageElement).style.display =
-																'none'
-														}}
-													/>
-												)}
-												<div>
-													<div className="font-medium text-text-primary truncate">
-														{model?.name || modelId}
-													</div>
-													{/* <div className="text-xs text-text-secondary">
-														{model?.provider}
-													</div> */}
-												</div>
-											</div>
-											{!status.hasValidKey && (
-												<div className="mt-1 transition-opacity">
-													<span
-														className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${status.statusColor}`}
-													>
-														{status.statusText}
-													</span>
-												</div>
-											)}
-										</div>
-									</div>
+										model={model}
+										showRemoveButton
+										onRemove={() => onRemoveModel(modelId)}
+										disableRemove={selectedModels.length <= 1}
+										showStatus
+										hasValidKey={hasValidKeyForModel(modelId)}
+									/>
 								)
 							})}
 							<button
