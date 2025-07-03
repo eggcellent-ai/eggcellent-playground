@@ -843,7 +843,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 											className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white text-sm font-medium transition-colors flex items-center gap-2 focus:outline-none focus:ring-0 focus:bg-neutral-600"
 										>
 											<ArrowsPointingOutIcon className="w-4 h-4" />
-											Responses
+											View Responses
 										</button>
 									)}
 									<button
@@ -1164,7 +1164,7 @@ Examples of valid formats:
 						{/* Section Header */}
 						<div className="bg-neutral-50 px-2 pb-2 pt-8">
 							<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
-								Response
+								Responses
 							</h2>
 						</div>
 
