@@ -39,7 +39,7 @@ export default function ModelSelectionSection({
 			{/* Section Header */}
 			<div className="bg-neutral-50 px-2 pb-2 pt-8">
 				<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
-					Models ({selectedModels.length})
+					Models
 				</h2>
 			</div>
 
@@ -67,7 +67,7 @@ export default function ModelSelectionSection({
 								return (
 									<div
 										key={modelId}
-										className="bg-surface-input border border-neutral p-3 flex items-center justify-between"
+										className="bg-surface-input border border-neutral p-3 flex flex-col justify-between min-h-[140px]"
 									>
 										<div className="flex-1 min-w-0">
 											<div className="font-medium text-text-primary truncate">
@@ -84,27 +84,36 @@ export default function ModelSelectionSection({
 												</span>
 											</div>
 										</div>
-										<button
-											onClick={() => onRemoveModel(modelId)}
-											disabled={selectedModels.length <= 1}
-											className="p-1 rounded-full text-text-secondary hover:text-error hover:bg-error-light transition-colors ml-2 disabled:opacity-50 disabled:cursor-not-allowed"
-											title={
-												selectedModels.length <= 1
-													? 'Cannot remove the last model'
-													: 'Remove model'
-											}
-										>
-											<XMarkIcon className="w-4 h-4" />
-										</button>
+										<div className="flex justify-end mt-2">
+											<button
+												onClick={() => onRemoveModel(modelId)}
+												disabled={selectedModels.length <= 1}
+												className="p-1 rounded-full text-text-secondary hover:text-error hover:bg-error-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+												title={
+													selectedModels.length <= 1
+														? 'Cannot remove the last model'
+														: 'Remove model'
+												}
+											>
+												<XMarkIcon className="w-4 h-4" />
+											</button>
+										</div>
 									</div>
 								)
 							})}
 							<button
 								onClick={() => setShowModelModal(true)}
-								className="bg-surface-input border border-neutral p-3 flex items-center justify-center gap-2 hover:border-neutral-dark hover:bg-neutral-hover transition-colors text-text-secondary h-full"
+								className="bg-surface-input border border-neutral p-3 flex flex-col items-center justify-center gap-2 hover:border-neutral-dark hover:bg-neutral-hover transition-colors text-text-secondary min-h-[140px]"
 							>
-								<PlusIcon className="w-4 h-4" />
-								<span>Add Model</span>
+								<div className="flex-1 min-w-0 flex flex-col items-center justify-center">
+									<div className="font-medium text-text-primary">
+										<PlusIcon className="w-6 h-6 mb-2" />
+										<span>Add Model</span>
+									</div>
+									<div className="text-xs text-text-secondary mt-1">
+										Add more AI models to compare
+									</div>
+								</div>
 							</button>
 						</div>
 					</div>
