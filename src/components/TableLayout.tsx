@@ -787,7 +787,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		<div
 			className="flex flex-col w-full h-full overflow-hidden"
 			style={{
-				paddingBottom: '80px', // Fixed padding for floating control panel
+				paddingBottom: '400px', // Fixed padding for floating control panel
 			}}
 		>
 			{/* Show table only if there's an active prompt version */}
