@@ -1,12 +1,5 @@
 import { TrashIcon } from '@heroicons/react/24/outline'
-import { AVAILABLE_MODELS } from '../lib/stores'
-
-// Define Model type based on AVAILABLE_MODELS structure
-type Model = {
-	id: string
-	name: string
-	provider: string
-}
+import type { Model } from '../lib/models'
 
 // Import logos
 import googleLogo from '../assets/logos/google.svg'
