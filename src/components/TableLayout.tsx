@@ -860,7 +860,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 												(modelId) => !hasValidKeyForModel(modelId)
 											)
 										}
-										className="px-5 py-2 bg-primary hover:bg-secondary text-white text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+										className="px-5 py-2 bg-primary hover:bg-primary-dark text-white text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
 									>
 										<PlayIcon className="w-4 h-4" />
 										{runningAllTable ? 'Running All...' : 'Run Table'}
