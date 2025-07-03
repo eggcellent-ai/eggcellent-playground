@@ -52,13 +52,66 @@ export const AVAILABLE_MODELS = [
 	{ id: 'grok-vision-beta', name: 'Grok Vision Beta', provider: 'xAI' },
 
 	// Google Models
-	{ id: 'gemini-1.5-pro-latest', name: 'Gemini 1.5 Pro', provider: 'Google' },
 	{
-		id: 'gemini-1.5-flash-latest',
+		id: 'gemini-2.5-pro',
+		name: 'Gemini 2.5 Pro',
+		provider: 'Google',
+	},
+	{
+		id: 'gemini-2.5-flash',
+		name: 'Gemini 2.5 Flash',
+		provider: 'Google',
+	},
+	{
+		id: 'gemini-2.5-pro-preview-05-06',
+		name: 'Gemini 2.5 Pro Preview',
+		provider: 'Google',
+	},
+	{
+		id: 'gemini-2.5-flash-preview-04-17',
+		name: 'Gemini 2.5 Flash Preview',
+		provider: 'Google',
+	},
+	{
+		id: 'gemini-2.5-pro-exp-03-25',
+		name: 'Gemini 2.5 Pro Exp',
+		provider: 'Google',
+	},
+	{
+		id: 'gemini-2.0-flash',
+		name: 'Gemini 2.0 Flash',
+		provider: 'Google',
+	},
+	{
+		id: 'gemini-1.5-pro',
+		name: 'Gemini 1.5 Pro',
+		provider: 'Google',
+	},
+	{
+		id: 'gemini-1.5-pro-latest',
+		name: 'Gemini 1.5 Pro Latest',
+		provider: 'Google',
+	},
+	{
+		id: 'gemini-1.5-flash',
 		name: 'Gemini 1.5 Flash',
 		provider: 'Google',
 	},
-	{ id: 'gemini-pro', name: 'Gemini Pro', provider: 'Google' },
+	{
+		id: 'gemini-1.5-flash-latest',
+		name: 'Gemini 1.5 Flash Latest',
+		provider: 'Google',
+	},
+	{
+		id: 'gemini-1.5-flash-8b',
+		name: 'Gemini 1.5 Flash 8B',
+		provider: 'Google',
+	},
+	{
+		id: 'gemini-1.5-flash-8b-latest',
+		name: 'Gemini 1.5 Flash 8B Latest',
+		provider: 'Google',
+	},
 
 	// // Mistral Models
 	// { id: 'mistral-large-latest', name: 'Mistral Large', provider: 'Mistral' },
