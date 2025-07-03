@@ -10,7 +10,6 @@ import { CheckIcon } from '@heroicons/react/24/solid'
 import { useState, useEffect, useCallback } from 'react'
 import { type UploadedImage } from './InputComponent'
 import PromptVersionHistory from './PromptVersionHistory'
-import FullScreenResponseView from './FullScreenResponseView'
 import ModelSelectionSection from './ModelSelectionSection'
 import { useAIService, type ChatMessage } from '../lib/aiService'
 import ResponseTable from './ResponseTable'
@@ -1179,16 +1178,10 @@ Examples of valid formats:
 							onRunAllModels={handleRunAllModels}
 							onRemoveRow={handleRemoveRow}
 							onUpdateRowInput={handleUpdateRowInput}
+							isFullScreen={showFullScreenResponses}
+							onClose={() => setShowFullScreenResponses(false)}
 						/>
 					</div>
-
-					{/* Full Screen Responses Modal */}
-					<FullScreenResponseView
-						isOpen={showFullScreenResponses}
-						onClose={() => setShowFullScreenResponses(false)}
-						tableData={tableData}
-						selectedModels={selectedModels}
-					/>
 				</>
 			) : (
 				// Show message when no prompt is selected

@@ -1,8 +1,10 @@
 import { PlayIcon } from '@heroicons/react/24/solid'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 import InputComponent, { type UploadedImage } from './InputComponent'
 import TableCell from './TableCell'
 import ModelItem from './ModelItem'
 import { AVAILABLE_MODELS } from '../lib/stores'
+import { useEffect } from 'react'
 
 interface ResponseTableProps {
 	tableData: Array<{
@@ -29,6 +31,8 @@ interface ResponseTableProps {
 		input: string,
 		images: UploadedImage[]
 	) => void
+	isFullScreen?: boolean
+	onClose?: () => void
 }
 
 export default function ResponseTable({
@@ -42,8 +46,46 @@ export default function ResponseTable({
 	onRunAllModels,
 	onRemoveRow,
 	onUpdateRowInput,
+	isFullScreen = false,
+	onClose,
 }: ResponseTableProps) {
-	return (
+	// Handle Escape key to close modal when in full-screen mode
+	useEffect(() => {
+		if (!isFullScreen) return
+
+		const handleEscape = (event: KeyboardEvent) => {
+			if (event.key === 'Escape' && onClose) {
+				onClose()
+			}
+		}
+
+		document.addEventListener('keydown', handleEscape)
+		return () => {
+			document.removeEventListener('keydown', handleEscape)
+		}
+	}, [isFullScreen, onClose])
+
+	// Handle body scroll locking in full-screen mode
+	useEffect(() => {
+		if (!isFullScreen) return
+
+		// Save current scroll position
+		const scrollY = window.scrollY
+		document.body.style.position = 'fixed'
+		document.body.style.width = '100%'
+		document.body.style.top = `-${scrollY}px`
+
+		return () => {
+			// Restore scroll position
+			const scrollY = document.body.style.top
+			document.body.style.position = ''
+			document.body.style.width = ''
+			document.body.style.top = ''
+			window.scrollTo(0, parseInt(scrollY || '0') * -1)
+		}
+	}, [isFullScreen])
+
+	const tableContent = (
 		<div className="flex-1 overflow-auto bg-surface-card">
 			<div className="overflow-x-auto min-w-full">
 				<table
@@ -167,4 +209,39 @@ export default function ResponseTable({
 			</div>
 		</div>
 	)
+
+	if (isFullScreen) {
+		return (
+			<div
+				className="fixed inset-0 bg-black/90 flex flex-col z-50"
+				onClick={onClose}
+			>
+				{/* Modal Header */}
+				<div
+					className="flex justify-between items-center p-4 bg-neutral-100 border-b border-neutral"
+					onClick={(e) => e.stopPropagation()}
+				>
+					<h2 className="text-xl font-semibold text-text-primary">
+						All Responses - Full Screen View
+					</h2>
+					<button
+						onClick={onClose}
+						className="text-text-secondary hover:text-text-primary p-2"
+					>
+						<XMarkIcon className="w-6 h-6" />
+					</button>
+				</div>
+
+				{/* Modal Content */}
+				<div
+					className="flex-1 overflow-auto bg-white"
+					onClick={(e) => e.stopPropagation()}
+				>
+					{tableContent}
+				</div>
+			</div>
+		)
+	}
+
+	return tableContent
 }
