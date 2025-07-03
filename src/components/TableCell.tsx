@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useSystemPromptStore } from '../lib/stores'
+import { useSystemPromptStore, AVAILABLE_MODELS } from '../lib/stores'
 import type { UploadedImage } from './InputComponent'
 import { useAIService, type ChatMessage } from '../lib/aiService'
+import ModelItem from './ModelItem'
 
 interface TableCellProps {
 	rowId: string
@@ -213,9 +214,23 @@ export default function TableCell({
 					>
 						{/* Modal Header */}
 						<div className="flex justify-between items-center p-4 border border-neutral bg-neutral">
-							<h3 className="text-lg font-medium text-text-primary">
-								Full Response - {modelId}
-							</h3>
+							<div className="flex-1">
+								{(() => {
+									const model = AVAILABLE_MODELS.find((m) => m.id === modelId)
+									return model ? (
+										<ModelItem
+											model={model}
+											showStatus
+											hasValidKey={hasValidKeyForModel(modelId)}
+											className="h-16 p-2 bg-white"
+										/>
+									) : (
+										<h3 className="text-lg font-medium text-text-primary">
+											Response - {modelId}
+										</h3>
+									)
+								})()}
+							</div>
 							<button
 								onClick={() => setShowFullModal(false)}
 								className="text-text-secondary hover:text-text-primary text-xl leading-none"

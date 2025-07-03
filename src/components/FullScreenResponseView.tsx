@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { AVAILABLE_MODELS } from '../lib/stores'
 import type { UploadedImage } from './InputComponent'
+import ModelItem from './ModelItem'
+import { useAIService } from '../lib/aiService'
 
 interface TableRowData {
 	id: string
@@ -24,6 +26,8 @@ export default function FullScreenResponseView({
 	tableData,
 	selectedModels,
 }: FullScreenResponseViewProps) {
+	const { hasValidKeyForModel } = useAIService()
+
 	// Handle Escape key to close modal
 	useEffect(() => {
 		const handleEscape = (event: KeyboardEvent) => {
@@ -118,13 +122,21 @@ export default function FullScreenResponseView({
 												className="bg-surface-card border border-neutral overflow-hidden"
 											>
 												{/* Model Header */}
-												<div className="bg-neutral-100 px-4 py-2 border-b border-neutral">
-													<h4 className="font-medium text-text-primary">
-														{model?.name || modelId}
-													</h4>
-													<p className="text-xs text-text-secondary">
-														{model?.provider}
-													</p>
+												<div className="border-b border-neutral">
+													{model ? (
+														<ModelItem
+															model={model}
+															showStatus
+															hasValidKey={hasValidKeyForModel(modelId)}
+															className="h-16 p-2"
+														/>
+													) : (
+														<div className="bg-neutral-100 px-4 py-2">
+															<h4 className="font-medium text-text-primary">
+																{modelId}
+															</h4>
+														</div>
+													)}
 												</div>
 
 												{/* Response Content */}

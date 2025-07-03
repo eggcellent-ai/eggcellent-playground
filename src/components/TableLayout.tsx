@@ -14,6 +14,7 @@ import PromptVersionHistory from './PromptVersionHistory'
 import FullScreenResponseView from './FullScreenResponseView'
 import ModelSelectionSection from './ModelSelectionSection'
 import { useAIService, type ChatMessage } from '../lib/aiService'
+import ModelItem from './ModelItem'
 
 interface TableLayoutProps {
 	inputPromptContent: string
@@ -1189,19 +1190,19 @@ Examples of valid formats:
 												return (
 													<th
 														key={modelId}
-														className={`p-3 text-left text-sm font-semibold text-text-primary border-b border-neutral ${
+														className={`text-left text-sm font-semibold text-text-primary border-b border-neutral ${
 															index < selectedModels.length - 1
 																? 'border-r border-neutral'
 																: ''
 														}`}
 														style={{ width: '300px', minWidth: '300px' }}
 													>
-														<div>
-															{model?.name}
-															<span className="block text-xs font-normal text-text-secondary">
-																{model?.provider}
-															</span>
-														</div>
+														<ModelItem
+															model={model!}
+															showStatus
+															hasValidKey={hasValidKeyForModel(modelId)}
+															className="h-16 p-2"
+														/>
 													</th>
 												)
 											})}

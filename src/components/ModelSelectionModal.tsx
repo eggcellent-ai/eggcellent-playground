@@ -146,6 +146,7 @@ export default function ModelSelectionModal({
 													<ModelItem
 														key={model.id}
 														model={model}
+														className="border border-neutral"
 														onClick={() => {
 															onAddModel(model.id)
 															// Don't close modal, allow multiple selections
@@ -158,20 +159,6 @@ export default function ModelSelectionModal({
 								})}
 							</div>
 						)}
-					</div>
-
-					{/* Footer */}
-					<div className="flex items-center justify-between p-6 border-t border-neutral bg-neutral-50">
-						<div className="text-sm text-text-secondary">
-							{selectedModels.length} model
-							{selectedModels.length !== 1 ? 's' : ''} currently selected
-						</div>
-						<button
-							onClick={onClose}
-							className="px-4 py-2 bg-secondary text-white hover:bg-secondary-dark transition-colors"
-						>
-							Done
-						</button>
 					</div>
 				</div>
 			</div>
