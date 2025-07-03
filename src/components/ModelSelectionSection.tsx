@@ -4,34 +4,10 @@ import { AVAILABLE_MODELS } from '../lib/stores'
 import { useAIService } from '../lib/aiService'
 import ModelSelectionModal from './ModelSelectionModal'
 
-// Import provider logos as URLs
-import OpenAILogo from '../assets/logos/openai.svg?url'
-import AnthropicLogo from '../assets/logos/anthropic.svg?url'
-import XAILogo from '../assets/logos/xai.svg?url'
-import GoogleLogo from '../assets/logos/google.svg?url'
-import MistralLogo from '../assets/logos/mistral.svg?url'
-import GroqLogo from '../assets/logos/groq.svg?url'
-import DeepSeekLogo from '../assets/logos/deepseek.svg?url'
-import TogetherLogo from '../assets/logos/together.svg?url'
-import PerplexityLogo from '../assets/logos/perplexity.svg?url'
-
 interface ModelSelectionSectionProps {
 	selectedModels: string[]
 	onAddModel: (modelId: string) => void
 	onRemoveModel: (modelId: string) => void
-}
-
-// Provider logo mapping
-const PROVIDER_LOGOS: Record<string, string> = {
-	OpenAI: OpenAILogo,
-	Anthropic: AnthropicLogo,
-	xAI: XAILogo,
-	Google: GoogleLogo,
-	Mistral: MistralLogo,
-	Groq: GroqLogo,
-	DeepSeek: DeepSeekLogo,
-	'Together.ai': TogetherLogo,
-	Perplexity: PerplexityLogo,
 }
 
 export default function ModelSelectionSection({
@@ -47,109 +23,90 @@ export default function ModelSelectionSection({
 		setShowModelModal(false)
 	}
 
-	const handleRemoveModel = (modelId: string) => {
-		onRemoveModel(modelId)
+	const getModelStatus = (modelId: string) => {
+		const hasValidKey = hasValidKeyForModel(modelId)
+		return {
+			hasValidKey,
+			statusText: hasValidKey ? 'Ready' : 'API Key Required',
+			statusColor: hasValidKey
+				? 'bg-success-light text-success-dark'
+				: 'bg-warning-light text-warning-dark',
+		}
 	}
 
-	const readyModels = selectedModels.filter((modelId) =>
-		hasValidKeyForModel(modelId)
-	)
-
 	return (
-		<div className="bg-neutral-50 border-b border-neutral">
+		<div>
 			{/* Section Header */}
-			<div className="px-4 py-3 border-b border-neutral">
-				<div className="flex items-center justify-between">
-					<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
-						Models
-					</h2>
-					<div className="flex items-center gap-2 text-xs text-text-secondary">
-						<span>
-							{selectedModels.length} total • {readyModels.length} ready
-						</span>
-						<button
-							onClick={() => setShowModelModal(true)}
-							className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-text-primary bg-white border border-neutral rounded-md hover:bg-neutral-50 transition-colors"
-						>
-							<PlusIcon className="h-3 w-3" />
-							Add Model
-						</button>
-					</div>
-				</div>
+			<div className="bg-neutral-50 px-2 pb-2 pt-8">
+				<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
+					Models ({selectedModels.length})
+				</h2>
 			</div>
 
-			{/* Model Grid */}
-			<div className="p-4">
+			{/* Models Display */}
+			<div>
 				{selectedModels.length === 0 ? (
 					<div className="text-center py-8 text-text-secondary">
-						<p>No models selected</p>
+						<p className="mb-4">No models selected</p>
 						<button
 							onClick={() => setShowModelModal(true)}
-							className="mt-2 inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-text-primary bg-white border border-neutral rounded-md hover:bg-neutral-50 transition-colors"
+							className="px-4 py-2 bg-primary text-white text-sm hover:bg-primary-dark transition-colors flex items-center gap-2 mx-auto"
 						>
-							<PlusIcon className="h-4 w-4" />
-							Add Your First Model
+							<PlusIcon className="w-4 h-4" />
+							Add Models
 						</button>
 					</div>
 				) : (
-					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-						{selectedModels.map((modelId) => {
-							const model = AVAILABLE_MODELS.find((m) => m.id === modelId)
-							if (!model) return null
+					<div className="space-y-3">
+						{/* Selected Models Grid */}
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+							{selectedModels.map((modelId) => {
+								const model = AVAILABLE_MODELS.find((m) => m.id === modelId)
+								const status = getModelStatus(modelId)
 
-							const isReady = hasValidKeyForModel(modelId)
-							const providerLogo = PROVIDER_LOGOS[model.provider]
-
-							return (
-								<div
-									key={modelId}
-									className="relative bg-white border border-neutral rounded-lg p-3 hover:shadow-sm transition-shadow"
-								>
-									{/* Remove button */}
-									<button
-										onClick={() => handleRemoveModel(modelId)}
-										className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors z-10"
+								return (
+									<div
+										key={modelId}
+										className="bg-surface-input border border-neutral p-3 flex items-center justify-between"
 									>
-										<XMarkIcon className="h-3 w-3" />
-									</button>
-
-									{/* Provider logo and model info */}
-									<div className="flex items-start gap-3">
-										{providerLogo && (
-											<img
-												src={providerLogo}
-												alt={`${model.provider} logo`}
-												className="w-8 h-8 flex-shrink-0 rounded-sm object-contain"
-											/>
-										)}
 										<div className="flex-1 min-w-0">
-											<h3 className="font-medium text-text-primary text-sm truncate">
-												{model.name}
-											</h3>
-											<p className="text-xs text-text-secondary truncate">
-												{model.provider}
-											</p>
+											<div className="font-medium text-text-primary truncate">
+												{model?.name || modelId}
+											</div>
+											<div className="text-xs text-text-secondary">
+												{model?.provider}
+											</div>
+											<div className="mt-1">
+												<span
+													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${status.statusColor}`}
+												>
+													{status.statusText}
+												</span>
+											</div>
 										</div>
-									</div>
-
-									{/* Status indicator */}
-									<div className="mt-3 flex items-center gap-1">
-										<div
-											className={`w-2 h-2 rounded-full ${
-												isReady ? 'bg-green-500' : 'bg-red-500'
-											}`}
-										/>
-										<span
-											className={`text-xs font-medium ${
-												isReady ? 'text-green-600' : 'text-red-600'
-											}`}
+										<button
+											onClick={() => onRemoveModel(modelId)}
+											disabled={selectedModels.length <= 1}
+											className="p-1 rounded-full text-text-secondary hover:text-error hover:bg-error-light transition-colors ml-2 disabled:opacity-50 disabled:cursor-not-allowed"
+											title={
+												selectedModels.length <= 1
+													? 'Cannot remove the last model'
+													: 'Remove model'
+											}
 										>
-											{isReady ? 'Ready' : 'API Key Required'}
-										</span>
+											<XMarkIcon className="w-4 h-4" />
+										</button>
 									</div>
-								</div>
-							)
-						})}
+								)
+							})}
+							<button
+								onClick={() => setShowModelModal(true)}
+								className="bg-surface-input border border-neutral p-3 flex items-center justify-center gap-2 hover:border-neutral-dark hover:bg-neutral-hover transition-colors text-text-secondary h-full"
+							>
+								<PlusIcon className="w-4 h-4" />
+								<span>Add Model</span>
+							</button>
+						</div>
 					</div>
 				)}
 			</div>
