@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { AVAILABLE_MODELS } from '../lib/stores'
 import ModelItem from './ModelItem'
+import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 
 interface ModelSelectionModalProps {
 	isOpen: boolean
@@ -102,28 +103,27 @@ export default function ModelSelectionModal({
 							<h2 className="text-xl font-semibold text-text-primary">
 								Select AI Models
 							</h2>
-							<p className="text-sm text-text-secondary mt-1">
-								{totalAvailableModels} models available across{' '}
-								{availableProviders.length} providers
-							</p>
 						</div>
 						<button
 							onClick={onClose}
-							className="p-2 hover:bg-neutral-hover transition-colors"
+							className="p-2 hover:bg-neutral-hover rounded-full transition-colors"
 						>
-							<span className="text-text-secondary">✕</span>
+							<XMarkIcon className="w-5 h-5 text-text-secondary" />
 						</button>
 					</div>
 
 					{/* Search Bar */}
-					<div className="p-6 border-b border-neutral">
+					<div className="relative p-6">
 						<div className="relative">
+							<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+								<MagnifyingGlassIcon className="h-5 w-5 text-text-secondary" />
+							</div>
 							<input
 								type="text"
 								placeholder="Search models or providers..."
 								value={searchQuery}
 								onChange={(e) => setSearchQuery(e.target.value)}
-								className="w-full pl-4 pr-4 py-3 border border-neutral focus:outline-none focus:border-secondary text-text-primary placeholder-text-muted"
+								className="w-full pl-10 pr-4 py-3 border border-neutral focus:outline-none focus:border-secondary text-text-primary placeholder-text-muted"
 								autoFocus
 							/>
 						</div>
@@ -148,7 +148,7 @@ export default function ModelSelectionModal({
 									return (
 										<div key={provider} className="space-y-3">
 											{/* Provider Header */}
-											<div className="flex items-center gap-3 pb-2 border-b border-neutral-light">
+											<div className="flex items-center gap-3 pb-2">
 												<div>
 													<h3 className="font-semibold text-text-primary capitalize">
 														{provider}
