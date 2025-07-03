@@ -90,13 +90,22 @@ export default function ResponseTable({
 			<div className="overflow-x-auto min-w-full">
 				<table
 					className="w-full h-full border-collapse border border-neutral"
-					style={{ minWidth: `${300 + selectedModels.length * 300}px` }}
+					style={{
+						minWidth: `${
+							isFullScreen
+								? 400
+								: 300 + selectedModels.length * (isFullScreen ? 400 : 300)
+						}px`,
+					}}
 				>
 					<thead className="sticky top-0">
 						<tr>
 							<th
 								className="p-3 text-left text-sm font-semibold text-text-primary border-b border-r border-neutral"
-								style={{ width: '300px', minWidth: '300px' }}
+								style={{
+									width: isFullScreen ? '400px' : '300px',
+									minWidth: isFullScreen ? '400px' : '300px',
+								}}
 							>
 								Input
 							</th>
@@ -110,13 +119,16 @@ export default function ResponseTable({
 												? 'border-r border-neutral'
 												: ''
 										}`}
-										style={{ width: '300px', minWidth: '300px' }}
+										style={{
+											width: isFullScreen ? '400px' : '300px',
+											minWidth: isFullScreen ? '400px' : '300px',
+										}}
 									>
 										<ModelItem
 											model={model!}
 											showStatus
 											hasValidKey={hasValidKeyForModel(modelId)}
-											className="h-16 p-2"
+											className={`${isFullScreen ? 'h-20 p-3' : 'h-16 p-2'}`}
 										/>
 									</th>
 								)
@@ -130,7 +142,10 @@ export default function ResponseTable({
 									className={`p-3 align-top border-r border-neutral ${
 										rowIndex < tableData.length - 1 ? 'border-b' : ''
 									}`}
-									style={{ width: '300px', minWidth: '300px' }}
+									style={{
+										width: isFullScreen ? '400px' : '300px',
+										minWidth: isFullScreen ? '400px' : '300px',
+									}}
 								>
 									<div className="space-y-3">
 										<InputComponent
@@ -140,7 +155,7 @@ export default function ResponseTable({
 												onUpdateRowInput(row.id, value, images || [])
 											}
 											placeholder="Enter your test input..."
-											rows={3}
+											rows={isFullScreen ? 4 : 3}
 											showImageUpload={true}
 										/>
 
@@ -156,9 +171,13 @@ export default function ResponseTable({
 														row.input.trim() || (row.images || []).length > 0
 													) || runningRows.has(row.id)
 												}
-												className="px-3 py-1 bg-neutral-900 text-white text-xs hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+												className={`px-3 py-1 bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1 ${
+													isFullScreen ? 'text-sm' : 'text-xs'
+												}`}
 											>
-												<PlayIcon className="w-3 h-3" />
+												<PlayIcon
+													className={`${isFullScreen ? 'w-4 h-4' : 'w-3 h-3'}`}
+												/>
 												{runningRows.has(row.id) ? 'Running...' : 'Run'}
 											</button>
 
@@ -166,7 +185,9 @@ export default function ResponseTable({
 											{tableData.length > 1 && (
 												<button
 													onClick={() => onRemoveRow(row.id)}
-													className="px-3 py-1 border border-neutral text-text-secondary text-xs hover:border-neutral-dark hover:bg-neutral-hover transition-colors"
+													className={`px-3 py-1 border border-neutral text-text-secondary hover:border-neutral-dark hover:bg-neutral-hover transition-colors ${
+														isFullScreen ? 'text-sm' : 'text-xs'
+													}`}
 													title="Remove row"
 												>
 													Remove
@@ -185,7 +206,10 @@ export default function ResponseTable({
 												? 'border-r border-neutral'
 												: ''
 										}`}
-										style={{ width: '300px', minWidth: '300px' }}
+										style={{
+											width: isFullScreen ? '400px' : '300px',
+											minWidth: isFullScreen ? '400px' : '300px',
+										}}
 									>
 										<TableCell
 											key={`${row.id}-${modelId}-${
@@ -199,6 +223,7 @@ export default function ResponseTable({
 											activePromptId={activePromptId}
 											activeVersionId={activeVersionId}
 											isRowRunning={runningRows.has(row.id)}
+											isFullScreen={isFullScreen}
 										/>
 									</td>
 								))}
@@ -218,17 +243,17 @@ export default function ResponseTable({
 			>
 				{/* Modal Header */}
 				<div
-					className="flex justify-between items-center p-4 bg-neutral-100 border-b border-neutral"
+					className="flex justify-between items-center p-4 bg-neutral-100"
 					onClick={(e) => e.stopPropagation()}
 				>
-					<h2 className="text-xl font-semibold text-text-primary">
-						All Responses - Full Screen View
+					<h2 className="text-2xl font-semibold text-text-primary">
+						All Responses
 					</h2>
 					<button
 						onClick={onClose}
 						className="text-text-secondary hover:text-text-primary p-2"
 					>
-						<XMarkIcon className="w-6 h-6" />
+						<XMarkIcon className="w-8 h-8" />
 					</button>
 				</div>
 

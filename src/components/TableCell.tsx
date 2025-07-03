@@ -13,6 +13,7 @@ interface TableCellProps {
 	activePromptId: string | null
 	activeVersionId: string | null
 	isRowRunning?: boolean
+	isFullScreen?: boolean
 }
 
 export default function TableCell({
@@ -24,6 +25,7 @@ export default function TableCell({
 	activePromptId,
 	activeVersionId,
 	isRowRunning = false,
+	isFullScreen = false,
 }: TableCellProps) {
 	const [response, setResponse] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
@@ -156,9 +158,17 @@ export default function TableCell({
 
 	return (
 		<>
-			<div className="flex flex-col h-64 justify-between group w-full max-w-[300px]">
+			<div
+				className={`flex flex-col justify-between group w-full ${
+					isFullScreen ? 'h-96' : 'h-64'
+				}`}
+			>
 				{/* Response Area - Fixed height with scrolling */}
-				<div className="flex-1 overflow-y-auto text-sm min-h-0 break-words">
+				<div
+					className={`flex-1 overflow-y-auto min-h-0 break-words ${
+						isFullScreen ? 'text-base' : 'text-sm'
+					}`}
+				>
 					{isLoading || isRowRunning ? (
 						<div className="animate-pulse text-muted">Running prompt...</div>
 					) : response ? (
@@ -176,22 +186,26 @@ export default function TableCell({
 						<button
 							onClick={handleRun}
 							disabled={isLoading || isRowRunning}
-							className="px-3 py-1 bg-neutral-900 text-white text-xs hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+							className={`px-3 py-1 bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
+								isFullScreen ? 'text-sm' : 'text-xs'
+							}`}
 						>
 							{isLoading || isRowRunning ? 'Running...' : 'Run'}
 						</button>
 						{hasRun && (
 							<button
 								onClick={handleClear}
-								className="px-3 py-1 border border-neutral text-text-secondary text-xs hover:border-neutral-dark hover:bg-neutral-hover transition-colors"
+								className={`px-3 py-1 border border-neutral text-text-secondary hover:border-neutral-dark hover:bg-neutral-hover transition-colors ${
+									isFullScreen ? 'text-sm' : 'text-xs'
+								}`}
 							>
 								Clear
 							</button>
 						)}
 					</div>
 
-					{/* View Full button - only show if we have content */}
-					{response && !isLoading && !isRowRunning && (
+					{/* View Full button - only show if we have content and not in full screen */}
+					{response && !isLoading && !isRowRunning && !isFullScreen && (
 						<button
 							onClick={() => setShowFullModal(true)}
 							className="px-2 py-1 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-colors shrink-0"
