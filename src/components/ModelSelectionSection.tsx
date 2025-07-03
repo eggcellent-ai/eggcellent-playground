@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { AVAILABLE_MODELS } from '../lib/stores'
 import { useAIService } from '../lib/aiService'
 import ModelSelectionModal from './ModelSelectionModal'
@@ -90,53 +90,54 @@ export default function ModelSelectionSection({
 								return (
 									<div
 										key={modelId}
-										className="bg-surface-input border border-neutral p-4 flex items-start justify-between group"
+										className="bg-surface-input border border-neutral p-4 flex items-start justify-between group relative"
 									>
-										<div className="flex gap-4 items-center">
-											{model?.provider && PROVIDER_LOGOS[model.provider] && (
-												<img
-													src={PROVIDER_LOGOS[model.provider]}
-													alt={`${model.provider} logo`}
-													className="w-8 h-8 object-contain"
-													onError={(e) => {
-														// Hide the image if it fails to load
-														;(e.target as HTMLImageElement).style.display =
-															'none'
-													}}
-												/>
-											)}
-											<div>
-												<div className="font-medium text-text-primary truncate">
-													{model?.name || modelId}
-												</div>
-												<div className="flex items-center gap-2">
-													<div className="text-xs text-text-secondary">
-														{model?.provider}
-													</div>
-													{!status.hasValidKey && (
-														<div className="mt-1 transition-opacity">
-															<span
-																className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${status.statusColor}`}
-															>
-																{status.statusText}
-															</span>
-														</div>
-													)}
-												</div>
-											</div>
-										</div>
 										<button
 											onClick={() => onRemoveModel(modelId)}
 											disabled={selectedModels.length <= 1}
-											className="rounded-full text-text-secondary hover:text-error hover:bg-error-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed hidden group-hover:block"
+											className="absolute inset-0 flex items-center justify-center bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity text-text-secondary gap-2 disabled:cursor-not-allowed disabled:opacity-0"
 											title={
 												selectedModels.length <= 1
 													? 'Cannot remove the last model'
 													: 'Remove model'
 											}
 										>
-											<XMarkIcon className="w-4 h-4" />
+											<TrashIcon className="w-5 h-5" />
+											<span className="text-sm font-medium">Remove</span>
 										</button>
+										<div className="flex gap-4 items-start justify-between w-full">
+											<div className="flex gap-4 items-center">
+												{model?.provider && PROVIDER_LOGOS[model.provider] && (
+													<img
+														src={PROVIDER_LOGOS[model.provider]}
+														alt={`${model.provider} logo`}
+														className="w-8 h-8 object-contain"
+														onError={(e) => {
+															// Hide the image if it fails to load
+															;(e.target as HTMLImageElement).style.display =
+																'none'
+														}}
+													/>
+												)}
+												<div>
+													<div className="font-medium text-text-primary truncate">
+														{model?.name || modelId}
+													</div>
+													<div className="text-xs text-text-secondary">
+														{model?.provider}
+													</div>
+												</div>
+											</div>
+											{!status.hasValidKey && (
+												<div className="mt-1 transition-opacity">
+													<span
+														className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${status.statusColor}`}
+													>
+														{status.statusText}
+													</span>
+												</div>
+											)}
+										</div>
 									</div>
 								)
 							})}
