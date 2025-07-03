@@ -3,6 +3,16 @@ import { useSystemPromptStore } from '../lib/stores'
 import TableLayout from '../components/TableLayout'
 import { useEffect, useState } from 'react'
 
+// Loading component to avoid duplication
+const LoadingSpinner = () => (
+	<div className="flex items-center justify-center min-h-screen bg-background">
+		<div className="text-center">
+			<div className="animate-spin h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+			<p className="text-muted">Loading prompt...</p>
+		</div>
+	</div>
+)
+
 export default function PromptDetailPage() {
 	const { id: promptId } = useParams<{ id: string }>()
 	const prompts = useSystemPromptStore((state) => state.prompts)
@@ -14,7 +24,7 @@ export default function PromptDetailPage() {
 	)
 
 	const [hasHydrated, setHasHydrated] = useState(false)
-	const [shouldShowLoading, setShouldShowLoading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	// Find the current prompt
 	const currentPrompt = prompts.find((prompt) => prompt.id === promptId)
@@ -58,7 +68,7 @@ export default function PromptDetailPage() {
 	useEffect(() => {
 		// Show loading for a brief moment even if data is available for better UX
 		const timer = setTimeout(() => {
-			setShouldShowLoading(false)
+			setIsLoading(false)
 		}, 300)
 
 		return () => clearTimeout(timer)
@@ -76,26 +86,8 @@ export default function PromptDetailPage() {
 		: ''
 
 	// Show loading state while hydrating or briefly after data loads
-	if (!hasHydrated) {
-		return (
-			<div className="flex items-center justify-center min-h-screen bg-background">
-				<div className="text-center">
-					<div className="animate-spin h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-					<p className="text-muted">Loading prompt...</p>
-				</div>
-			</div>
-		)
-	}
-
-	if (shouldShowLoading && currentPrompt) {
-		return (
-			<div className="flex items-center justify-center min-h-screen bg-background">
-				<div className="text-center">
-					<div className="animate-spin h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-					<p className="text-muted">Loading prompt content...</p>
-				</div>
-			</div>
-		)
+	if (!hasHydrated || (isLoading && currentPrompt)) {
+		return <LoadingSpinner />
 	}
 
 	// Show "not found" only if we've hydrated and the prompt definitely doesn't exist
