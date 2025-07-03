@@ -81,16 +81,20 @@ export default function ModelSelectionModal({
 	)
 
 	return (
-		<div className="fixed inset-0 z-50 overflow-y-auto">
+		<div className="fixed inset-0 z-50 overflow-y-auto" onClick={onClose}>
 			{/* Backdrop */}
 			<div
 				className="fixed inset-0 bg-black/50 transition-opacity"
-				onClick={onClose}
+				aria-hidden="true"
 			/>
 
 			{/* Modal */}
 			<div className="relative min-h-screen flex items-center justify-center p-4">
-				<div className="relative bg-white shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+				<div
+					className="relative bg-white shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col"
+					onClick={(e) => e.stopPropagation()}
+					onMouseDown={(e) => e.stopPropagation()}
+				>
 					{/* Header */}
 					<div className="flex items-center justify-between p-6 border-b border-neutral">
 						<div>
