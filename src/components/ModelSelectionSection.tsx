@@ -67,7 +67,7 @@ export default function ModelSelectionSection({
 								return (
 									<div
 										key={modelId}
-										className="bg-surface-input border border-neutral p-3 flex flex-col justify-between min-h-[140px]"
+										className="bg-surface-input border border-neutral p-3 flex items-start justify-between min-h-[90px]"
 									>
 										<div className="flex-1 min-w-0">
 											<div className="font-medium text-text-primary truncate">
@@ -76,13 +76,15 @@ export default function ModelSelectionSection({
 											<div className="text-xs text-text-secondary">
 												{model?.provider}
 											</div>
-											<div className="mt-1">
-												<span
-													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${status.statusColor}`}
-												>
-													{status.statusText}
-												</span>
-											</div>
+											{!status.hasValidKey && (
+												<div className="mt-1">
+													<span
+														className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${status.statusColor}`}
+													>
+														{status.statusText}
+													</span>
+												</div>
+											)}
 										</div>
 										<div className="flex justify-end mt-2">
 											<button
@@ -103,17 +105,10 @@ export default function ModelSelectionSection({
 							})}
 							<button
 								onClick={() => setShowModelModal(true)}
-								className="bg-surface-input border border-neutral p-3 flex flex-col items-center justify-center gap-2 hover:border-neutral-dark hover:bg-neutral-hover transition-colors text-text-secondary min-h-[140px]"
+								className="border border-neutral p-3 flex items-center justify-center gap-2 hover:border-neutral-dark hover:bg-neutral-hover transition-colors text-text-secondary min-h-[90px] text-sm"
 							>
-								<div className="flex-1 min-w-0 flex flex-col items-center justify-center">
-									<div className="font-medium text-text-primary">
-										<PlusIcon className="w-6 h-6 mb-2" />
-										<span>Add Model</span>
-									</div>
-									<div className="text-xs text-text-secondary mt-1">
-										Add more AI models to compare
-									</div>
-								</div>
+								<PlusIcon className="w-5 h-5" />
+								<span>Add Model</span>
 							</button>
 						</div>
 					</div>
