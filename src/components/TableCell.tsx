@@ -205,10 +205,10 @@ export default function TableCell({
 					</div>
 
 					{/* View Full button - only show if we have content and not in full screen */}
-					{response && !isLoading && !isRowRunning && !isFullScreen && (
+					{response && !isLoading && !isRowRunning && (
 						<button
 							onClick={() => setShowFullModal(true)}
-							className="px-2 py-1 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-colors shrink-0"
+							className="px-3 py-2 text-xs text-blue-600 bg-text-blue-700 bg-blue-50 transition-colors shrink-0"
 						>
 							View Full
 						</button>

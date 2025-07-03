@@ -243,17 +243,17 @@ export default function ResponseTable({
 			>
 				{/* Modal Header */}
 				<div
-					className="flex justify-between items-center p-4 bg-neutral-100"
+					className="flex justify-between items-center px-5 py-3 bg-neutral-100"
 					onClick={(e) => e.stopPropagation()}
 				>
-					<h2 className="text-2xl font-semibold text-text-primary">
+					<h2 className="text-lg font-semibold text-text-primary">
 						All Responses
 					</h2>
 					<button
 						onClick={onClose}
-						className="text-text-secondary hover:text-text-primary p-2"
+						className="text-text-secondary hover:text-text-primary"
 					>
-						<XMarkIcon className="w-8 h-8" />
+						<XMarkIcon className="w-6 h-6" />
 					</button>
 				</div>
 
