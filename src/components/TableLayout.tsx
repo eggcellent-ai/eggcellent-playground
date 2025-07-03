@@ -13,6 +13,7 @@ import InputComponent, { type UploadedImage } from './InputComponent'
 import TableCell from './TableCell'
 import PromptVersionHistory from './PromptVersionHistory'
 import ModelSelectionModal from './ModelSelectionModal'
+import FullScreenResponseView from './FullScreenResponseView'
 import { useAIService, type ChatMessage } from '../lib/aiService'
 
 interface TableLayoutProps {
@@ -843,7 +844,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 											className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white text-sm font-medium transition-colors flex items-center gap-2"
 										>
 											<ArrowsPointingOutIcon className="w-4 h-4" />
-											View All
+											Responses
 										</button>
 									)}
 									<button
@@ -1347,135 +1348,12 @@ Examples of valid formats:
 					/>
 
 					{/* Full Screen Responses Modal */}
-					{showFullScreenResponses && (
-						<div
-							className="fixed inset-0 bg-black/90 flex flex-col z-50"
-							onClick={() => setShowFullScreenResponses(false)}
-						>
-							{/* Modal Header */}
-							<div
-								className="flex justify-between items-center p-4 bg-white border-b"
-								onClick={(e) => e.stopPropagation()}
-							>
-								<h2 className="text-xl font-semibold text-text-primary">
-									All Responses - Full Screen View
-								</h2>
-								<button
-									onClick={() => setShowFullScreenResponses(false)}
-									className="text-text-secondary hover:text-text-primary text-2xl leading-none p-2"
-								>
-									×
-								</button>
-							</div>
-
-							{/* Modal Content */}
-							<div
-								className="flex-1 overflow-auto bg-white"
-								onClick={(e) => e.stopPropagation()}
-							>
-								<div className="p-6">
-									{/* Render each input row with all model responses horizontally */}
-									{tableData
-										.filter(
-											(row) =>
-												row.input.trim() ||
-												(row.images || []).length > 0 ||
-												selectedModels.some((modelId) =>
-													row.responses[modelId]?.trim()
-												)
-										)
-										.map((row, rowIndex) => (
-											<div
-												key={row.id}
-												className={`mb-8 ${
-													rowIndex < tableData.length - 1
-														? 'border-b border-neutral-200 pb-8'
-														: ''
-												}`}
-											>
-												{/* Input Section */}
-												<div className="mb-4">
-													<h3 className="text-lg font-medium text-text-primary mb-2">
-														Input {rowIndex + 1}
-													</h3>
-													<div className="bg-neutral-50 p-4 rounded-lg">
-														{row.input && (
-															<div className="whitespace-pre-wrap text-text-primary mb-2">
-																{row.input}
-															</div>
-														)}
-														{(row.images || []).length > 0 && (
-															<div className="text-sm text-text-secondary">
-																📎 {(row.images || []).length} image(s) attached
-															</div>
-														)}
-													</div>
-												</div>
-
-												{/* Responses Section - Horizontal Layout */}
-												<div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-													{selectedModels.map((modelId) => {
-														const model = AVAILABLE_MODELS.find(
-															(m) => m.id === modelId
-														)
-														const response = row.responses[modelId] || ''
-
-														return (
-															<div
-																key={modelId}
-																className="bg-surface-card border border-neutral rounded-lg overflow-hidden"
-															>
-																{/* Model Header */}
-																<div className="bg-neutral-100 px-4 py-2 border-b border-neutral">
-																	<h4 className="font-medium text-text-primary">
-																		{model?.name || modelId}
-																	</h4>
-																	<p className="text-xs text-text-secondary">
-																		{model?.provider}
-																	</p>
-																</div>
-
-																{/* Response Content */}
-																<div className="p-4">
-																	{response ? (
-																		<div className="whitespace-pre-wrap text-text-primary text-sm leading-relaxed max-h-96 overflow-y-auto">
-																			{response}
-																		</div>
-																	) : (
-																		<div className="text-muted text-sm italic">
-																			No response yet
-																		</div>
-																	)}
-																</div>
-															</div>
-														)
-													})}
-												</div>
-											</div>
-										))}
-
-									{/* Empty State */}
-									{!tableData.some(
-										(row) =>
-											row.input.trim() ||
-											(row.images || []).length > 0 ||
-											selectedModels.some((modelId) =>
-												row.responses[modelId]?.trim()
-											)
-									) && (
-										<div className="text-center text-muted py-12">
-											<h3 className="text-lg font-medium mb-2">
-												No Data to Display
-											</h3>
-											<p>
-												Add some inputs and run the table to see responses here.
-											</p>
-										</div>
-									)}
-								</div>
-							</div>
-						</div>
-					)}
+					<FullScreenResponseView
+						isOpen={showFullScreenResponses}
+						onClose={() => setShowFullScreenResponses(false)}
+						tableData={tableData}
+						selectedModels={selectedModels}
+					/>
 				</>
 			) : (
 				// Show message when no prompt is selected
