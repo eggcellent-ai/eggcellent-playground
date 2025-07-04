@@ -698,8 +698,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							</div>
 
 							{/* Variables Display */}
-							<div className="p-4 border border-neutral bg-surface-card">
-								<div className="overflow-x-auto">
+							<div>
+								<div className="overflow-x-auto bg-surface-card">
 									<table className="w-full text-sm border-collapse">
 										<tbody>
 											{detectedVariables.map((variable) => {
@@ -712,7 +712,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 												)
 
 												return (
-													<tr key={variable} className="hover:bg-neutral-50">
+													<tr key={variable}>
 														<td className="border border-neutral px-3 py-2 font-mono text-sm">
 															<div className="flex flex-wrap gap-1">
 																{formats.map((format, index) => (
@@ -763,32 +763,22 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									</table>
 								</div>
 								{/* Final Prompt Preview */}
-								<div className="pt-4">
-									<div className="flex justify-between items-center mb-2">
+								<div>
+									<div className="flex gap-4 items-center mb-2 p-4">
 										<div className="text-xs font-medium text-gray-500">
 											{detectedVariables.length} variables will be substituted
 										</div>
 										<button
 											onClick={() => setShowFullPreview(!showFullPreview)}
-											className="text-xs text-text-secondary"
+											className="text-xs text-blue-500 font-medium"
 										>
-											{showFullPreview ? 'Show Less' : 'Show All'}
+											{showFullPreview ? 'Hide Prompt' : 'Show final prompt'}
 										</button>
 									</div>
 									<div
-										className={`text-sm text-text-primary whitespace-pre-wrap break-words p-2 bg-amber-50 ${
-											!showFullPreview ? 'line-clamp-2 overflow-hidden' : ''
+										className={`text-sm text-text-primary whitespace-pre-wrap break-words bg-amber-50 p-4 border border-amber-200 ${
+											!showFullPreview ? 'hidden' : ''
 										}`}
-										style={
-											!showFullPreview
-												? {
-														display: '-webkit-box',
-														WebkitLineClamp: 2,
-														WebkitBoxOrient: 'vertical' as const,
-														overflow: 'hidden',
-												  }
-												: {}
-										}
 									>
 										{activePromptId && activeVersionId
 											? substituteVariables(
