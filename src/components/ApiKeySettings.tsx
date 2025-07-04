@@ -60,61 +60,62 @@ const PROVIDERS = [
 		storeKey: 'googleKey',
 		setStoreKey: 'setGoogleKey',
 	},
-	{
-		key: 'mistral',
-		name: 'Mistral',
-		description: 'Mistral models (Mistral Large, Medium, Mixtral, etc.)',
-		placeholder: '...',
-		getUrl: 'https://console.mistral.ai/api-keys',
-		getKey: () => apiKeyStorage.getMistralKey(),
-		setKey: (key: string) => apiKeyStorage.setMistralKey(key),
-		storeKey: 'mistralKey',
-		setStoreKey: 'setMistralKey',
-	},
-	{
-		key: 'groq',
-		name: 'Groq',
-		description: 'Fast inference models (Llama, Mixtral, Gemma)',
-		placeholder: 'gsk_...',
-		getUrl: 'https://console.groq.com/keys',
-		getKey: () => apiKeyStorage.getGroqKey(),
-		setKey: (key: string) => apiKeyStorage.setGroqKey(key),
-		storeKey: 'groqKey',
-		setStoreKey: 'setGroqKey',
-	},
-	{
-		key: 'deepseek',
-		name: 'DeepSeek',
-		description: 'DeepSeek Chat and Coder models',
-		placeholder: 'sk-...',
-		getUrl: 'https://platform.deepseek.com/api_keys',
-		getKey: () => apiKeyStorage.getDeepseekKey(),
-		setKey: (key: string) => apiKeyStorage.setDeepseekKey(key),
-		storeKey: 'deepseekKey',
-		setStoreKey: 'setDeepseekKey',
-	},
-	{
-		key: 'togetherai',
-		name: 'Together.ai',
-		description: 'Open source models (Llama, Mistral, RedPajama)',
-		placeholder: '...',
-		getUrl: 'https://api.together.xyz/settings/api-keys',
-		getKey: () => apiKeyStorage.getTogetheraiKey(),
-		setKey: (key: string) => apiKeyStorage.setTogetheraiKey(key),
-		storeKey: 'togetheraiKey',
-		setStoreKey: 'setTogetheraiKey',
-	},
-	{
-		key: 'perplexity',
-		name: 'Perplexity',
-		description: 'Perplexity Sonar models with web search',
-		placeholder: 'pplx-...',
-		getUrl: 'https://www.perplexity.ai/settings/api',
-		getKey: () => apiKeyStorage.getPerplexityKey(),
-		setKey: (key: string) => apiKeyStorage.setPerplexityKey(key),
-		storeKey: 'perplexityKey',
-		setStoreKey: 'setPerplexityKey',
-	},
+	// ,
+	// {
+	// 	key: 'mistral',
+	// 	name: 'Mistral',
+	// 	description: 'Mistral models (Mistral Large, Medium, Mixtral, etc.)',
+	// 	placeholder: '...',
+	// 	getUrl: 'https://console.mistral.ai/api-keys',
+	// 	getKey: () => apiKeyStorage.getMistralKey(),
+	// 	setKey: (key: string) => apiKeyStorage.setMistralKey(key),
+	// 	storeKey: 'mistralKey',
+	// 	setStoreKey: 'setMistralKey',
+	// },
+	// {
+	// 	key: 'groq',
+	// 	name: 'Groq',
+	// 	description: 'Fast inference models (Llama, Mixtral, Gemma)',
+	// 	placeholder: 'gsk_...',
+	// 	getUrl: 'https://console.groq.com/keys',
+	// 	getKey: () => apiKeyStorage.getGroqKey(),
+	// 	setKey: (key: string) => apiKeyStorage.setGroqKey(key),
+	// 	storeKey: 'groqKey',
+	// 	setStoreKey: 'setGroqKey',
+	// },
+	// {
+	// 	key: 'deepseek',
+	// 	name: 'DeepSeek',
+	// 	description: 'DeepSeek Chat and Coder models',
+	// 	placeholder: 'sk-...',
+	// 	getUrl: 'https://platform.deepseek.com/api_keys',
+	// 	getKey: () => apiKeyStorage.getDeepseekKey(),
+	// 	setKey: (key: string) => apiKeyStorage.setDeepseekKey(key),
+	// 	storeKey: 'deepseekKey',
+	// 	setStoreKey: 'setDeepseekKey',
+	// },
+	// {
+	// 	key: 'togetherai',
+	// 	name: 'Together.ai',
+	// 	description: 'Open source models (Llama, Mistral, RedPajama)',
+	// 	placeholder: '...',
+	// 	getUrl: 'https://api.together.xyz/settings/api-keys',
+	// 	getKey: () => apiKeyStorage.getTogetheraiKey(),
+	// 	setKey: (key: string) => apiKeyStorage.setTogetheraiKey(key),
+	// 	storeKey: 'togetheraiKey',
+	// 	setStoreKey: 'setTogetheraiKey',
+	// },
+	// {
+	// 	key: 'perplexity',
+	// 	name: 'Perplexity',
+	// 	description: 'Perplexity Sonar models with web search',
+	// 	placeholder: 'pplx-...',
+	// 	getUrl: 'https://www.perplexity.ai/settings/api',
+	// 	getKey: () => apiKeyStorage.getPerplexityKey(),
+	// 	setKey: (key: string) => apiKeyStorage.setPerplexityKey(key),
+	// 	storeKey: 'perplexityKey',
+	// 	setStoreKey: 'setPerplexityKey',
+	// },
 ] as const
 
 export default function ApiKeySettings({
@@ -260,11 +261,11 @@ export default function ApiKeySettings({
 							>
 								<div className="mb-3">
 									<div className="flex items-center justify-between mb-1">
-										<label className="text-sm font-medium text-primary">
+										<label className="text-lg font-semibold text-primary">
 											{provider.name}
 										</label>
 										<span
-											className={`text-xs ${
+											className={`text-sm ${
 												currentKeys[provider.key]?.trim()
 													? 'text-success'
 													: 'text-warning'
@@ -307,7 +308,7 @@ export default function ApiKeySettings({
 									href={provider.getUrl}
 									target="_blank"
 									rel="noopener noreferrer"
-									className="text-xs text-primary hover:text-primary-dark underline"
+									className="text-xs text-blue-500 hover:text-primary-dark"
 								>
 									Get API Key →
 								</a>
@@ -316,7 +317,7 @@ export default function ApiKeySettings({
 					</div>
 
 					{/* Actions */}
-					<div className="flex justify-end items-center mt-8 pt-6 border-t border-neutral">
+					<div className="flex justify-end items-center mt-8 pt-6">
 						<button
 							onClick={handleClear}
 							disabled={!hasAnyKeys}
