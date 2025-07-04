@@ -4,7 +4,7 @@ import InputComponent, { type UploadedImage } from './InputComponent'
 import TableCell from './TableCell'
 import ModelItem from './ModelItem'
 import { AVAILABLE_MODELS } from '../lib/stores'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 interface ResponseTableProps {
 	tableData: Array<{
@@ -47,9 +47,6 @@ export default function ResponseTable({
 	isFullScreen = false,
 	onClose,
 }: ResponseTableProps) {
-	// Track which cells are running
-	const [runningCells, setRunningCells] = useState<Set<string>>(new Set())
-
 	// Handle Escape key to close modal when in full-screen mode
 	useEffect(() => {
 		if (!isFullScreen) return
@@ -85,30 +82,6 @@ export default function ResponseTable({
 			window.scrollTo(0, parseInt(scrollY || '0') * -1)
 		}
 	}, [isFullScreen])
-
-	// Handle running all models for a row
-	const handleRunAllModels = async (
-		rowId: string,
-		input: string,
-		images: UploadedImage[]
-	) => {
-		// Mark all cells in this row as running
-		const newRunningCells = new Set(runningCells)
-		selectedModels.forEach((modelId) => {
-			newRunningCells.add(`${rowId}-${modelId}`)
-		})
-		setRunningCells(newRunningCells)
-
-		// Call parent handler
-		await onRunAllModels(rowId, input, images)
-
-		// Clear running state for all cells in this row
-		const updatedRunningCells = new Set(runningCells)
-		selectedModels.forEach((modelId) => {
-			updatedRunningCells.delete(`${rowId}-${modelId}`)
-		})
-		setRunningCells(updatedRunningCells)
-	}
 
 	const tableContent = (
 		<div className="flex-1 overflow-auto bg-surface-card">
@@ -189,11 +162,7 @@ export default function ResponseTable({
 											{/* Run All Models Button */}
 											<button
 												onClick={() =>
-													handleRunAllModels(
-														row.id,
-														row.input,
-														row.images || []
-													)
+													onRunAllModels(row.id, row.input, row.images || [])
 												}
 												disabled={
 													!(row.input.trim() || (row.images || []).length > 0)
@@ -250,9 +219,6 @@ export default function ResponseTable({
 											activePromptId={activePromptId}
 											activeVersionId={activeVersionId}
 											isFullScreen={isFullScreen}
-											isRunningFromParent={runningCells.has(
-												`${row.id}-${modelId}`
-											)}
 										/>
 									</td>
 								))}

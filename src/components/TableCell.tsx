@@ -13,7 +13,6 @@ interface TableCellProps {
 	activePromptId: string | null
 	activeVersionId: string | null
 	isFullScreen?: boolean
-	isRunningFromParent?: boolean
 }
 
 export default function TableCell({
@@ -25,7 +24,6 @@ export default function TableCell({
 	activePromptId,
 	activeVersionId,
 	isFullScreen = false,
-	isRunningFromParent = false,
 }: TableCellProps) {
 	const [response, setResponse] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
@@ -47,10 +45,18 @@ export default function TableCell({
 				modelId
 			)
 			if (existingResponse) {
-				setResponse(existingResponse)
-				setHasRun(true)
+				if (existingResponse === '<loading>') {
+					setResponse('')
+					setIsLoading(true)
+					setHasRun(false)
+				} else {
+					setResponse(existingResponse)
+					setIsLoading(false)
+					setHasRun(true)
+				}
 			} else {
 				setResponse('')
+				setIsLoading(false)
 				setHasRun(false)
 			}
 		}
@@ -59,7 +65,7 @@ export default function TableCell({
 	const handleRun = async () => {
 		// Allow if there's either text input or images
 		const hasContent = input.trim() || images.length > 0
-		if (!hasContent || isLoading || isRunningFromParent) return
+		if (!hasContent || isLoading) return
 
 		// Check if we have a valid API key for this model
 		if (!hasValidKeyForModel(modelId)) {
@@ -169,7 +175,7 @@ export default function TableCell({
 						isFullScreen ? 'text-base' : 'text-sm'
 					}`}
 				>
-					{isLoading || isRunningFromParent ? (
+					{isLoading ? (
 						<div className="animate-pulse text-muted">Running prompt...</div>
 					) : response ? (
 						<div className="whitespace-pre-wrap text-text-primary break-words">
@@ -185,12 +191,12 @@ export default function TableCell({
 					<div className="flex space-x-2">
 						<button
 							onClick={handleRun}
-							disabled={isLoading || isRunningFromParent}
+							disabled={isLoading}
 							className={`px-3 py-1 bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
 								isFullScreen ? 'text-sm' : 'text-xs'
 							}`}
 						>
-							{isLoading || isRunningFromParent ? 'Running...' : 'Run'}
+							{isLoading ? 'Running...' : 'Run'}
 						</button>
 						{hasRun && (
 							<button
@@ -205,7 +211,7 @@ export default function TableCell({
 					</div>
 
 					{/* View Full button - only show if we have content and not in full screen */}
-					{response && !isLoading && !isRunningFromParent && (
+					{response && !isLoading && (
 						<button
 							onClick={() => setShowFullModal(true)}
 							className="px-3 py-2 text-xs text-blue-600 bg-text-blue-700 bg-blue-50 transition-colors shrink-0"

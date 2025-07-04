@@ -366,7 +366,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 		if (rowsWithContent.length === 0) return
 
-		// Clear all existing responses before starting new runs
+		// Clear all existing responses and set loading state for each cell
 		rowsWithContent.forEach((row) => {
 			selectedModels.forEach((modelId) => {
 				updateTableCellResponse(
@@ -374,7 +374,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					activeVersionId,
 					row.id,
 					modelId,
-					''
+					'<loading>' // Special marker to indicate loading state
 				)
 			})
 		})
