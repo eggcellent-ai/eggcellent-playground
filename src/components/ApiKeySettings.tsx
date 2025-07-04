@@ -211,24 +211,24 @@ export default function ApiKeySettings({
 		<div className="fixed inset-0 z-50 flex items-center justify-center">
 			{/* Backdrop */}
 			<div
-				className="absolute inset-0 bg-black bg-opacity-50"
+				className="absolute inset-0 bg-neutral-dark bg-opacity-50"
 				onClick={onClose}
 			/>
 
 			{/* Modal */}
-			<div className="relative bg-white shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+			<div className="relative bg-surface-card shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
 				{/* Header */}
-				<div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 z-10">
+				<div className="sticky top-0 bg-surface-card border-b border-neutral px-6 py-4 z-10">
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-4">
-							<KeyIcon className="w-6 h-6 text-blue-600" />
-							<h2 className="text-xl font-semibold text-gray-900">
+							<KeyIcon className="w-6 h-6 text-primary" />
+							<h2 className="text-xl font-semibold text-primary">
 								API Key Settings
 							</h2>
 						</div>
 						<button
 							onClick={onClose}
-							className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+							className="p-2 text-muted hover:text-primary hover:bg-neutral-hover transition-colors rounded"
 						>
 							<XMarkIcon className="w-5 h-5" />
 						</button>
@@ -239,8 +239,8 @@ export default function ApiKeySettings({
 					{/* Warning Message */}
 					<div className="mb-6 p-4 bg-warning-light border border-warning">
 						<div className="flex gap-3">
-							<ExclamationTriangleIcon className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-							<div className="text-sm text-amber-800 leading-relaxed">
+							<ExclamationTriangleIcon className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+							<div className="text-sm text-warning-dark leading-relaxed">
 								<strong>Security Notice:</strong> API keys are stored locally in
 								your browser.
 							</div>
@@ -252,22 +252,30 @@ export default function ApiKeySettings({
 						{PROVIDERS.map((provider) => (
 							<div
 								key={provider.key}
-								className={`border border-gray-200 p-4 ${
-									currentKeys[provider.key]?.trim() ? 'bg-green-50' : 'bg-white'
-								}`}
+								className={`border ${
+									currentKeys[provider.key]?.trim()
+										? 'bg-success-light border-success'
+										: 'bg-surface-card border-neutral'
+								} p-4`}
 							>
 								<div className="mb-3">
 									<div className="flex items-center justify-between mb-1">
-										<label className="text-sm font-medium text-gray-700">
+										<label className="text-sm font-medium text-primary">
 											{provider.name}
 										</label>
-										<span className="text-xs text-gray-500">
+										<span
+											className={`text-xs ${
+												currentKeys[provider.key]?.trim()
+													? 'text-success'
+													: 'text-warning'
+											}`}
+										>
 											{currentKeys[provider.key]?.trim()
 												? '✅ Set'
 												: '⚠️ Empty'}
 										</span>
 									</div>
-									<p className="text-xs text-gray-500 mb-3">
+									<p className="text-xs text-muted mb-3">
 										{provider.description}
 									</p>
 								</div>
@@ -280,12 +288,12 @@ export default function ApiKeySettings({
 											handleKeyChange(provider.key, e.target.value)
 										}
 										placeholder={provider.placeholder}
-										className="w-full px-3 py-2 pr-10 border border-gray-300 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+										className="w-full px-3 py-2 pr-10 border border-neutral bg-surface-input text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-colors text-primary"
 									/>
 									<button
 										type="button"
 										onClick={() => toggleShowKey(provider.key)}
-										className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"
+										className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 text-muted hover:text-primary"
 									>
 										{showKeys[provider.key] ? (
 											<EyeSlashIcon className="w-4 h-4" />
@@ -299,7 +307,7 @@ export default function ApiKeySettings({
 									href={provider.getUrl}
 									target="_blank"
 									rel="noopener noreferrer"
-									className="text-xs text-blue-600 hover:text-blue-800 underline"
+									className="text-xs text-primary hover:text-primary-dark underline"
 								>
 									Get API Key →
 								</a>
@@ -308,11 +316,11 @@ export default function ApiKeySettings({
 					</div>
 
 					{/* Actions */}
-					<div className="flex justify-end items-center mt-8 pt-6 border-t border-gray-200">
+					<div className="flex justify-end items-center mt-8 pt-6 border-t border-neutral">
 						<button
 							onClick={handleClear}
 							disabled={!hasAnyKeys}
-							className="px-4 py-2 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-red-50"
+							className="px-4 py-2 text-sm text-error hover:text-error-dark hover:bg-error-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-error-light rounded"
 						>
 							Clear All Keys
 						</button>
