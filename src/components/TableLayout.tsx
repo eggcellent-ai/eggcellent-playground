@@ -6,7 +6,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { PlayIcon } from '@heroicons/react/24/solid'
 import { CheckIcon } from '@heroicons/react/24/solid'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { type UploadedImage } from './InputComponent'
 import PromptVersionHistory from './PromptVersionHistory'
 import ModelSelectionSection from './ModelSelectionSection'
@@ -507,6 +507,42 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		updatePromptVariable(activePromptId || '', key, value)
 	}
 
+	// Add keyboard shortcut handler
+	const handleKeyboardShortcut = useCallback(
+		(event: KeyboardEvent) => {
+			// Check for Cmd + Enter (Mac) or Ctrl + Enter (Windows)
+			if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+				// Check if table can be run
+				const canRunTable =
+					!runningAllTable &&
+					tableData.some(
+						(row) => row.input.trim() || (row.images || []).length > 0
+					) &&
+					selectedModels.length > 0 &&
+					!selectedModels.some((modelId) => !hasValidKeyForModel(modelId))
+
+				if (canRunTable) {
+					handleRunAllTable()
+				}
+			}
+		},
+		[
+			runningAllTable,
+			tableData,
+			selectedModels,
+			hasValidKeyForModel,
+			handleRunAllTable,
+		]
+	)
+
+	// Add event listener for keyboard shortcut
+	useEffect(() => {
+		document.addEventListener('keydown', handleKeyboardShortcut)
+		return () => {
+			document.removeEventListener('keydown', handleKeyboardShortcut)
+		}
+	}, [handleKeyboardShortcut])
+
 	return (
 		<div
 			className="flex flex-col w-full h-full overflow-hidden"
@@ -586,7 +622,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										className="px-5 py-2 bg-primary hover:bg-primary-dark text-white text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 focus:outline-none focus:ring-0 focus:bg-primary-dark"
 									>
 										<PlayIcon className="w-4 h-4" />
-										{runningAllTable ? 'Running All...' : 'Run Table'}
+										{runningAllTable ? 'Running table...' : 'Run table'}
 									</button>
 								</div>
 							</div>
