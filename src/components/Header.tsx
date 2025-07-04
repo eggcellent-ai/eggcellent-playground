@@ -78,10 +78,10 @@ export default function Header() {
 							</button>
 							<button
 								onClick={() => setShowApiKeySettings(true)}
-								className="flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200"
+								className="bg-neutral-dark hover:bg-primary text-white px-4 py-2 font-medium transition-colors flex items-center gap-2"
 								title="Configure API Keys"
 							>
-								<KeyIcon className="w-4 h-4" />
+								<KeyIcon className="w-5 h-5" />
 								<span className="hidden sm:inline">Setup API Keys</span>
 								<span className="sm:hidden">Keys</span>
 							</button>
