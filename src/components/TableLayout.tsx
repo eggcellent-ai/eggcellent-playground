@@ -367,7 +367,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		}
 	}
 
-	const handleRunAllTable = async () => {
+	const handleRunAllTable = useCallback(async () => {
 		if (!activePromptId || !activeVersionId || runningAllTable) return
 
 		// Get all rows with content
@@ -485,7 +485,18 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		} finally {
 			setRunningAllTable(false)
 		}
-	}
+	}, [
+		activePromptId,
+		activeVersionId,
+		runningAllTable,
+		tableData,
+		selectedModels,
+		hasValidKeyForModel,
+		streamText,
+		updateTableCellResponse,
+		substituteVariables,
+		inputPromptContent,
+	])
 
 	const handleSavePrompt = () => {
 		if (activePromptId && promptContent.trim()) {
