@@ -1,6 +1,6 @@
 import { useSystemPromptStore } from '../lib/stores'
 import { useNavigate } from 'react-router-dom'
-import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { TrashIcon } from '@heroicons/react/24/outline'
 import { DocumentTextIcon } from '@heroicons/react/24/outline'
 
 interface PromptType {
@@ -102,12 +102,12 @@ export default function PromptList() {
 								<div className="p-4">
 									<div className="flex items-start justify-between mb-8">
 										<div className="flex-1 min-w-0 flex items-start">
-											<h3 className="text-lg font-semibold text-text-primary line-clamp-1">
+											<h3 className="text-lg font-medium text-primary line-clamp-1">
 												{getPromptTitle(prompt)}
 											</h3>
 										</div>
 										<div className="flex items-start gap-3">
-											<div className="flex items-center gap-2 text-sm text-muted">
+											<div className="flex items-center gap-2 text-sm text-gray-500">
 												<span>
 													{prompt.versions.length} version
 													{prompt.versions.length !== 1 ? 's' : ''}
@@ -138,7 +138,7 @@ export default function PromptList() {
 										</div>
 									</div>
 
-									<p className="text-sm text-text-secondary line-clamp-3 mb-3">
+									<p className="text-sm text-gray-500 line-clamp-3 mb-3">
 										{getPromptPreview(prompt)}
 									</p>
 								</div>
@@ -147,17 +147,6 @@ export default function PromptList() {
 					</div>
 				)}
 			</div>
-			{prompts.length > 0 && (
-				<div className="w-full flex justify-start p-6 items-start">
-					<button
-						onClick={handleCreateNewPrompt}
-						className="bg-neutral-dark hover:bg-primary text-white px-4 py-2 font-medium transition-colors flex items-center gap-2"
-					>
-						<PlusIcon className="w-5 h-5" />
-						New Prompt
-					</button>
-				</div>
-			)}
 		</div>
 	)
 }
