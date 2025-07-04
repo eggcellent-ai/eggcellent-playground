@@ -60,7 +60,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		activePromptId || '',
 		activeVersionId || ''
 	)
-	const [runningRows, setRunningRows] = useState<Set<string>>(new Set())
 	const [runningAllTable, setRunningAllTable] = useState(false)
 	const [showVersionHistory, setShowVersionHistory] = useState(false)
 	const [promptContent, setPromptContent] = useState(inputPromptContent)
@@ -279,9 +278,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		const hasContent = input.trim() || images.length > 0
 		if (!hasContent || !activePromptId || !activeVersionId) return
 
-		// Set loading state for this row
-		setRunningRows((prev) => new Set(prev).add(rowId))
-
 		try {
 			// Run all selected models in parallel
 			const promises = selectedModels.map(async (modelId) => {
@@ -357,13 +353,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 			console.log('All models completed:', results)
 		} catch (error) {
 			console.error('Error in handleRunAllModels:', error)
-		} finally {
-			// Clear loading state for this row
-			setRunningRows((prev) => {
-				const newSet = new Set(prev)
-				newSet.delete(rowId)
-				return newSet
-			})
 		}
 	}
 
@@ -395,9 +384,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		try {
 			// Run all rows in parallel
 			const rowPromises = rowsWithContent.map(async (row) => {
-				// Set loading state for this row
-				setRunningRows((prev) => new Set(prev).add(row.id))
-
 				try {
 					// Run all selected models for this row in parallel
 					const modelPromises = selectedModels.map(async (modelId) => {
@@ -477,13 +463,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 				} catch (error) {
 					console.error(`Error processing row ${row.id}:`, error)
 					return { rowId: row.id, error }
-				} finally {
-					// Clear loading state for this row
-					setRunningRows((prev) => {
-						const newSet = new Set(prev)
-						newSet.delete(row.id)
-						return newSet
-					})
 				}
 			})
 
@@ -886,7 +865,6 @@ Examples of valid formats:
 							activePromptId={activePromptId || ''}
 							activeVersionId={activeVersionId}
 							inputPromptContent={inputPromptContent}
-							runningRows={runningRows}
 							hasValidKeyForModel={hasValidKeyForModel}
 							onRunAllModels={handleRunAllModels}
 							onRemoveRow={handleRemoveRow}

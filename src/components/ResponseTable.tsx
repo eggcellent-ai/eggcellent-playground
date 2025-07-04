@@ -4,7 +4,7 @@ import InputComponent, { type UploadedImage } from './InputComponent'
 import TableCell from './TableCell'
 import ModelItem from './ModelItem'
 import { AVAILABLE_MODELS } from '../lib/stores'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 interface ResponseTableProps {
 	tableData: Array<{
@@ -18,7 +18,6 @@ interface ResponseTableProps {
 	activePromptId: string
 	activeVersionId: string
 	inputPromptContent: string
-	runningRows: Set<string>
 	hasValidKeyForModel: (modelId: string) => boolean
 	onRunAllModels: (
 		rowId: string,
@@ -41,7 +40,6 @@ export default function ResponseTable({
 	activePromptId,
 	activeVersionId,
 	inputPromptContent,
-	runningRows,
 	hasValidKeyForModel,
 	onRunAllModels,
 	onRemoveRow,
@@ -49,6 +47,9 @@ export default function ResponseTable({
 	isFullScreen = false,
 	onClose,
 }: ResponseTableProps) {
+	// Track which cells are running
+	const [runningCells, setRunningCells] = useState<Set<string>>(new Set())
+
 	// Handle Escape key to close modal when in full-screen mode
 	useEffect(() => {
 		if (!isFullScreen) return
@@ -84,6 +85,30 @@ export default function ResponseTable({
 			window.scrollTo(0, parseInt(scrollY || '0') * -1)
 		}
 	}, [isFullScreen])
+
+	// Handle running all models for a row
+	const handleRunAllModels = async (
+		rowId: string,
+		input: string,
+		images: UploadedImage[]
+	) => {
+		// Mark all cells in this row as running
+		const newRunningCells = new Set(runningCells)
+		selectedModels.forEach((modelId) => {
+			newRunningCells.add(`${rowId}-${modelId}`)
+		})
+		setRunningCells(newRunningCells)
+
+		// Call parent handler
+		await onRunAllModels(rowId, input, images)
+
+		// Clear running state for all cells in this row
+		const updatedRunningCells = new Set(runningCells)
+		selectedModels.forEach((modelId) => {
+			updatedRunningCells.delete(`${rowId}-${modelId}`)
+		})
+		setRunningCells(updatedRunningCells)
+	}
 
 	const tableContent = (
 		<div className="flex-1 overflow-auto bg-surface-card">
@@ -164,12 +189,14 @@ export default function ResponseTable({
 											{/* Run All Models Button */}
 											<button
 												onClick={() =>
-													onRunAllModels(row.id, row.input, row.images || [])
+													handleRunAllModels(
+														row.id,
+														row.input,
+														row.images || []
+													)
 												}
 												disabled={
-													!(
-														row.input.trim() || (row.images || []).length > 0
-													) || runningRows.has(row.id)
+													!(row.input.trim() || (row.images || []).length > 0)
 												}
 												className={`px-3 py-1 bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1 ${
 													isFullScreen ? 'text-sm' : 'text-xs'
@@ -178,7 +205,7 @@ export default function ResponseTable({
 												<PlayIcon
 													className={`${isFullScreen ? 'w-4 h-4' : 'w-3 h-3'}`}
 												/>
-												{runningRows.has(row.id) ? 'Running...' : 'Run'}
+												Run All
 											</button>
 
 											{/* Remove Row Button */}
@@ -222,8 +249,10 @@ export default function ResponseTable({
 											systemPrompt={inputPromptContent}
 											activePromptId={activePromptId}
 											activeVersionId={activeVersionId}
-											isRowRunning={runningRows.has(row.id)}
 											isFullScreen={isFullScreen}
+											isRunningFromParent={runningCells.has(
+												`${row.id}-${modelId}`
+											)}
 										/>
 									</td>
 								))}
