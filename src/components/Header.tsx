@@ -1,12 +1,38 @@
-import { useLocation, Link } from 'react-router-dom'
+import { useLocation, Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { KeyIcon } from '@heroicons/react/24/outline'
+import { KeyIcon, PlusIcon } from '@heroicons/react/24/outline'
 import ApiKeySettings from './ApiKeySettings'
+import { useSystemPromptStore } from '../lib/stores'
 
 export default function Header() {
 	const location = useLocation()
+	const navigate = useNavigate()
 	const isHomePage = location.pathname === '/'
 	const [showApiKeySettings, setShowApiKeySettings] = useState(false)
+	const { addPrompt, updatePromptTitle } = useSystemPromptStore()
+
+	const handleCreateNewPrompt = () => {
+		const state = useSystemPromptStore.getState()
+		const promptCount = state.prompts.length + 1
+		const autoTitle = `Untitled Prompt ${promptCount}`
+
+		// Add the prompt first
+		addPrompt('You are a helpful assistant.')
+
+		// Update the title of the newly created prompt
+		setTimeout(() => {
+			const state = useSystemPromptStore.getState()
+			if (state.activePromptId && state.activeVersionId) {
+				updatePromptTitle(
+					state.activePromptId,
+					state.activeVersionId,
+					autoTitle
+				)
+				// Navigate to the new prompt detail page
+				navigate(`/prompt/${state.activePromptId}`)
+			}
+		}, 0)
+	}
 
 	return (
 		<>
@@ -40,8 +66,16 @@ export default function Header() {
 							)}
 						</div>
 
-						{/* API Key Settings Button */}
-						<div className="pr-6">
+						{/* Action Buttons */}
+						<div className="pr-6 flex items-center gap-4">
+							<button
+								onClick={handleCreateNewPrompt}
+								className="bg-neutral-dark hover:bg-primary text-white px-4 py-2 font-medium transition-colors flex items-center gap-2"
+							>
+								<PlusIcon className="w-5 h-5" />
+								<span className="hidden sm:inline">New Prompt</span>
+								<span className="sm:hidden">New</span>
+							</button>
 							<button
 								onClick={() => setShowApiKeySettings(true)}
 								className="flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200"
