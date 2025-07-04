@@ -165,21 +165,21 @@ export default function ApiKeySettings({
 				case 'setGoogleKey':
 					store.setGoogleKey(value)
 					break
-				case 'setMistralKey':
-					store.setMistralKey(value)
-					break
-				case 'setGroqKey':
-					store.setGroqKey(value)
-					break
-				case 'setDeepseekKey':
-					store.setDeepseekKey(value)
-					break
-				case 'setTogetheraiKey':
-					store.setTogetheraiKey(value)
-					break
-				case 'setPerplexityKey':
-					store.setPerplexityKey(value)
-					break
+				// case 'setMistralKey':
+				// 	store.setMistralKey(value)
+				// 	break
+				// case 'setGroqKey':
+				// 	store.setGroqKey(value)
+				// 	break
+				// case 'setDeepseekKey':
+				// 	store.setDeepseekKey(value)
+				// 	break
+				// case 'setTogetheraiKey':
+				// 	store.setTogetheraiKey(value)
+				// 	break
+				// case 'setPerplexityKey':
+				// 	store.setPerplexityKey(value)
+				// 	break
 			}
 		}
 	}
