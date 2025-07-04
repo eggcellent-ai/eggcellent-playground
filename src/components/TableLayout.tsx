@@ -7,12 +7,19 @@ import {
 } from '@heroicons/react/24/outline'
 import { PlayIcon } from '@heroicons/react/24/solid'
 import { CheckIcon } from '@heroicons/react/24/solid'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { type UploadedImage } from './InputComponent'
 import PromptVersionHistory from './PromptVersionHistory'
 import ModelSelectionSection from './ModelSelectionSection'
-import { useAIService, type ChatMessage } from '../lib/aiService'
+import { useAIService } from '../lib/aiService'
 import ResponseTable from './ResponseTable'
+import {
+	getTableValidation,
+	loadCurrentDataToJson,
+	validateJsonInput,
+	getVariableFormats,
+	buildAIServiceMessages,
+} from '../lib/tableUtils'
 
 interface TableLayoutProps {
 	inputPromptContent: string
@@ -40,7 +47,10 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	const { streamText, hasValidKeyForModel } = useAIService()
 
 	// Get selected models from store
-	const selectedModels = getSelectedModels(activePromptId, activeVersionId)
+	const selectedModels = getSelectedModels(
+		activePromptId || '',
+		activeVersionId || ''
+	)
 	const [runningRows, setRunningRows] = useState<Set<string>>(new Set())
 	const [runningAllTable, setRunningAllTable] = useState(false)
 	const [showVersionHistory, setShowVersionHistory] = useState(false)
@@ -60,207 +70,40 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	const [showFullScreenResponses, setShowFullScreenResponses] = useState(false)
 
 	// Table validation function
-	const getTableValidation = () => {
-		const validationMessages: string[] = []
-
-		// Check if there are any input rows
-		if (!tableData || tableData.length === 0) {
-			validationMessages.push('No input rows available')
-		} else {
-			// Check if any rows have content
-			const rowsWithContent = tableData.filter(
-				(row) => row.input.trim() || (row.images || []).length > 0
-			)
-
-			if (rowsWithContent.length === 0) {
-				validationMessages.push('All input rows are empty')
-			}
-		}
-
-		// Check if any models are selected
-		if (selectedModels.length === 0) {
-			validationMessages.push('No models selected')
-		}
-
-		// Check if selected models have valid API keys
-		const modelsWithoutKeys = selectedModels.filter(
-			(modelId) => !hasValidKeyForModel(modelId)
-		)
-		if (modelsWithoutKeys.length > 0) {
-			const modelNames = modelsWithoutKeys
-				.map((modelId) => {
-					const model = AVAILABLE_MODELS.find((m) => m.id === modelId)
-					return model?.name || modelId
-				})
-				.join(', ')
-			validationMessages.push(`Missing API keys for: ${modelNames}`)
-		}
-
-		return {
-			isValid: validationMessages.length === 0,
-			messages: validationMessages,
-		}
-	}
+	const validation = getTableValidation(
+		getTableData(activePromptId || '', activeVersionId || ''),
+		selectedModels,
+		hasValidKeyForModel,
+		AVAILABLE_MODELS
+	)
 
 	// Get table data for current version
-	const tableData = getTableData(activePromptId, activeVersionId)
+	const tableData = getTableData(activePromptId || '', activeVersionId || '')
 
-	// Get current prompt title
+	// Get current prompt
 	const currentPrompt = prompts.find((p) => p.id === activePromptId)
-	const currentVersion = currentPrompt?.versions.find(
-		(v) => v.versionId === activeVersionId
-	)
-	const currentTitle = currentVersion?.title || ''
 
-	// Function to load current input rows as JSON
-	const loadCurrentDataToJson = useCallback(() => {
-		if (!activePromptId) return ''
-
-		// Get current input rows and convert to JSON
-		const currentPrompt = prompts.find((p) => p.id === activePromptId)
-		const inputRows = currentPrompt?.inputRows || []
-
-		// Convert to simple array of strings/objects
-		const jsonData = inputRows
-			.filter((row) => row.input.trim() || (row.images || []).length > 0) // Only include rows with content
-			.map((row) => {
-				// If row has images, create an object with both input and images info
-				if ((row.images || []).length > 0) {
-					return {
-						input: row.input,
-						images: row.images.length + ' image(s)', // Simplified representation
-					}
-				}
-				// If only text input, return just the string
-				return row.input
-			})
-
-		// If no existing data, return example input
-		if (jsonData.length === 0) {
-			return JSON.stringify(['example input'], null, 2)
-		}
-
-		return JSON.stringify(jsonData, null, 2)
-	}, [activePromptId, prompts])
-
-	// Function to validate JSON format
-	const validateJsonInput = useCallback(
-		(value: string) => {
-			const trimmedValue = value.trim()
-
-			if (!trimmedValue) {
-				setJsonValidationStatus({
-					isValid: true,
-					message: '',
-					isEmpty: true,
-				})
-				return
-			}
-
-			try {
-				const parsed = JSON.parse(trimmedValue)
-
-				// Check if it's a valid format we can process
-				if (Array.isArray(parsed)) {
-					if (parsed.length === 0) {
-						setJsonValidationStatus({
-							isValid: true,
-							message: '',
-							isEmpty: true,
-						})
-					} else {
-						setJsonValidationStatus({
-							isValid: true,
-							message: `Valid - ${parsed.length} rows detected`,
-							isEmpty: false,
-						})
-					}
-				} else if (typeof parsed === 'object' && parsed !== null) {
-					// Check for array properties
-					const arrayProps = ['items', 'data', 'inputs', 'messages', 'content']
-					const foundArrayProp = arrayProps.find((prop) =>
-						Array.isArray(parsed[prop])
-					)
-
-					if (foundArrayProp) {
-						const arrayLength = parsed[foundArrayProp].length
-						if (arrayLength === 0) {
-							setJsonValidationStatus({
-								isValid: true,
-								message: '',
-								isEmpty: true,
-							})
-						} else {
-							setJsonValidationStatus({
-								isValid: true,
-								message: `Valid - ${arrayLength} rows detected`,
-								isEmpty: false,
-							})
-						}
-					} else {
-						// Count non-null values
-						const values = Object.values(parsed).filter(
-							(val) =>
-								typeof val === 'string' ||
-								typeof val === 'number' ||
-								(typeof val === 'object' && val !== null)
-						)
-						if (values.length > 0) {
-							setJsonValidationStatus({
-								isValid: true,
-								message: `Valid JSON - Will create ${values.length} row(s) from object values`,
-								isEmpty: false,
-							})
-						} else {
-							setJsonValidationStatus({
-								isValid: true,
-								message: 'Valid JSON - No processable values found',
-								isEmpty: false,
-							})
-						}
-					}
-				} else {
-					setJsonValidationStatus({
-						isValid: false,
-						message: 'Invalid - must be array or object',
-						isEmpty: false,
-					})
-				}
-			} catch {
-				setJsonValidationStatus({
-					isValid: false,
-					message: 'Invalid - JSON format error',
-					isEmpty: false,
-				})
-			}
-		},
-		[setJsonValidationStatus]
-	)
-
-	// Sync title content when prompt or version changes
-	useEffect(() => {
-		setTitleContent(currentTitle)
-	}, [currentTitle, activePromptId, activeVersionId])
+	// Function to handle JSON input changes with validation
+	const handleJsonInputChange = (inputValue: string) => {
+		setJsonInputValue(inputValue)
+		const validation = validateJsonInput(inputValue)
+		setJsonValidationStatus(validation)
+	}
 
 	// Auto-load current data to JSON input when version changes
 	useEffect(() => {
 		if (activePromptId && activeVersionId) {
-			const currentDataJson = loadCurrentDataToJson()
-			setJsonInputValue(currentDataJson)
-			validateJsonInput(currentDataJson)
+			const jsonData = loadCurrentDataToJson(activePromptId || '', prompts)
+			setJsonInputValue(jsonData)
+			handleJsonInputChange(jsonData)
 		}
-	}, [
-		activePromptId,
-		activeVersionId,
-		loadCurrentDataToJson,
-		validateJsonInput,
-	])
+	}, [activePromptId, activeVersionId, prompts])
 
 	// Initialize table with example input if empty
 	useEffect(() => {
 		if (activePromptId && activeVersionId && tableData.length === 0) {
 			// Add a row with example input directly
-			addTableRow(activePromptId, 'example input')
+			addTableRow(activePromptId || '', 'example input')
 		}
 	}, [activePromptId, activeVersionId, tableData.length, addTableRow])
 
@@ -271,12 +114,12 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 		// Automatically add detected variables to the store if they don't exist
 		if (activePromptId && variables.length > 0) {
-			const currentVariables = getPromptVariables(activePromptId)
+			const currentVariables = getPromptVariables(activePromptId || '')
 
 			variables.forEach((variable) => {
 				// Only add if variable doesn't already exist
 				if (!(variable in currentVariables)) {
-					updatePromptVariable(activePromptId, variable, '')
+					updatePromptVariable(activePromptId || '', variable, '')
 				}
 			})
 		}
@@ -284,13 +127,13 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 	const handleAddRow = () => {
 		if (activePromptId) {
-			addTableRow(activePromptId)
+			addTableRow(activePromptId || '')
 		}
 	}
 
 	const handleRemoveRow = (rowId: string) => {
 		if (activePromptId && tableData.length > 1) {
-			removeTableRow(activePromptId, rowId)
+			removeTableRow(activePromptId || '', rowId)
 		}
 	}
 
@@ -300,14 +143,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		images: UploadedImage[] = []
 	) => {
 		if (activePromptId) {
-			updateTableRowInput(activePromptId, rowId, input, images)
+			updateTableRowInput(activePromptId || '', rowId, input, images)
 		}
-	}
-
-	// Function to handle JSON input changes with validation
-	const handleJsonInputChange = (value: string) => {
-		setJsonInputValue(value)
-		validateJsonInput(value)
 	}
 
 	// Function to save JSON data by replacing all current rows
@@ -322,7 +159,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 			if (currentPrompt) {
 				const currentRows = currentPrompt.inputRows || []
 				currentRows.forEach((row) => {
-					removeTableRow(activePromptId, row.id)
+					removeTableRow(activePromptId || '', row.id)
 				})
 			}
 
@@ -357,7 +194,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					}
 
 					// Add new row with the input value directly
-					addTableRow(activePromptId!, inputValue)
+					addTableRow(activePromptId || '', inputValue)
 				})
 
 				// JSON input remains visible after saving
@@ -374,7 +211,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						arrayData.forEach((item: unknown) => {
 							const inputValue =
 								typeof item === 'string' ? item : JSON.stringify(item)
-							addTableRow(activePromptId!, inputValue)
+							addTableRow(activePromptId || '', inputValue)
 						})
 
 						return
@@ -393,7 +230,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					values.forEach((value) => {
 						const inputValue =
 							typeof value === 'string' ? value : JSON.stringify(value)
-						addTableRow(activePromptId!, inputValue)
+						addTableRow(activePromptId || '', inputValue)
 					})
 
 					return
@@ -410,7 +247,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 		const newModels = selectedModels.filter((id) => id !== modelId)
 		if (activePromptId && activeVersionId) {
-			updateSelectedModels(activePromptId, activeVersionId, newModels)
+			updateSelectedModels(activePromptId || '', activeVersionId, newModels)
 		}
 	}
 
@@ -418,7 +255,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		if (!selectedModels.includes(modelId)) {
 			const newModels = [...selectedModels, modelId]
 			if (activePromptId && activeVersionId) {
-				updateSelectedModels(activePromptId, activeVersionId, newModels)
+				updateSelectedModels(activePromptId || '', activeVersionId, newModels)
 			}
 		}
 	}
@@ -447,7 +284,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					if (!hasValidKeyForModel(modelId)) {
 						const errorMessage = `Error: API key required for ${modelId}`
 						updateTableCellResponse(
-							activePromptId,
+							activePromptId || '',
 							activeVersionId,
 							rowId,
 							modelId,
@@ -461,49 +298,14 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					}
 
 					// Build messages array for AI service
-					const messages: ChatMessage[] = [
-						{
-							role: 'system',
-							content: substituteVariables(
-								activePromptId,
-								activeVersionId,
-								inputPromptContent
-							),
-						},
-					]
-
-					// Build user message content
-					if (images.length > 0) {
-						// Multimodal content
-						const content: Array<
-							{ type: 'text'; text: string } | { type: 'image'; image: string }
-						> = []
-
-						if (input.trim()) {
-							content.push({
-								type: 'text',
-								text: input.trim(),
-							})
-						}
-
-						images.forEach((image) => {
-							content.push({
-								type: 'image',
-								image: image.base64,
-							})
-						})
-
-						messages.push({
-							role: 'user',
-							content,
-						})
-					} else {
-						// Text-only content
-						messages.push({
-							role: 'user',
-							content: input.trim(),
-						})
-					}
+					const messages = buildAIServiceMessages(
+						input,
+						images,
+						activePromptId || '',
+						activeVersionId,
+						inputPromptContent,
+						substituteVariables
+					)
 
 					// Use AI service for generation
 					const fullResponse = await streamText(messages, modelId)
@@ -514,7 +316,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 					// Save response to store
 					updateTableCellResponse(
-						activePromptId,
+						activePromptId || '',
 						activeVersionId,
 						rowId,
 						modelId,
@@ -530,7 +332,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							: `Failed to get response from ${modelId}`
 					const fullErrorMessage = `Error: ${errorMessage}`
 					updateTableCellResponse(
-						activePromptId,
+						activePromptId || '',
 						activeVersionId,
 						rowId,
 						modelId,
@@ -569,7 +371,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		rowsWithContent.forEach((row) => {
 			selectedModels.forEach((modelId) => {
 				updateTableCellResponse(
-					activePromptId,
+					activePromptId || '',
 					activeVersionId,
 					row.id,
 					modelId,
@@ -600,7 +402,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							if (!hasValidKeyForModel(modelId)) {
 								const errorMessage = `Error: API key required for ${modelId}`
 								updateTableCellResponse(
-									activePromptId,
+									activePromptId || '',
 									activeVersionId,
 									row.id,
 									modelId,
@@ -614,50 +416,14 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							}
 
 							// Build messages array for AI service
-							const messages: ChatMessage[] = [
-								{
-									role: 'system',
-									content: substituteVariables(
-										activePromptId,
-										activeVersionId,
-										inputPromptContent
-									),
-								},
-							]
-
-							// Build user message content
-							if ((row.images || []).length > 0) {
-								// Multimodal content
-								const content: Array<
-									| { type: 'text'; text: string }
-									| { type: 'image'; image: string }
-								> = []
-
-								if (row.input.trim()) {
-									content.push({
-										type: 'text',
-										text: row.input.trim(),
-									})
-								}
-
-								;(row.images || []).forEach((image) => {
-									content.push({
-										type: 'image',
-										image: image.base64,
-									})
-								})
-
-								messages.push({
-									role: 'user',
-									content,
-								})
-							} else {
-								// Text-only content
-								messages.push({
-									role: 'user',
-									content: row.input.trim(),
-								})
-							}
+							const messages = buildAIServiceMessages(
+								row.input,
+								row.images || [],
+								activePromptId || '',
+								activeVersionId,
+								inputPromptContent,
+								substituteVariables
+							)
 
 							// Use AI service for generation
 							const fullResponse = await streamText(messages, modelId)
@@ -668,7 +434,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 							// Save response to store
 							updateTableCellResponse(
-								activePromptId,
+								activePromptId || '',
 								activeVersionId,
 								row.id,
 								modelId,
@@ -684,7 +450,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									: `Failed to get response from ${modelId}`
 							const fullErrorMessage = `Error: ${errorMessage}`
 							updateTableCellResponse(
-								activePromptId,
+								activePromptId || '',
 								activeVersionId,
 								row.id,
 								modelId,
@@ -723,7 +489,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 	const handleSavePrompt = () => {
 		if (activePromptId && promptContent.trim()) {
-			updatePrompt(activePromptId, promptContent)
+			updatePrompt(activePromptId || '', promptContent)
 			setUpdateSuccess(true)
 			setTimeout(() => setUpdateSuccess(false), 1000)
 		}
@@ -731,7 +497,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 	const handleSaveTitle = () => {
 		if (activePromptId && activeVersionId) {
-			updatePromptTitle(activePromptId, activeVersionId, titleContent)
+			updatePromptTitle(activePromptId || '', activeVersionId, titleContent)
 		}
 	}
 
@@ -744,40 +510,12 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	// Variable helper functions
 	const getCurrentVariables = () => {
 		if (!activePromptId) return {}
-		return getPromptVariables(activePromptId)
+		return getPromptVariables(activePromptId || '')
 	}
 
 	const handleUpdateVariable = (key: string, value: string) => {
 		if (!activePromptId) return
-		updatePromptVariable(activePromptId, key, value)
-	}
-
-	// Function to detect which format(s) a variable is using in the prompt content
-	const getVariableFormats = (variableName: string): string[] => {
-		const formats: string[] = []
-
-		// Check for {{variable}} format
-		const curlyBracePattern = new RegExp(
-			`\\{\\{\\s*${variableName.replace(
-				/[.*+?^${}()|[\]\\]/g,
-				'\\$&'
-			)}\\s*\\}\\}`,
-			'g'
-		)
-		if (curlyBracePattern.test(promptContent)) {
-			formats.push(`{{${variableName}}}`)
-		}
-
-		// Check for ${variable} format
-		const dollarBracePattern = new RegExp(
-			`\\$\\{\\s*${variableName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\}`,
-			'g'
-		)
-		if (dollarBracePattern.test(promptContent)) {
-			formats.push(`\${${variableName}}`)
-		}
-
-		return formats
+		updatePromptVariable(activePromptId || '', key, value)
 	}
 
 	return (
@@ -808,7 +546,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									/>
 									{/* Validation Messages */}
 									{(() => {
-										const validation = getTableValidation()
 										if (!validation.isValid && validation.messages.length > 0) {
 											return (
 												<div className="mt-2 text-sm text-error-dark">
@@ -956,7 +693,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 								<h3 className="text-sm font-semibold mb-3 text-text-primary">
 									Version History
 								</h3>
-								<PromptVersionHistory activePromptId={activePromptId} />
+								<PromptVersionHistory activePromptId={activePromptId || ''} />
 							</div>
 						)}
 					</div>
@@ -980,7 +717,10 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 												const currentVariables = getCurrentVariables()
 												const value = currentVariables[variable] || ''
 												const hasValue = value.trim() !== ''
-												const formats = getVariableFormats(variable)
+												const formats = getVariableFormats(
+													variable,
+													promptContent
+												)
 
 												return (
 													<tr key={variable} className="hover:bg-neutral-50">
@@ -1063,7 +803,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									>
 										{activePromptId && activeVersionId
 											? substituteVariables(
-													activePromptId,
+													activePromptId || '',
 													activeVersionId,
 													promptContent
 											  )
@@ -1170,7 +910,7 @@ Examples of valid formats:
 						<ResponseTable
 							tableData={tableData}
 							selectedModels={selectedModels}
-							activePromptId={activePromptId}
+							activePromptId={activePromptId || ''}
 							activeVersionId={activeVersionId}
 							inputPromptContent={inputPromptContent}
 							runningRows={runningRows}
