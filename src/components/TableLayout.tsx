@@ -763,8 +763,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									</table>
 								</div>
 								{/* Final Prompt Preview */}
-								<div>
-									<div className="flex gap-4 items-center mb-2 p-4">
+								<div className="p-4">
+									<div className="flex gap-4 items-center mb-4">
 										<div className="text-xs font-medium text-gray-500">
 											{detectedVariables.length} variables will be substituted
 										</div>
