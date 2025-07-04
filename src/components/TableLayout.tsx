@@ -77,6 +77,20 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	const [showFullPreview, setShowFullPreview] = useState(false)
 	const [showFullScreenResponses, setShowFullScreenResponses] = useState(false)
 
+	// Get current prompt
+	const currentPrompt = prompts.find((p) => p.id === activePromptId)
+	const currentVersion = currentPrompt?.versions.find(
+		(v) => v.versionId === activeVersionId
+	)
+
+	// Update promptContent when version changes
+	useEffect(() => {
+		if (currentVersion) {
+			setPromptContent(currentVersion.content)
+			setTitleContent(currentVersion.title || '')
+		}
+	}, [currentVersion])
+
 	// Table validation function
 	const validation = getTableValidation(
 		getTableData(activePromptId || '', activeVersionId || ''),
@@ -87,9 +101,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 	// Get table data for current version
 	const tableData = getTableData(activePromptId || '', activeVersionId || '')
-
-	// Get current prompt
-	const currentPrompt = prompts.find((p) => p.id === activePromptId)
 
 	// Function to handle JSON input changes with validation
 	const handleJsonInputChange = (inputValue: string) => {

@@ -40,8 +40,7 @@ const PROVIDERS = [
 	{
 		key: 'xai',
 		name: 'xAI',
-		description:
-			'Grok models (Grok 3, Grok 3 Fast, Grok 3 Mini, Grok 2.1, Grok Beta)',
+		description: 'Grok models (Grok 3, Grok 3 Fast, Grok 3 Mini)',
 		placeholder: 'xai-...',
 		getUrl: 'https://console.x.ai/team/api-keys',
 		getKey: () => apiKeyStorage.getXaiKey(),
