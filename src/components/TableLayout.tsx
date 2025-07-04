@@ -1,7 +1,6 @@
 import { useSystemPromptStore, AVAILABLE_MODELS } from '../lib/stores'
 import { detectVariables } from '../lib/stores'
 import {
-	PlusIcon,
 	ArrowsPointingOutIcon,
 	ArrowsPointingInIcon,
 } from '@heroicons/react/24/outline'
@@ -20,6 +19,16 @@ import {
 	getVariableFormats,
 	buildAIServiceMessages,
 } from '../lib/tableUtils'
+
+// Debounce helper function
+function debounce(func: (value: string) => void, wait: number) {
+	let timeout: NodeJS.Timeout | null = null
+
+	return (value: string) => {
+		if (timeout) clearTimeout(timeout)
+		timeout = setTimeout(() => func(value), wait)
+	}
+}
 
 interface TableLayoutProps {
 	inputPromptContent: string
@@ -90,6 +99,107 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		setJsonValidationStatus(validation)
 	}
 
+	// Debounced function to handle JSON saving
+	const debouncedHandleJsonSave = debounce((inputValue: string) => {
+		const validation = validateJsonInput(inputValue)
+		if (validation.isValid && !validation.isEmpty && activePromptId) {
+			try {
+				const jsonData = JSON.parse(inputValue.trim())
+
+				// First, clear all existing rows
+				const currentPrompt = prompts.find((p) => p.id === activePromptId)
+				if (currentPrompt) {
+					const currentRows = currentPrompt.inputRows || []
+					currentRows.forEach((row) => {
+						removeTableRow(activePromptId || '', row.id)
+					})
+				}
+
+				// Handle array of items
+				if (Array.isArray(jsonData)) {
+					if (jsonData.length === 0) {
+						// If empty array, just clear all rows (already done above)
+						return
+					}
+
+					// Create rows for all items
+					jsonData.forEach((item) => {
+						// Determine the input value based on item type
+						let inputValue: string
+						if (typeof item === 'string') {
+							inputValue = item
+						} else if (typeof item === 'object' && item !== null) {
+							// For objects, try to use common properties or stringify
+							if (item.input) {
+								inputValue = item.input
+							} else if (item.text) {
+								inputValue = item.text
+							} else if (item.message) {
+								inputValue = item.message
+							} else if (item.content) {
+								inputValue = item.content
+							} else {
+								inputValue = JSON.stringify(item)
+							}
+						} else {
+							inputValue = String(item)
+						}
+
+						// Add new row with the input value directly
+						addTableRow(activePromptId || '', inputValue)
+					})
+
+					return
+				}
+
+				// Handle single object
+				if (typeof jsonData === 'object' && jsonData !== null) {
+					// If it's an object with an array property, use that array
+					const arrayProps = ['items', 'data', 'inputs', 'messages', 'content']
+					for (const prop of arrayProps) {
+						if (Array.isArray(jsonData[prop])) {
+							const arrayData = jsonData[prop]
+							arrayData.forEach((item: unknown) => {
+								const inputValue =
+									typeof item === 'string' ? item : JSON.stringify(item)
+								addTableRow(activePromptId || '', inputValue)
+							})
+
+							return
+						}
+					}
+
+					// If object has multiple properties, create rows from property values
+					const values = Object.values(jsonData).filter(
+						(val) =>
+							typeof val === 'string' ||
+							typeof val === 'number' ||
+							(typeof val === 'object' && val !== null)
+					)
+
+					if (values.length > 0) {
+						values.forEach((value) => {
+							const inputValue =
+								typeof value === 'string' ? value : JSON.stringify(value)
+							addTableRow(activePromptId || '', inputValue)
+						})
+
+						return
+					}
+				}
+			} catch {
+				// Invalid JSON format, do nothing as validation will show the error
+			}
+		}
+	}, 1000) // 1 second debounce
+
+	// Update the textarea onChange handler
+	const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		const newValue = e.target.value
+		handleJsonInputChange(newValue)
+		debouncedHandleJsonSave(newValue)
+	}
+
 	// Auto-load current data to JSON input when version changes
 	useEffect(() => {
 		if (activePromptId && activeVersionId) {
@@ -125,12 +235,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		}
 	}, [promptContent, activePromptId, getPromptVariables, updatePromptVariable])
 
-	const handleAddRow = () => {
-		if (activePromptId) {
-			addTableRow(activePromptId || '')
-		}
-	}
-
 	const handleRemoveRow = (rowId: string) => {
 		if (activePromptId && tableData.length > 1) {
 			removeTableRow(activePromptId || '', rowId)
@@ -144,100 +248,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	) => {
 		if (activePromptId) {
 			updateTableRowInput(activePromptId || '', rowId, input, images)
-		}
-	}
-
-	// Function to save JSON data by replacing all current rows
-	const handleSaveJsonData = () => {
-		if (!activePromptId || !jsonInputValue.trim()) return
-
-		try {
-			const jsonData = JSON.parse(jsonInputValue.trim())
-
-			// First, clear all existing rows
-			const currentPrompt = prompts.find((p) => p.id === activePromptId)
-			if (currentPrompt) {
-				const currentRows = currentPrompt.inputRows || []
-				currentRows.forEach((row) => {
-					removeTableRow(activePromptId || '', row.id)
-				})
-			}
-
-			// Handle array of items
-			if (Array.isArray(jsonData)) {
-				if (jsonData.length === 0) {
-					// If empty array, just clear all rows (already done above)
-					return
-				}
-
-				// Create rows for all items
-				jsonData.forEach((item) => {
-					// Determine the input value based on item type
-					let inputValue: string
-					if (typeof item === 'string') {
-						inputValue = item
-					} else if (typeof item === 'object' && item !== null) {
-						// For objects, try to use common properties or stringify
-						if (item.input) {
-							inputValue = item.input
-						} else if (item.text) {
-							inputValue = item.text
-						} else if (item.message) {
-							inputValue = item.message
-						} else if (item.content) {
-							inputValue = item.content
-						} else {
-							inputValue = JSON.stringify(item)
-						}
-					} else {
-						inputValue = String(item)
-					}
-
-					// Add new row with the input value directly
-					addTableRow(activePromptId || '', inputValue)
-				})
-
-				// JSON input remains visible after saving
-				return
-			}
-
-			// Handle single object
-			if (typeof jsonData === 'object' && jsonData !== null) {
-				// If it's an object with an array property, use that array
-				const arrayProps = ['items', 'data', 'inputs', 'messages', 'content']
-				for (const prop of arrayProps) {
-					if (Array.isArray(jsonData[prop])) {
-						const arrayData = jsonData[prop]
-						arrayData.forEach((item: unknown) => {
-							const inputValue =
-								typeof item === 'string' ? item : JSON.stringify(item)
-							addTableRow(activePromptId || '', inputValue)
-						})
-
-						return
-					}
-				}
-
-				// If object has multiple properties, create rows from property values
-				const values = Object.values(jsonData).filter(
-					(val) =>
-						typeof val === 'string' ||
-						typeof val === 'number' ||
-						(typeof val === 'object' && val !== null)
-				)
-
-				if (values.length > 0) {
-					values.forEach((value) => {
-						const inputValue =
-							typeof value === 'string' ? value : JSON.stringify(value)
-						addTableRow(activePromptId || '', inputValue)
-					})
-
-					return
-				}
-			}
-		} catch {
-			alert('Invalid JSON format. Please check your input and try again.')
 		}
 	}
 
@@ -825,17 +835,10 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					<div>
 						{/* Section Header */}
 						<div className="bg-neutral-50 px-2 pb-2 pt-8">
-							<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
-								Input
-							</h2>
-						</div>
-
-						{/* Bulk JSON Input */}
-						<div className="p-4 border border-neutral bg-surface-card">
-							<div className="mb-3 flex justify-start items-center gap-2">
-								<h3 className="text-sm font-semibold text-text-primary">
-									Bulk Input
-								</h3>
+							<div className="flex justify-between items-center">
+								<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
+									Input
+								</h2>
 								{!jsonValidationStatus.isEmpty && (
 									<div
 										className={`text-xs px-2 py-1 ${
@@ -849,51 +852,21 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									</div>
 								)}
 							</div>
+						</div>
 
-							<div className="space-y-3">
-								<div className="space-y-2">
-									<textarea
-										value={jsonInputValue}
-										onChange={(e) => handleJsonInputChange(e.target.value)}
-										placeholder={`Current input rows are automatically loaded. Edit the JSON to manage multiple rows.
+						{/* Bulk JSON Input */}
+						<div className="p-4 border border-neutral bg-surface-card">
+							<textarea
+								value={jsonInputValue}
+								onChange={handleTextareaChange}
+								placeholder={`Current input rows are automatically loaded. Edit the JSON to manage multiple rows.
 
 Examples of valid formats:
 ["Input 1", "Input 2", "Input 3"]
 [{"input": "Test 1"}, {"text": "Test 2"}]
 {"items": ["Item 1", "Item 2"]}`}
-										className={`w-full h-32 p-3 border text-sm resize-none bg-surface-input transition-colors focus:ring-none ${
-											jsonValidationStatus.isEmpty
-												? 'border-neutral'
-												: jsonValidationStatus.isValid
-												? 'border-neutral focus:ring-success'
-												: 'border-error focus:ring-error'
-										}`}
-									/>
-								</div>
-								<div className="flex items-center justify-between">
-									{/* Add Single Input */}
-									<div>
-										<button
-											onClick={handleAddRow}
-											className="flex items-center px-4 py-2 text-sm text-neutral-dark hover:text-text-primary hover:bg-neutral-hover transition-colors border border-neutral"
-										>
-											<PlusIcon className="w-4 h-4 mr-2" />
-											Add Single Input
-										</button>
-									</div>
-									<div className="flex gap-2">
-										<button
-											onClick={handleSaveJsonData}
-											disabled={
-												!jsonInputValue.trim() || !jsonValidationStatus.isValid
-											}
-											className="px-4 py-2 bg-neutral-dark text-white text-sm hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-										>
-											Update Inputs
-										</button>
-									</div>
-								</div>
-							</div>
+								className="w-full resize-y bg-surface-card text-text-primary placeholder-text-muted transition-colors text-sm focus:outline-none h-54"
+							/>
 						</div>
 					</div>
 
