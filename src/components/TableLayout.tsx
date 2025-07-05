@@ -76,6 +76,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	const [detectedVariables, setDetectedVariables] = useState<string[]>([])
 	const [showFullPreview, setShowFullPreview] = useState(false)
 	const [showFullScreenResponses, setShowFullScreenResponses] = useState(false)
+	const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
 	// Get current prompt
 	const currentPrompt = prompts.find((p) => p.id === activePromptId)
@@ -88,6 +89,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		if (currentVersion) {
 			setPromptContent(currentVersion.content)
 			setTitleContent(currentVersion.title || '')
+			setHasUnsavedChanges(false)
 		}
 	}, [currentVersion])
 
@@ -502,6 +504,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		if (activePromptId && promptContent.trim()) {
 			updatePrompt(activePromptId || '', promptContent)
 			setUpdateSuccess(true)
+			setHasUnsavedChanges(false)
 			setTimeout(() => setUpdateSuccess(false), 1000)
 		}
 	}
@@ -514,6 +517,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 	useEffect(() => {
 		setPromptContent(inputPromptContent)
+		setHasUnsavedChanges(false)
 	}, [inputPromptContent])
 
 	// No longer needed - modal handles its own backdrop clicks
@@ -655,9 +659,16 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					<div>
 						{/* Section Header */}
 						<div className="bg-neutral-50 px-2 pb-2 pt-8">
-							<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
-								System Prompt
-							</h2>
+							<div className="flex justify-between items-center">
+								<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
+									System Prompt
+								</h2>
+								{hasUnsavedChanges && (
+									<span className="text-xs text-warning-dark bg-warning-light px-2 py-1 rounded">
+										Unsaved changes
+									</span>
+								)}
+							</div>
 						</div>
 						<div className="border border-neutral">
 							{/* Prompt Editor */}
@@ -689,7 +700,10 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										}}
 										value={promptContent}
 										placeholder="Enter system prompt..."
-										onChange={(e) => setPromptContent(e.target.value)}
+										onChange={(e) => {
+											setPromptContent(e.target.value)
+											setHasUnsavedChanges(true)
+										}}
 										onInput={(e) => {
 											if (!isEditorExpanded) {
 												const target = e.target as HTMLTextAreaElement
@@ -718,6 +732,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 											className={`px-4 py-2 text-sm border ${
 												updateSuccess
 													? 'bg-success border-success text-white'
+													: hasUnsavedChanges
+													? 'bg-warning border-warning text-white hover:bg-warning-dark'
 													: 'bg-neutral-dark border-neutral-dark text-white hover:bg-primary'
 											} transition-colors flex items-center gap-1`}
 										>
@@ -726,6 +742,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 													<CheckIcon className="w-3 h-3" />
 													Updated
 												</>
+											) : hasUnsavedChanges ? (
+												'Save Changes'
 											) : (
 												'Update Prompt'
 											)}
