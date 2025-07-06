@@ -29,10 +29,9 @@ export default function TableInputForm({
 		<div className="space-y-4">
 			{/* Table Header */}
 			<div className="flex justify-between items-center">
-				<h3 className="text-sm font-medium text-text-primary">Table Input</h3>
 				<button
 					onClick={handleAddRow}
-					className="px-3 py-1 text-sm bg-primary hover:bg-primary-dark text-white rounded-md flex items-center gap-2 transition-colors"
+					className="px-3 py-1 text-sm border border-neutral hover:bg-neutral-100 text-primary flex items-center gap-2 transition-colors"
 				>
 					<PlusIcon className="w-4 h-4" />
 					Add Row
@@ -42,12 +41,12 @@ export default function TableInputForm({
 			{/* Table Body */}
 			<div className="space-y-2">
 				{rows.map((row) => (
-					<div key={row.id} className="flex gap-2 items-start">
+					<div key={row.id} className="flex gap-2 items-center">
 						<textarea
 							value={row.input}
 							onChange={(e) => handleInputChange(row.id, e.target.value)}
 							placeholder="Enter input..."
-							className="flex-1 p-2 border border-neutral rounded-md text-sm resize-y min-h-[60px] focus:outline-none focus:ring-1 focus:ring-primary"
+							className="flex-1 p-2 border border-neutral text-sm resize-y min-h-[60px] focus:outline-none focus:ring-1 focus:ring-primary"
 						/>
 						<button
 							onClick={() => handleRemoveRow(row.id)}
