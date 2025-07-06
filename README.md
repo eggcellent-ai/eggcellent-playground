@@ -1,8 +1,8 @@
+![Eggcellent Screenshot](public/image.png){width=800 height=450}
+
 # 🥚 Eggcellent
 
 Eggcellent is the fastest way to test and debug AI prompts for your application. Compare outputs across models, manage prompt versions, and validate structured results — all in a clean, local-first playground.
-
-![Eggcellent Screenshot](public/image.png)
 
 ## ✨ Features
 
