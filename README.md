@@ -11,8 +11,6 @@ Eggcellent is the fastest way to test and debug AI prompts for your application.
 - 🔒 **Local-First Security**: Your API keys and prompts stay secure in your browser
 - 📊 **Structured Output Validation**: Ensure your prompts produce the expected format
 - 🖼️ **Multi-Modal Support**: Test prompts with both text and images
-- ⚡ **Real-Time Streaming**: See responses stream in real-time
-- 📱 **Responsive Design**: Works seamlessly on desktop and mobile
 
 ## 🚀 Quick Start
 
@@ -45,7 +43,6 @@ Eggcellent uses a local-first approach to API key management:
 - Keys are never sent to any server
 - Optional session-only storage (cleared on browser close)
 - Visual indicators for storage security status
-- Automatic key validation before storage
 
 ## 🛠️ Development
 
@@ -61,27 +58,7 @@ Eggcellent uses a local-first approach to API key management:
 - 🎨 TailwindCSS
 - 📦 Zustand (State Management)
 - 🔄 React Router
-- 🧪 AI SDK
-
-### Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-
-## 📖 Documentation
-
-For detailed documentation, check out:
-
-- [Security Guide](docs/security.md)
-- [API Integration Guide](docs/api-integration.md)
-- [Contributing Guide](CONTRIBUTING.md)
-- [Architecture Overview](docs/architecture.md)
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+- 🧪 AI SDK Vercel
 
 ## 🔒 Security
 
@@ -90,18 +67,6 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 - All processing happens client-side
 - Optional enhanced security features available
 
-See our [Security Guide](docs/security.md) for best practices and recommendations.
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Built with [Vite](https://vitejs.dev/)
-- UI components from [TailwindCSS](https://tailwindcss.com/)
-- Icons from [Heroicons](https://heroicons.com/)
-
----
-
-<p align="center">Made with ❤️ for the AI developer community</p>
