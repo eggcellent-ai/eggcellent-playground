@@ -126,7 +126,7 @@ export default function ResponseTable({
 											model={model!}
 											showStatus
 											hasValidKey={hasValidKeyForModel(modelId)}
-											className={`${isFullScreen ? 'h-20 p-3' : 'h-16 p-2'}`}
+											className={'h-15 p-3'}
 										/>
 									</th>
 								)
