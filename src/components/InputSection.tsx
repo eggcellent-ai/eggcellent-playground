@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSystemPromptStore } from '../lib/stores'
 import { validateJsonInput } from '../lib/tableUtils'
 import TableInputForm from './TableInputForm'
+import TabGroup from './TabGroup'
 
 // Debounce helper function
 function debounce(func: (value: string) => void, wait: number) {
@@ -170,29 +171,15 @@ export default function InputSection({
 			{/* Input Content */}
 			<div className="border border-neutral bg-surface-card">
 				{/* Tab Buttons */}
-				<div className="flex gap-2 p-2 border-b border-neutral">
-					<button
-						onClick={() => setInputMode('json')}
-						className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
-							inputMode === 'json'
-								? 'text-primary'
-								: 'text-muted hover:text-primary'
-						}`}
-					>
-						JSON Input
-					</button>
-					<span className="text-muted">|</span>
-					<button
-						onClick={() => setInputMode('table')}
-						className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
-							inputMode === 'table'
-								? 'text-primary'
-								: 'text-muted hover:text-primary'
-						}`}
-					>
-						Table Input
-					</button>
-				</div>
+				<TabGroup<InputMode>
+					items={[
+						{ id: 'json', label: 'JSON Input' },
+						{ id: 'table', label: 'Table Input' },
+					]}
+					className="border-b border-neutral"
+					activeId={inputMode}
+					onChange={setInputMode}
+				/>
 				<div className="p-4 bg-surface-card">
 					{inputMode === 'json' ? (
 						<textarea
