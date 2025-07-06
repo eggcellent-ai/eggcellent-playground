@@ -170,7 +170,7 @@ export default function InputSection({
 			{/* Input Content */}
 			<div className="border border-neutral bg-surface-card">
 				{/* Tab Buttons */}
-				<div className="flex gap-2 p-2">
+				<div className="flex gap-2 p-2 border-b border-neutral">
 					<button
 						onClick={() => setInputMode('json')}
 						className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
@@ -181,6 +181,7 @@ export default function InputSection({
 					>
 						JSON Input
 					</button>
+					<span className="text-muted">|</span>
 					<button
 						onClick={() => setInputMode('table')}
 						className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
