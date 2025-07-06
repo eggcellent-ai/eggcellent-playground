@@ -1,0 +1,57 @@
+# Eggcellent - AI Prompt Testing Playground
+User-agent: *
+Allow: /
+Allow: /docs/
+Allow: /public/
+Disallow: /api/
+Disallow: /.git/
+Disallow: /node_modules/
+
+# Prevent API key pages from being indexed
+Disallow: /*?*apiKey=
+Disallow: /*?*key=
+Disallow: /settings
+
+# Allow main documentation
+Allow: /docs/getting-started
+Allow: /docs/features
+Allow: /docs/models
+
+# Sitemap
+Sitemap: https://eggcellent.space/sitemap.xml
+
+# Crawl-delay for heavy crawlers
+User-agent: AdsBot-Google
+Crawl-delay: 2
+
+# Special directives for AI crawlers
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+Disallow: /settings
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /api/
+Disallow: /settings
+
+User-agent: Anthropic-AI
+Allow: /
+Disallow: /api/
+Disallow: /settings
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /api/
+Disallow: /settings
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /api/
+Disallow: /settings
+
+# Rate limit for all crawlers
+Crawl-delay: 10
+
+# Host
+Host: https://eggcellent.space 
