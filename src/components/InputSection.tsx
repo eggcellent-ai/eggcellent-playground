@@ -170,13 +170,13 @@ export default function InputSection({
 			{/* Input Content */}
 			<div className="border border-neutral bg-surface-card">
 				{/* Tab Buttons */}
-				<div className="flex gap-2 p-2 border-b border-neutral">
+				<div className="flex gap-2 p-2">
 					<button
 						onClick={() => setInputMode('json')}
 						className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
 							inputMode === 'json'
-								? ' text-primary border-b-2 border-primary'
-								: 'text-text-muted hover:text-text-primary'
+								? 'text-primary'
+								: 'text-muted hover:text-primary'
 						}`}
 					>
 						JSON Input
@@ -185,8 +185,8 @@ export default function InputSection({
 						onClick={() => setInputMode('table')}
 						className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
 							inputMode === 'table'
-								? ' text-primary border-b-2 border-primary'
-								: 'text-text-muted hover:text-text-primary'
+								? 'text-primary'
+								: 'text-muted hover:text-primary'
 						}`}
 					>
 						Table Input
