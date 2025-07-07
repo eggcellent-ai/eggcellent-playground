@@ -3,6 +3,11 @@ import { useSystemPromptStore, AVAILABLE_MODELS } from '../lib/stores'
 import type { UploadedImage } from './InputComponent'
 import { useAIService, type ChatMessage } from '../lib/aiService'
 import ModelItem from './ModelItem'
+import {
+	PlayIcon,
+	XMarkIcon,
+	ArrowsPointingOutIcon,
+} from '@heroicons/react/24/solid'
 
 interface TableCellProps {
 	rowId: string
@@ -187,25 +192,27 @@ export default function TableCell({
 				</div>
 
 				{/* Controls */}
-				<div className="flex justify-between items-center p-2 bg-neutral-hover/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-wrap gap-1">
+				<div className="flex justify-between items-center bg-neutral-hover/50 transition-opacity duration-200 flex-wrap gap-1 p-2">
 					<div className="flex space-x-2">
 						<button
 							onClick={handleRun}
 							disabled={isLoading}
-							className={`px-3 py-1 bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
+							className={`p-2 text-neutral-700 hover:border hover:border-neutral-300 hover:bg-white rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
 								isFullScreen ? 'text-sm' : 'text-xs'
 							}`}
+							title={isLoading ? 'Running...' : 'Run'}
 						>
-							{isLoading ? 'Running...' : 'Run'}
+							<PlayIcon className="w-4 h-4" />
 						</button>
 						{hasRun && (
 							<button
 								onClick={handleClear}
-								className={`px-3 py-1 border border-neutral text-text-secondary hover:border-neutral-dark hover:bg-neutral-hover transition-colors ${
+								className={`p-2 text-neutral-700 hover:border hover:border-neutral-300 hover:bg-white rounded-full transition-all ${
 									isFullScreen ? 'text-sm' : 'text-xs'
 								}`}
+								title="Clear"
 							>
-								Clear
+								<XMarkIcon className="w-4 h-4" />
 							</button>
 						)}
 					</div>
@@ -214,9 +221,10 @@ export default function TableCell({
 					{response && !isLoading && (
 						<button
 							onClick={() => setShowFullModal(true)}
-							className="px-3 py-2 text-xs text-blue-600 bg-text-blue-700 bg-blue-50 transition-colors shrink-0"
+							className="p-2 text-neutral-700 hover:border hover:border-neutral-300 hover:bg-white rounded-full transition-all"
+							title="View Full Response"
 						>
-							View Full
+							<ArrowsPointingOutIcon className="w-4 h-4" />
 						</button>
 					)}
 				</div>
