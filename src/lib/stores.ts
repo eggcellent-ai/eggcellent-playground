@@ -227,7 +227,7 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 					inputRows: [
 						{
 							id: crypto.randomUUID(),
-							input: 'example input',
+							input: 'hello',
 							images: [],
 							timestamp: Date.now(),
 						},

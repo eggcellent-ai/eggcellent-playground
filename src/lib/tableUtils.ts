@@ -104,9 +104,9 @@ export const loadCurrentDataToJson = (
 			return row.input
 		})
 
-	// If no existing data, return example input
+	// If no existing data, return hello
 	if (jsonData.length === 0) {
-		return JSON.stringify(['example input'], null, 2)
+		return JSON.stringify(['hello'], null, 2)
 	}
 
 	return JSON.stringify(jsonData, null, 2)
