@@ -170,7 +170,7 @@ export default function TableCell({
 	return (
 		<>
 			<div
-				className={`flex flex-col justify-between group w-full ${
+				className={`flex flex-col justify-between group w-full relative ${
 					isFullScreen ? 'h-96' : 'h-64'
 				}`}
 			>
@@ -191,40 +191,36 @@ export default function TableCell({
 					)}
 				</div>
 
-				{/* Controls */}
-				<div className="flex justify-between items-center bg-neutral-hover/50 transition-opacity duration-200 flex-wrap gap-1 p-2">
-					<div className="flex space-x-2">
+				{/* Floating Actions Tooltip */}
+				<div className="absolute -top-8 right-0 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-white shadow-lg rounded-lg p-1 flex gap-1 z-10">
+					<button
+						onClick={handleRun}
+						disabled={isLoading}
+						className={`p-1.5 text-neutral-700 hover:border hover:border-neutral-300 hover:bg-white rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+							isFullScreen ? 'text-sm' : 'text-xs'
+						}`}
+						title={isLoading ? 'Running...' : 'Run'}
+					>
+						<PlayIcon className="w-3.5 h-3.5" />
+					</button>
+					{hasRun && (
 						<button
-							onClick={handleRun}
-							disabled={isLoading}
-							className={`p-2 text-neutral-700 hover:border hover:border-neutral-300 hover:bg-white rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+							onClick={handleClear}
+							className={`p-1.5 text-neutral-700 hover:border hover:border-neutral-300 hover:bg-white rounded-full transition-all ${
 								isFullScreen ? 'text-sm' : 'text-xs'
 							}`}
-							title={isLoading ? 'Running...' : 'Run'}
+							title="Clear"
 						>
-							<PlayIcon className="w-4 h-4" />
+							<XMarkIcon className="w-3.5 h-3.5" />
 						</button>
-						{hasRun && (
-							<button
-								onClick={handleClear}
-								className={`p-2 text-neutral-700 hover:border hover:border-neutral-300 hover:bg-white rounded-full transition-all ${
-									isFullScreen ? 'text-sm' : 'text-xs'
-								}`}
-								title="Clear"
-							>
-								<XMarkIcon className="w-4 h-4" />
-							</button>
-						)}
-					</div>
-
-					{/* View Full button - only show if we have content and not in full screen */}
+					)}
 					{response && !isLoading && (
 						<button
 							onClick={() => setShowFullModal(true)}
-							className="p-2 text-neutral-700 hover:border hover:border-neutral-300 hover:bg-white rounded-full transition-all"
+							className="p-1.5 text-neutral-700 hover:border hover:border-neutral-300 hover:bg-white rounded-full transition-all"
 							title="View Full Response"
 						>
-							<ArrowsPointingOutIcon className="w-4 h-4" />
+							<ArrowsPointingOutIcon className="w-3.5 h-3.5" />
 						</button>
 					)}
 				</div>
