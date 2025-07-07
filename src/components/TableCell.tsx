@@ -192,11 +192,11 @@ export default function TableCell({
 				</div>
 
 				{/* Floating Actions Tooltip */}
-				<div className="absolute -top-8 right-0 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-white shadow-lg rounded-lg p-1 flex gap-1 z-10">
+				<div className="absolute -top-8 right-0 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-white shadow-lg p-1 flex gap-1 z-10">
 					<button
 						onClick={handleRun}
 						disabled={isLoading}
-						className={`p-1.5 text-neutral-700 hover:border hover:border-neutral-300 hover:bg-white rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+						className={`p-1.5 text-neutral-700 hover:bg-neutral-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
 							isFullScreen ? 'text-sm' : 'text-xs'
 						}`}
 						title={isLoading ? 'Running...' : 'Run'}
@@ -206,7 +206,7 @@ export default function TableCell({
 					{hasRun && (
 						<button
 							onClick={handleClear}
-							className={`p-1.5 text-neutral-700 hover:border hover:border-neutral-300 hover:bg-white rounded-full transition-all ${
+							className={`p-1.5 text-neutral-700 hover:bg-neutral-100 transition-all ${
 								isFullScreen ? 'text-sm' : 'text-xs'
 							}`}
 							title="Clear"
@@ -217,7 +217,7 @@ export default function TableCell({
 					{response && !isLoading && (
 						<button
 							onClick={() => setShowFullModal(true)}
-							className="p-1.5 text-neutral-700 hover:border hover:border-neutral-300 hover:bg-white rounded-full transition-all"
+							className="p-1.5 text-neutral-700 hover:bg-neutral-100 transition-all"
 							title="View Full Response"
 						>
 							<ArrowsPointingOutIcon className="w-3.5 h-3.5" />
