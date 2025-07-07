@@ -70,7 +70,7 @@ export default function Header() {
 						<div className="pr-6 flex items-center gap-4">
 							<button
 								onClick={handleCreateNewPrompt}
-								className="bg-neutral-dark hover:bg-primary text-white px-4 py-2 font-medium transition-colors flex items-center gap-2"
+								className="bg-[#f3f3f3] hover:bg-primary text-primary px-4 py-2 font-medium transition-colors flex items-center gap-2 border border-[#dfdfdf]"
 							>
 								<PlusIcon className="w-5 h-5" />
 								<span className="hidden sm:inline">New Prompt</span>
@@ -78,7 +78,7 @@ export default function Header() {
 							</button>
 							<button
 								onClick={() => setShowApiKeySettings(true)}
-								className="bg-neutral-light hover:bg-primary text-primary px-4 py-2 font-medium transition-colors flex items-center gap-2 border border-neutral"
+								className="bg-amber-50 hover:bg-primary text-amber-700 px-4 py-2 font-medium transition-colors flex items-center gap-2 border border-amber-300"
 								title="Configure API Keys"
 							>
 								<KeyIcon className="w-5 h-5" />
