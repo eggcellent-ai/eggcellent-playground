@@ -505,7 +505,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										className="px-5 py-2 bg-primary hover:bg-primary-dark text-white text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 focus:outline-none focus:ring-0 focus:bg-primary-dark"
 									>
 										<PlayIcon className="w-4 h-4" />
-										{runningAllTable ? 'Running table...' : 'Run table'}
+										{runningAllTable ? 'Running ...' : 'Run table'}
 									</button>
 								</div>
 							</div>
