@@ -25,7 +25,6 @@ const PROVIDERS = [
 		key: 'openai',
 		name: 'OpenAI',
 		logo: openaiLogo,
-		description: 'GPT models (GPT-4o, GPT-4o Mini, o1, etc.)',
 		placeholder: 'sk-...',
 		getUrl: 'https://platform.openai.com/api-keys',
 		getKey: () => apiKeyStorage.getOpenAIKey(),
@@ -37,7 +36,6 @@ const PROVIDERS = [
 		key: 'anthropic',
 		name: 'Anthropic',
 		logo: anthropicLogo,
-		description: 'Claude models (Claude 3.5 Sonnet, Haiku, etc.)',
 		placeholder: 'sk-ant-...',
 		getUrl: 'https://console.anthropic.com/settings/keys',
 		getKey: () => apiKeyStorage.getAnthropicKey(),
@@ -49,7 +47,6 @@ const PROVIDERS = [
 		key: 'xai',
 		name: 'xAI',
 		logo: xaiLogo,
-		description: 'Grok models (Grok 3, Grok 3 Fast, Grok 3 Mini)',
 		placeholder: 'xai-...',
 		getUrl: 'https://console.x.ai/team/api-keys',
 		getKey: () => apiKeyStorage.getXaiKey(),
@@ -61,7 +58,6 @@ const PROVIDERS = [
 		key: 'google',
 		name: 'Google',
 		logo: googleLogo,
-		description: 'Gemini models (Gemini 1.5 Pro, Flash, etc.)',
 		placeholder: 'AI...',
 		getUrl: 'https://console.cloud.google.com/apis/credentials',
 		getKey: () => apiKeyStorage.getGoogleKey(),
@@ -298,9 +294,6 @@ export default function ApiKeySettings({
 											</span>
 										</div>
 									</div>
-									<p className="text-xs text-muted mb-3">
-										{provider.description}
-									</p>
 								</div>
 
 								<div className="relative mb-3">
@@ -343,7 +336,7 @@ export default function ApiKeySettings({
 						<button
 							onClick={handleClear}
 							disabled={!hasAnyKeys}
-							className="px-4 py-2 text-sm text-error hover:text-error-dark hover:bg-error-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-error-light rounded"
+							className="px-4 py-2 text-sm text-error hover:text-error-dark hover:bg-error-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors border border-error-light"
 						>
 							Clear All Keys
 						</button>
