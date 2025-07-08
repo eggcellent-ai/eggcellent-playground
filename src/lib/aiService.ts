@@ -12,7 +12,16 @@ export type ChatMessage = CoreMessage
 // Model provider mapping - comprehensive detection
 const getModelProvider = (modelId: string): string => {
 	// OpenAI models
-	if (modelId.startsWith('gpt-') || modelId.startsWith('o1-')) return 'openai'
+	if (
+		modelId.startsWith('gpt-') ||
+		modelId.startsWith('o1-') ||
+		modelId.startsWith('o3-') ||
+		modelId.startsWith('o4-') ||
+		modelId === 'o1' ||
+		modelId === 'o3' ||
+		modelId === 'o4'
+	)
+		return 'openai'
 
 	// Anthropic models
 	if (modelId.startsWith('claude-')) return 'anthropic'
