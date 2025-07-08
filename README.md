@@ -5,9 +5,13 @@ Eggcellent is the fastest way to test and debug AI prompts for your application.
 ## ✨ Features
 
 • Multi-Model Testing: Compare responses from OpenAI, Anthropic, Google, and xAI models side by side
-• Prompt Version Control: Track and manage different versions of your prompts  
+
+• Prompt Version Control: Track and manage different versions of your prompts
+
 • Local-First Security: Your API keys and prompts stay secure in your browser
+
 • Structured Output Validation: Ensure your prompts produce the expected format
+
 • Multi-Modal Support: Test prompts with both text and images
 
 ## 🚀 Quick Start
