@@ -25,7 +25,7 @@ export default function MultiPanelLayout() {
 				<div className="flex-shrink-0 w-96 border-l border-neutral bg-surface-card flex items-center justify-center">
 					<button
 						onClick={handleTogglePlayground}
-						className="p-3 text-text-secondary hover:text-primary hover:bg-primary-light transition-colors"
+						className="p-3 text-secondary hover:text-primary hover:bg-primary-light transition-colors"
 						title="Toggle Playground"
 					>
 						<BeakerIcon className="w-6 h-6" />

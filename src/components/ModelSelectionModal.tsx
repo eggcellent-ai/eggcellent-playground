@@ -88,7 +88,7 @@ export default function ModelSelectionModal({
 					{/* Header */}
 					<div className="flex items-center justify-between p-6 border-b border-neutral">
 						<div>
-							<h2 className="text-xl font-semibold text-text-primary">
+							<h2 className="text-xl font-semibold text-primary">
 								Select AI Models
 							</h2>
 						</div>
@@ -96,7 +96,7 @@ export default function ModelSelectionModal({
 							onClick={onClose}
 							className="p-2 hover:bg-neutral-hover rounded-full transition-colors"
 						>
-							<XMarkIcon className="w-5 h-5 text-text-secondary" />
+							<XMarkIcon className="w-5 h-5 text-secondary" />
 						</button>
 					</div>
 
@@ -104,14 +104,14 @@ export default function ModelSelectionModal({
 					<div className="relative p-6">
 						<div className="relative">
 							<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-								<MagnifyingGlassIcon className="h-5 w-5 text-text-secondary" />
+								<MagnifyingGlassIcon className="h-5 w-5 text-secondary" />
 							</div>
 							<input
 								type="text"
 								placeholder="Search models or providers..."
 								value={searchQuery}
 								onChange={(e) => setSearchQuery(e.target.value)}
-								className="w-full pl-10 pr-4 py-3 border border-neutral focus:outline-none focus:border-secondary text-text-primary placeholder-text-muted"
+								className="w-full pl-10 pr-4 py-3 border border-neutral focus:outline-none focus:border-secondary text-primary placeholder-text-muted"
 								autoFocus
 							/>
 						</div>
@@ -121,7 +121,7 @@ export default function ModelSelectionModal({
 					<div className="flex-1 overflow-y-auto p-6">
 						{totalAvailableModels === 0 ? (
 							<div className="text-center py-12">
-								<p className="text-text-secondary">
+								<p className="text-secondary">
 									{searchQuery
 										? `No models found matching "${searchQuery}"`
 										: 'All available models are already selected'}
@@ -136,7 +136,7 @@ export default function ModelSelectionModal({
 									return (
 										<div key={provider} className="space-y-3">
 											{/* Provider Header */}
-											<h3 className="font-semibold text-text-primary capitalize pl-2">
+											<h3 className="font-semibold text-primary capitalize pl-2">
 												{provider}
 											</h3>
 

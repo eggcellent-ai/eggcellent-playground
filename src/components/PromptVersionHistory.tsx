@@ -96,7 +96,7 @@ const PromptVersionHistory: React.FC<PromptVersionHistoryProps> = ({
 						</button>
 
 						<div className="pr-8">
-							<p className="text-xs font-medium text-text-secondary mb-2">
+							<p className="text-xs font-medium text-secondary mb-2">
 								{(() => {
 									const date = new Date(version.timestamp)
 									const time = date.toLocaleTimeString('en-US', {
@@ -112,7 +112,7 @@ const PromptVersionHistory: React.FC<PromptVersionHistoryProps> = ({
 								})()}
 							</p>
 
-							<div className="text-sm text-text-primary">
+							<div className="text-sm text-primary">
 								{version.content ? (
 									<div className="space-y-1">
 										{version.content

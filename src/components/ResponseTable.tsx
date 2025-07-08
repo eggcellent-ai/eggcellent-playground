@@ -99,7 +99,7 @@ export default function ResponseTable({
 					<thead className="sticky top-0">
 						<tr>
 							<th
-								className="p-3 text-left text-sm font-semibold text-text-primary border-b border-r border-neutral"
+								className="p-3 text-left text-sm font-semibold text-primary border-b border-r border-neutral"
 								style={{
 									width: isFullScreen ? '400px' : '300px',
 									minWidth: isFullScreen ? '400px' : '300px',
@@ -112,7 +112,7 @@ export default function ResponseTable({
 								return (
 									<th
 										key={modelId}
-										className={`text-left text-sm font-semibold text-text-primary border-b border-neutral ${
+										className={`text-left text-sm font-semibold text-primary border-b border-neutral ${
 											index < selectedModels.length - 1
 												? 'border-r border-neutral'
 												: ''
@@ -181,7 +181,7 @@ export default function ResponseTable({
 											{tableData.length > 1 && (
 												<button
 													onClick={() => onRemoveRow(row.id)}
-													className={`px-3 py-1 border border-neutral text-text-secondary hover:border-neutral-dark hover:bg-neutral-hover transition-colors ${
+													className={`px-3 py-1 border border-neutral text-primary hover:border-neutral-dark hover:bg-neutral-hover transition-colors ${
 														isFullScreen ? 'text-sm' : 'text-xs'
 													}`}
 													title="Remove row"
@@ -241,12 +241,10 @@ export default function ResponseTable({
 					className="flex justify-between items-center px-5 py-3 bg-neutral-100"
 					onClick={(e) => e.stopPropagation()}
 				>
-					<h2 className="text-lg font-semibold text-text-primary">
-						All Responses
-					</h2>
+					<h2 className="text-lg font-semibold text-primary">All Responses</h2>
 					<button
 						onClick={onClose}
-						className="text-text-secondary hover:text-text-primary"
+						className="text-secondary hover:text-primary"
 					>
 						<XMarkIcon className="w-6 h-6" />
 					</button>

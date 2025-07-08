@@ -163,7 +163,7 @@ export default function InputSection({
 		<div>
 			{/* Section Header */}
 			<div className="bg-neutral-50 pb-2 pt-8 px-2 flex justify-between items-center">
-				<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
+				<h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
 					Input
 				</h2>
 			</div>
@@ -191,7 +191,7 @@ Examples of valid formats:
 ["Input 1", "Input 2", "Input 3"]
 [{"input": "Test 1"}, {"text": "Test 2"}]
 {"items": ["Item 1", "Item 2"]}`}
-							className="w-full resize-y bg-surface-card text-text-primary placeholder-text-muted transition-colors text-sm focus:outline-none h-54"
+							className="w-full resize-y bg-surface-card text-primary placeholder-text-muted transition-colors text-sm focus:outline-none h-54"
 						/>
 					) : (
 						<TableInputForm activePromptId={activePromptId} />

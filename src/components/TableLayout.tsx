@@ -449,7 +449,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										value={titleContent}
 										onChange={(e) => setTitleContent(e.target.value)}
 										onBlur={handleSaveTitle}
-										className="text-lg font-semibold text-text-primary bg-transparent border-none outline-none focus:outline-none w-full"
+										className="text-lg font-semibold text-primary bg-transparent border-none outline-none focus:outline-none w-full"
 										placeholder="Enter prompt title..."
 									/>
 									{/* Validation Messages */}
@@ -517,7 +517,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						{/* Section Header */}
 						<div className="bg-neutral-50 px-2 pb-2 pt-8">
 							<div className="flex justify-between items-center">
-								<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
+								<h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
 									System Prompt
 								</h2>
 								{hasUnsavedChanges && (
@@ -534,7 +534,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									{/* Expand/Collapse Icon - Top Right */}
 									<button
 										onClick={() => setIsEditorExpanded(!isEditorExpanded)}
-										className="absolute top-2 right-2 p-1 text-text-secondary hover:text-text-primary hover:bg-neutral-hover transition-colors z-10"
+										className="absolute top-2 right-2 p-1 text-secondary hover:text-primary hover:bg-neutral-hover transition-colors z-10"
 										title={
 											isEditorExpanded ? 'Collapse editor' : 'Expand editor'
 										}
@@ -546,7 +546,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										)}
 									</button>
 									<textarea
-										className="w-full resize-y bg-surface-card text-text-primary placeholder-text-muted transition-colors text-sm focus:outline-none"
+										className="w-full resize-y bg-surface-card text-primary placeholder-text-muted transition-colors text-sm focus:outline-none"
 										style={{
 											height: isEditorExpanded
 												? 'calc(100vh - 200px)'
@@ -574,8 +574,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 											onClick={() => setShowVersionHistory(!showVersionHistory)}
 											className={`px-4 py-2 text-sm border transition-colors ${
 												showVersionHistory
-													? 'bg-neutral border-neutral text-text-primary'
-													: 'border-neutral text-text-secondary hover:border-neutral-dark hover:bg-neutral-hover'
+													? 'bg-neutral border-neutral text-primary'
+													: 'border-neutral text-secondary hover:border-neutral-dark hover:bg-neutral-hover'
 											}`}
 										>
 											{showVersionHistory
@@ -612,7 +612,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						{/* Version History */}
 						{showVersionHistory && (
 							<div className="border-t border-neutral p-4">
-								<h3 className="text-sm font-semibold mb-3 text-text-primary">
+								<h3 className="text-sm font-semibold mb-3 text-primary">
 									Version History
 								</h3>
 								<PromptVersionHistory activePromptId={activePromptId || ''} />
@@ -625,7 +625,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						<div>
 							{/* Section Header */}
 							<div className="bg-neutral-50 px-2 pb-2 pt-8">
-								<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
+								<h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
 									Variables
 								</h2>
 							</div>
@@ -675,7 +675,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 																	handleUpdateVariable(variable, e.target.value)
 																}
 																placeholder="Enter value..."
-																className="w-full px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-secondary"
+																className="w-full px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-secondary text-primary"
 															/>
 														</td>
 														<td className="border border-neutral px-3 py-2">
@@ -709,7 +709,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										</button>
 									</div>
 									<div
-										className={`text-sm text-text-primary whitespace-pre-wrap break-words bg-amber-50 p-4 border border-amber-200 ${
+										className={`text-sm text-primary whitespace-pre-wrap break-words bg-amber-50 p-4 border border-amber-200 ${
 											!showFullPreview ? 'hidden' : ''
 										}`}
 									>
@@ -743,7 +743,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					<div className="flex-1 flex flex-col overflow-hidden">
 						{/* Section Header */}
 						<div className="bg-neutral-50 px-2 pb-2 pt-8">
-							<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
+							<h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
 								Responses
 							</h2>
 						</div>
@@ -768,7 +768,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 				// Show message when no prompt is selected
 				<div className="flex-1 flex items-center justify-center bg-surface-hover">
 					<div className="text-center text-muted">
-						<h2 className="text-lg font-semibold mb-2 text-text-primary">
+						<h2 className="text-lg font-semibold mb-2 text-primary">
 							No Prompt Selected
 						</h2>
 						<p>Create or select a prompt to start using the table view</p>

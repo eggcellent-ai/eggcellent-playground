@@ -59,7 +59,7 @@ export default function Header() {
 							{!isHomePage && (
 								<Link
 									to="/"
-									className="text-text-secondary px-4 py-2 font-semibold transition-colors hover:text-warning pl-10"
+									className="text-secondary px-4 py-2 font-semibold transition-colors hover:text-warning pl-10"
 								>
 									All Prompts
 								</Link>

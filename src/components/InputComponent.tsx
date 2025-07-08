@@ -115,9 +115,7 @@ export default function InputComponent({
 			{/* Image Preview Area */}
 			{showImageUpload && localImages.length > 0 && (
 				<div className="space-y-2">
-					<p className="text-xs font-semibold text-gray-600">
-						Uploaded Images:
-					</p>
+					<p className="text-xs font-semibold text-primary">Uploaded Images:</p>
 					<div className="flex flex-wrap gap-2">
 						{localImages.map((image) => (
 							<div key={image.id} className="relative group">
@@ -152,7 +150,7 @@ export default function InputComponent({
 				placeholder={placeholder}
 				rows={rows}
 				disabled={disabled}
-				className="w-full p-2 border bg-surface-input border-neutral text-sm resize-none focus:ring-secondary focus:border-secondary"
+				className="w-full p-2 border bg-surface-input border-neutral text-sm resize-none focus:ring-secondary focus:border-secondary text-primary"
 			/>
 
 			{/* Image Upload Button */}
@@ -169,7 +167,7 @@ export default function InputComponent({
 					/>
 					<label
 						htmlFor={inputId}
-						className="flex items-center px-2 py-1 text-text-secondary bg-neutral-hover border border-neutral hover:bg-neutral-light focus:outline-none focus:ring-2 focus:ring-secondary cursor-pointer text-xs"
+						className="flex items-center px-2 py-1 text-primary bg-neutral-hover border border-neutral hover:bg-neutral-light focus:outline-none focus:ring-2 focus:ring-secondary cursor-pointer text-xs"
 					>
 						<PhotoIcon className="w-3 h-3 mr-1" />
 						Images

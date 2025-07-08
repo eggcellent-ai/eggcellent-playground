@@ -69,7 +69,7 @@ export default function ModelItem({
 						onRemove()
 					}}
 					disabled={disableRemove}
-					className="absolute inset-0 flex items-center justify-center bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity text-text-secondary gap-2 disabled:cursor-not-allowed disabled:opacity-0"
+					className="absolute inset-0 flex items-center justify-center bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity text-secondary gap-2 disabled:cursor-not-allowed disabled:opacity-0"
 					title={
 						disableRemove ? 'Cannot remove the last model' : 'Remove model'
 					}

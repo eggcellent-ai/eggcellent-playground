@@ -183,7 +183,7 @@ export default function TableCell({
 					{isLoading ? (
 						<div className="animate-pulse text-muted">Running prompt...</div>
 					) : response ? (
-						<div className="whitespace-pre-wrap text-text-primary break-words">
+						<div className="whitespace-pre-wrap text-primary break-words">
 							{response}
 						</div>
 					) : (
@@ -249,7 +249,7 @@ export default function TableCell({
 											className="h-16 p-2 bg-white"
 										/>
 									) : (
-										<h3 className="text-lg font-medium text-text-primary">
+										<h3 className="text-lg font-medium text-primary">
 											Response - {modelId}
 										</h3>
 									)
@@ -259,7 +259,7 @@ export default function TableCell({
 
 						{/* Modal Content */}
 						<div className="flex-1 overflow-y-auto p-4">
-							<div className="whitespace-pre-wrap text-text-primary text-lg leading-relaxed">
+							<div className="whitespace-pre-wrap text-primary text-lg leading-relaxed">
 								{response}
 							</div>
 						</div>

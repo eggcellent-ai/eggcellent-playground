@@ -74,9 +74,7 @@ export default function PromptList() {
 							</div>
 							<div className="space-y-4">
 								<div>
-									<p className="text-xl text-text-secondary mb-2">
-										No prompts yet
-									</p>
+									<p className="text-xl text-secondary mb-2">No prompts yet</p>
 									<p className="text-muted mb-6">
 										Create your first prompt to get started with AI
 										conversations

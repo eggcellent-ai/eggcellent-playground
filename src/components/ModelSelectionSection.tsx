@@ -28,7 +28,7 @@ export default function ModelSelectionSection({
 		<div>
 			{/* Section Header */}
 			<div className="bg-neutral-50 px-2 pb-2 pt-8">
-				<h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
+				<h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
 					Models
 				</h2>
 			</div>
@@ -36,7 +36,7 @@ export default function ModelSelectionSection({
 			{/* Models Display */}
 			<div>
 				{selectedModels.length === 0 ? (
-					<div className="text-center py-8 text-text-secondary">
+					<div className="text-center py-8 text-secondary">
 						<p className="mb-4">No models selected</p>
 						<button
 							onClick={() => setShowModelModal(true)}
@@ -69,7 +69,7 @@ export default function ModelSelectionSection({
 							})}
 							<button
 								onClick={() => setShowModelModal(true)}
-								className="border border-neutral p-3 flex items-center justify-center gap-2 hover:border-neutral-dark hover:bg-neutral-hover transition-colors text-text-secondary text-sm h-15"
+								className="border border-neutral p-3 flex items-center justify-center gap-2 hover:border-neutral-dark hover:bg-neutral-hover transition-colors text-secondary text-sm h-15"
 							>
 								<PlusIcon className="w-5 h-5" />
 								<span>Add Model</span>

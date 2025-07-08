@@ -10,11 +10,12 @@
 	--primary-light: #c5ddcc;
 	--primary-dark: #00b037;
 
-	--secondary: #241212;
+	--main: #343434;
+	--secondary: #999999;
 	--secondary-light: #ddeaf0;
 	--secondary-dark: #006699;
 
-	--neutral: #e5e5e5;
+	--neutral: #f5f5f5;
 	--neutral-light: #f6f6f6;
 	--neutral-dark: #171717;
 	--neutral-hover: #f5f5f5;
@@ -34,7 +35,7 @@
 	/* Text colors */
 	--text-primary: #011a25;
 	--text-secondary: #093c52;
-	--text-muted: #737373;
+	--text-muted: #bcbcbc;
 	--text-inverse: #ffffff;
 
 	/* Surface colors */
@@ -108,7 +109,7 @@ body {
 
 /* Utility classes */
 .text-primary {
-	color: var(--text-primary);
+	color: var(--main);
 }
 .text-secondary {
 	color: var(--text-secondary);
