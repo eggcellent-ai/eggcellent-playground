@@ -8,6 +8,12 @@ import {
 } from '@heroicons/react/24/outline'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/solid'
 
+// Import provider logos
+import googleLogo from '../assets/logos/google.svg'
+import openaiLogo from '../assets/logos/openai.svg'
+import anthropicLogo from '../assets/logos/anthropic.svg'
+import xaiLogo from '../assets/logos/grok.svg'
+
 interface ApiKeySettingsProps {
 	isOpen: boolean
 	onClose: () => void
@@ -18,6 +24,7 @@ const PROVIDERS = [
 	{
 		key: 'openai',
 		name: 'OpenAI',
+		logo: openaiLogo,
 		description: 'GPT models (GPT-4o, GPT-4o Mini, o1, etc.)',
 		placeholder: 'sk-...',
 		getUrl: 'https://platform.openai.com/api-keys',
@@ -29,6 +36,7 @@ const PROVIDERS = [
 	{
 		key: 'anthropic',
 		name: 'Anthropic',
+		logo: anthropicLogo,
 		description: 'Claude models (Claude 3.5 Sonnet, Haiku, etc.)',
 		placeholder: 'sk-ant-...',
 		getUrl: 'https://console.anthropic.com/settings/keys',
@@ -40,6 +48,7 @@ const PROVIDERS = [
 	{
 		key: 'xai',
 		name: 'xAI',
+		logo: xaiLogo,
 		description: 'Grok models (Grok 3, Grok 3 Fast, Grok 3 Mini)',
 		placeholder: 'xai-...',
 		getUrl: 'https://console.x.ai/team/api-keys',
@@ -51,6 +60,7 @@ const PROVIDERS = [
 	{
 		key: 'google',
 		name: 'Google',
+		logo: googleLogo,
 		description: 'Gemini models (Gemini 1.5 Pro, Flash, etc.)',
 		placeholder: 'AI...',
 		getUrl: 'https://console.cloud.google.com/apis/credentials',
@@ -259,21 +269,34 @@ export default function ApiKeySettings({
 								} p-4`}
 							>
 								<div className="mb-3">
-									<div className="flex items-center justify-between mb-1">
-										<label className="text-lg font-semibold text-primary">
-											{provider.name}
-										</label>
-										<span
-											className={`text-sm ${
-												currentKeys[provider.key]?.trim()
-													? 'text-success'
-													: 'text-warning'
-											}`}
-										>
-											{currentKeys[provider.key]?.trim()
-												? '✅ Set'
-												: '⚠️ Empty'}
-										</span>
+									<div className="flex items-center gap-4 mb-1">
+										{provider.logo && (
+											<img
+												src={provider.logo}
+												alt={`${provider.name} logo`}
+												className="w-8 h-8 object-contain flex-shrink-0"
+												onError={(e) => {
+													// Hide the image if it fails to load
+													;(e.target as HTMLImageElement).style.display = 'none'
+												}}
+											/>
+										)}
+										<div className="flex items-center justify-between flex-1">
+											<label className="text-lg font-semibold text-primary">
+												{provider.name}
+											</label>
+											<span
+												className={`text-sm ${
+													currentKeys[provider.key]?.trim()
+														? 'text-success'
+														: 'text-warning'
+												}`}
+											>
+												{currentKeys[provider.key]?.trim()
+													? '✅ Set'
+													: '⚠️ Empty'}
+											</span>
+										</div>
 									</div>
 									<p className="text-xs text-muted mb-3">
 										{provider.description}
