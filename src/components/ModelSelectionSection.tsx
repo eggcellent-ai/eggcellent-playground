@@ -40,7 +40,7 @@ export default function ModelSelectionSection({
 						<p className="mb-4">No models selected</p>
 						<button
 							onClick={() => setShowModelModal(true)}
-							className="px-4 py-2 bg-primary text-white text-sm hover:bg-primary-dark transition-colors flex items-center gap-2 mx-auto"
+							className="px-4 py-2 bg-primary text-white text-sm transition-colors flex items-center gap-2 mx-auto"
 						>
 							<PlusIcon className="w-4 h-4" />
 							Add Models
@@ -69,7 +69,7 @@ export default function ModelSelectionSection({
 							})}
 							<button
 								onClick={() => setShowModelModal(true)}
-								className="border border-neutral p-3 flex items-center justify-center gap-2 hover:border-neutral-dark hover:bg-neutral-hover transition-colors text-secondary text-sm h-15"
+								className="border border-neutral p-3 flex items-center justify-center gap-2 hover:border-secondary hover:bg-neutral-hover transition-colors text-secondary text-sm h-15"
 							>
 								<PlusIcon className="w-5 h-5" />
 								<span>Add Model</span>
