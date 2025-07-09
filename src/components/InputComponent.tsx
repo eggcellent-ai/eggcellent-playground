@@ -10,25 +10,19 @@ interface InputComponentProps {
 export default function InputComponent({
 	value,
 	onChange,
-	placeholder = 'Enter your input...',
+	placeholder = '',
 	rows = 3,
 	disabled = false,
 	className = '',
 }: InputComponentProps) {
-	const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-		onChange(e.target.value)
-	}
-
 	return (
-		<div className={`space-y-2 ${className}`}>
-			<textarea
-				value={value}
-				onChange={handleTextChange}
-				placeholder={placeholder}
-				rows={rows}
-				disabled={disabled}
-				className="w-full p-2 border bg-surface-input border-neutral text-sm resize-none focus:ring-secondary focus:border-secondary text-primary"
-			/>
-		</div>
+		<textarea
+			value={value}
+			onChange={(e) => onChange(e.target.value)}
+			placeholder={placeholder}
+			rows={rows}
+			disabled={disabled}
+			className={`w-full p-2 border border-neutral text-sm resize-y focus:outline-none focus:ring-1 focus:ring-primary ${className}`}
+		/>
 	)
 }

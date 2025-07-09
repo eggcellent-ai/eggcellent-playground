@@ -7,17 +7,12 @@ import {
 import { PlayIcon } from '@heroicons/react/24/solid'
 import { CheckIcon } from '@heroicons/react/24/solid'
 import { useState, useEffect, useCallback } from 'react'
-import { type UploadedImage } from './InputComponent'
 import PromptVersionHistory from './PromptVersionHistory'
 import ModelSelectionSection from './ModelSelectionSection'
-import { useAIService } from '../lib/aiService'
+import { useAIService, type ChatMessage } from '../lib/aiService'
 import ResponseTable from './ResponseTable'
 import InputSection from './InputSection'
-import {
-	getTableValidation,
-	getVariableFormats,
-	buildAIServiceMessages,
-} from '../lib/tableUtils'
+import { getTableValidation, getVariableFormats } from '../lib/tableUtils'
 
 interface TableLayoutProps {
 	inputPromptContent: string
@@ -110,13 +105,9 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		}
 	}
 
-	const handleUpdateRowInput = (
-		rowId: string,
-		input: string,
-		images: UploadedImage[] = []
-	) => {
+	const handleUpdateRowInput = (rowId: string, input: string) => {
 		if (activePromptId) {
-			updateTableRowInput(activePromptId || '', rowId, input, images)
+			updateTableRowInput(activePromptId || '', rowId, input)
 		}
 	}
 
@@ -139,22 +130,27 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		}
 	}
 
-	const handleRunAllModels = async (
-		rowId: string,
-		input: string,
-		images: UploadedImage[] = []
-	) => {
-		// Allow if there's either text input or images
-		const hasContent = input.trim() || images.length > 0
+	const handleRunAllModels = async (rowId: string, input: string) => {
+		// Allow if there's text input
+		const hasContent = input.trim()
 		if (!hasContent || !activePromptId || !activeVersionId) return
 
 		try {
+			// Clear all existing responses and set loading state for each cell
+			selectedModels.forEach((modelId) => {
+				updateTableCellResponse(
+					activePromptId || '',
+					activeVersionId,
+					rowId,
+					modelId,
+					'<loading>' // Special marker to indicate loading state
+				)
+			})
+
 			// Run all selected models in parallel
 			const promises = selectedModels.map(async (modelId) => {
 				try {
-					console.log(
-						`Starting request for ${modelId} with input: ${input}, images: ${images.length}`
-					)
+					console.log(`Starting request for ${modelId} with input: ${input}`)
 
 					// Check if we have a valid API key for this model
 					if (!hasValidKeyForModel(modelId)) {
@@ -174,14 +170,20 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					}
 
 					// Build messages array for AI service
-					const messages = buildAIServiceMessages(
-						input,
-						images,
-						activePromptId || '',
-						activeVersionId,
-						inputPromptContent,
-						substituteVariables
-					)
+					const messages: ChatMessage[] = [
+						{
+							role: 'system',
+							content: substituteVariables(
+								activePromptId,
+								activeVersionId,
+								inputPromptContent
+							),
+						},
+						{
+							role: 'user',
+							content: input.trim(),
+						},
+					]
 
 					// Use AI service for generation
 					const fullResponse = await streamText(messages, modelId)
@@ -230,9 +232,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		if (!activePromptId || !activeVersionId || runningAllTable) return
 
 		// Get all rows with content
-		const rowsWithContent = tableData.filter(
-			(row) => row.input.trim() || (row.images || []).length > 0
-		)
+		const rowsWithContent = tableData.filter((row) => row.input.trim())
 
 		if (rowsWithContent.length === 0) return
 
@@ -259,9 +259,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					const modelPromises = selectedModels.map(async (modelId) => {
 						try {
 							console.log(
-								`Starting table request for ${modelId} with input: ${
-									row.input
-								}, images: ${(row.images || []).length}`
+								`Starting table request for ${modelId} with input: ${row.input}`
 							)
 
 							// Check if we have a valid API key for this model
@@ -282,14 +280,20 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							}
 
 							// Build messages array for AI service
-							const messages = buildAIServiceMessages(
-								row.input,
-								row.images || [],
-								activePromptId || '',
-								activeVersionId,
-								inputPromptContent,
-								substituteVariables
-							)
+							const messages: ChatMessage[] = [
+								{
+									role: 'system',
+									content: substituteVariables(
+										activePromptId,
+										activeVersionId,
+										inputPromptContent
+									),
+								},
+								{
+									role: 'user',
+									content: row.input.trim(),
+								},
+							]
 
 							// Use AI service for generation
 							const fullResponse = await streamText(messages, modelId)
@@ -398,9 +402,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 				// Check if table can be run
 				const canRunTable =
 					!runningAllTable &&
-					tableData.some(
-						(row) => row.input.trim() || (row.images || []).length > 0
-					) &&
+					tableData.some((row) => row.input.trim()) &&
 					selectedModels.length > 0 &&
 					!selectedModels.some((modelId) => !hasValidKeyForModel(modelId))
 
@@ -493,10 +495,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										onClick={handleRunAllTable}
 										disabled={
 											runningAllTable ||
-											!tableData.some(
-												(row) =>
-													row.input.trim() || (row.images || []).length > 0
-											) ||
+											!tableData.some((row) => row.input.trim()) ||
 											selectedModels.length === 0 ||
 											selectedModels.some(
 												(modelId) => !hasValidKeyForModel(modelId)

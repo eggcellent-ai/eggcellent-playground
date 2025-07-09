@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useSystemPromptStore, AVAILABLE_MODELS } from '../lib/stores'
-import type { UploadedImage } from './InputComponent'
 import { useAIService, type ChatMessage } from '../lib/aiService'
 import ModelItem from './ModelItem'
 import {
@@ -13,7 +12,6 @@ interface TableCellProps {
 	rowId: string
 	modelId: string
 	input: string
-	images?: UploadedImage[]
 	systemPrompt: string
 	activePromptId: string | null
 	activeVersionId: string | null
@@ -24,7 +22,6 @@ export default function TableCell({
 	rowId,
 	modelId,
 	input,
-	images = [],
 	systemPrompt,
 	activePromptId,
 	activeVersionId,
@@ -68,8 +65,8 @@ export default function TableCell({
 	}, [activePromptId, activeVersionId, rowId, modelId, getTableCellResponse])
 
 	const handleRun = async () => {
-		// Allow if there's either text input or images
-		const hasContent = input.trim() || images.length > 0
+		// Allow if there's text input
+		const hasContent = input.trim()
 		if (!hasContent || isLoading) return
 
 		// Check if we have a valid API key for this model
@@ -90,40 +87,11 @@ export default function TableCell({
 					role: 'system',
 					content: systemPrompt,
 				},
-			]
-
-			// Build user message content
-			if (images.length > 0) {
-				// Multimodal content
-				const content: Array<
-					{ type: 'text'; text: string } | { type: 'image'; image: string }
-				> = []
-
-				if (input.trim()) {
-					content.push({
-						type: 'text',
-						text: input.trim(),
-					})
-				}
-
-				images.forEach((image) => {
-					content.push({
-						type: 'image',
-						image: image.base64,
-					})
-				})
-
-				messages.push({
-					role: 'user',
-					content,
-				})
-			} else {
-				// Text-only content
-				messages.push({
+				{
 					role: 'user',
 					content: input.trim(),
-				})
-			}
+				},
+			]
 
 			// Use streaming AI service
 			const fullResponse = await streamText(messages, modelId, (text) =>

@@ -1,6 +1,6 @@
 import { PlayIcon } from '@heroicons/react/24/solid'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import InputComponent, { type UploadedImage } from './InputComponent'
+import InputComponent from './InputComponent'
 import TableCell from './TableCell'
 import ModelItem from './ModelItem'
 import { AVAILABLE_MODELS } from '../lib/stores'
@@ -10,7 +10,6 @@ interface ResponseTableProps {
 	tableData: Array<{
 		id: string
 		input: string
-		images: UploadedImage[]
 		timestamp: number
 		responses: Record<string, string>
 	}>
@@ -19,17 +18,9 @@ interface ResponseTableProps {
 	activeVersionId: string
 	inputPromptContent: string
 	hasValidKeyForModel: (modelId: string) => boolean
-	onRunAllModels: (
-		rowId: string,
-		input: string,
-		images: UploadedImage[]
-	) => void
+	onRunAllModels: (rowId: string, input: string) => void
 	onRemoveRow: (rowId: string) => void
-	onUpdateRowInput: (
-		rowId: string,
-		input: string,
-		images: UploadedImage[]
-	) => void
+	onUpdateRowInput: (rowId: string, input: string) => void
 	isFullScreen?: boolean
 	onClose?: () => void
 }
@@ -148,25 +139,19 @@ export default function ResponseTable({
 									<div className="space-y-3">
 										<InputComponent
 											value={row.input}
-											images={row.images || []}
-											onChange={(value: string, images?: UploadedImage[]) =>
-												onUpdateRowInput(row.id, value, images || [])
+											onChange={(value: string) =>
+												onUpdateRowInput(row.id, value)
 											}
 											placeholder="Enter your test input..."
 											rows={isFullScreen ? 4 : 3}
-											showImageUpload={true}
 										/>
 
 										{/* Action Buttons */}
 										<div className="flex gap-2">
 											{/* Run All Models Button */}
 											<button
-												onClick={() =>
-													onRunAllModels(row.id, row.input, row.images || [])
-												}
-												disabled={
-													!(row.input.trim() || (row.images || []).length > 0)
-												}
+												onClick={() => onRunAllModels(row.id, row.input)}
+												disabled={!row.input.trim()}
 												className={`px-3 py-1 bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1 ${
 													isFullScreen ? 'text-sm' : 'text-xs'
 												}`}
@@ -214,7 +199,6 @@ export default function ResponseTable({
 											rowId={row.id}
 											modelId={modelId}
 											input={row.input}
-											images={row.images || []}
 											systemPrompt={inputPromptContent}
 											activePromptId={activePromptId}
 											activeVersionId={activeVersionId}
