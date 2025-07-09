@@ -19,7 +19,7 @@ interface InputSectionProps {
 	activeVersionId: string
 }
 
-type InputMode = 'json' | 'table'
+type InputMode = 'table' | 'json'
 
 export default function InputSection({
 	activePromptId,
@@ -32,7 +32,7 @@ export default function InputSection({
 		message: string
 		isEmpty: boolean
 	}>({ isValid: true, message: '', isEmpty: true })
-	const [inputMode, setInputMode] = useState<InputMode>('json')
+	const [inputMode, setInputMode] = useState<InputMode>('table')
 
 	// Function to handle JSON input changes with validation
 	const handleJsonInputChange = (inputValue: string) => {
@@ -173,15 +173,17 @@ export default function InputSection({
 				{/* Tab Buttons */}
 				<TabGroup<InputMode>
 					items={[
-						{ id: 'json', label: 'JSON Input' },
 						{ id: 'table', label: 'Table Input' },
+						{ id: 'json', label: 'JSON Input' },
 					]}
 					className="border-b border-neutral"
 					activeId={inputMode}
 					onChange={setInputMode}
 				/>
 				<div className="p-4 bg-surface-card">
-					{inputMode === 'json' ? (
+					{inputMode === 'table' ? (
+						<TableInputForm activePromptId={activePromptId} />
+					) : (
 						<textarea
 							value={jsonInputValue}
 							onChange={handleTextareaChange}
@@ -193,8 +195,6 @@ Examples of valid formats:
 {"items": ["Item 1", "Item 2"]}`}
 							className="w-full resize-y bg-surface-card text-primary placeholder-text-muted transition-colors text-sm focus:outline-none h-54"
 						/>
-					) : (
-						<TableInputForm activePromptId={activePromptId} />
 					)}
 				</div>
 			</div>

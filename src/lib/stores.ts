@@ -35,7 +35,6 @@ interface PromptVersion {
 interface InputRow {
 	id: string
 	input: string
-	images: UploadedImage[]
 	timestamp: number
 }
 
@@ -43,13 +42,6 @@ interface InputRow {
 interface TableRow extends InputRow {
 	// Store responses for each model (inherited from version)
 	responses: Record<string, string>
-}
-
-interface UploadedImage {
-	id: string
-	name: string
-	base64: string
-	preview: string
 }
 
 interface Prompt {
@@ -141,12 +133,7 @@ interface SystemPromptState {
 	) => TableRow[]
 	addTableRow: (promptId: string, initialInput?: string) => void
 	removeTableRow: (promptId: string, rowId: string) => void
-	updateTableRowInput: (
-		promptId: string,
-		rowId: string,
-		input: string,
-		images?: UploadedImage[]
-	) => void
+	updateTableRowInput: (promptId: string, rowId: string, input: string) => void
 	getTableCellResponse: (
 		promptId: string,
 		versionId: string,
@@ -228,7 +215,6 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 						{
 							id: crypto.randomUUID(),
 							input: 'hello',
-							images: [],
 							timestamp: Date.now(),
 						},
 					],
@@ -655,7 +641,6 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 				const newRow: InputRow = {
 					id: crypto.randomUUID(),
 					input: initialInput || '',
-					images: [],
 					timestamp: Date.now(),
 				}
 				set((state) => ({
@@ -692,19 +677,14 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 					),
 				}))
 			},
-			updateTableRowInput: (
-				promptId: string,
-				rowId: string,
-				input: string,
-				images: UploadedImage[] = []
-			) => {
+			updateTableRowInput: (promptId: string, rowId: string, input: string) => {
 				set((state) => ({
 					prompts: state.prompts.map((prompt) =>
 						prompt.id === promptId
 							? {
 									...prompt,
 									inputRows: (prompt.inputRows || []).map((row) =>
-										row.id === rowId ? { ...row, input, images } : row
+										row.id === rowId ? { ...row, input } : row
 									),
 							  }
 							: prompt
