@@ -485,10 +485,10 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									) && (
 										<button
 											onClick={() => setShowFullScreenResponses(true)}
-											className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white text-sm font-medium transition-colors flex items-center gap-2 focus:outline-none focus:ring-0 focus:bg-neutral-600"
+											className="px-4 py-2 bg-surface-card border border-neutral hover:bg-neutral-hover text-primary font-medium transition-colors flex items-center gap-2 focus:outline-none focus:ring-0"
 										>
 											<ArrowsPointingOutIcon className="w-4 h-4" />
-											View Responses
+											Responses
 										</button>
 									)}
 									<button
@@ -501,7 +501,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 												(modelId) => !hasValidKeyForModel(modelId)
 											)
 										}
-										className="px-5 py-2 bg-primary hover:bg-primary-dark text-white text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 focus:outline-none focus:ring-0 focus:bg-primary-dark"
+										className="px-5 py-2 bg-primary hover:bg-primary-dark text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 focus:outline-none focus:ring-0 focus:bg-primary-dark"
 									>
 										<PlayIcon className="w-4 h-4" />
 										{runningAllTable ? 'Running ...' : 'Run table'}
@@ -510,7 +510,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							</div>
 						</div>
 					</div>
-
+					vc vc
 					{/* ===== SYSTEM PROMPT SECTION ===== */}
 					<div>
 						{/* Section Header */}
@@ -618,7 +618,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							</div>
 						)}
 					</div>
-
 					{/* ===== VARIABLES SECTION ===== */}
 					{detectedVariables.length > 0 && (
 						<div>
@@ -724,20 +723,17 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							</div>
 						</div>
 					)}
-
 					{/* ===== MODELS SECTION ===== */}
 					<ModelSelectionSection
 						selectedModels={selectedModels}
 						onAddModel={handleAddModel}
 						onRemoveModel={handleRemoveModel}
 					/>
-
 					{/* ===== INPUT SECTION ===== */}
 					<InputSection
 						activePromptId={activePromptId}
 						activeVersionId={activeVersionId}
 					/>
-
 					{/* ===== RESPONSE SECTION ===== */}
 					<div className="flex-1 flex flex-col overflow-hidden">
 						{/* Section Header */}
