@@ -510,7 +510,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							</div>
 						</div>
 					</div>
-					vc vc
 					{/* ===== SYSTEM PROMPT SECTION ===== */}
 					<div>
 						{/* Section Header */}
