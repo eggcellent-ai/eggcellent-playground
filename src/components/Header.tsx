@@ -72,7 +72,7 @@ export default function Header() {
 								href="https://github.com/eggcellent-ai/eggcellent-playground"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="bg-[#f3f3f3] hover:bg-primary text-primary px-4 py-2 font-medium transition-colors flex items-center gap-2 border border-[#dfdfdf]"
+								className="text-secondary px-4 py-2 font-semibold transition-colors hover:text-warning flex items-center gap-2"
 							>
 								<svg
 									viewBox="0 0 24 24"
