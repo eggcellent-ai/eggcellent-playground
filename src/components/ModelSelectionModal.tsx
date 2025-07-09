@@ -7,7 +7,7 @@ interface ModelSelectionModalProps {
 	isOpen: boolean
 	onClose: () => void
 	selectedModels: string[]
-	onAddModel: (modelId: string) => void
+	onAddModel: (modelIds: string[]) => void
 }
 
 export default function ModelSelectionModal({
@@ -17,14 +17,22 @@ export default function ModelSelectionModal({
 	onAddModel,
 }: ModelSelectionModalProps) {
 	const [searchQuery, setSearchQuery] = useState('')
+	const [tempSelectedModels, setTempSelectedModels] = useState<string[]>([])
+
+	// Reset temp selections when modal opens
+	useEffect(() => {
+		if (isOpen) {
+			setSearchQuery('')
+			setTempSelectedModels([...selectedModels]) // Initialize with current selections
+		}
+	}, [isOpen, selectedModels])
 
 	// Group models by provider
 	const modelsByProvider = useMemo(() => {
 		const filtered = AVAILABLE_MODELS.filter(
 			(model) =>
-				!selectedModels.includes(model.id) &&
-				(model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-					model.provider.toLowerCase().includes(searchQuery.toLowerCase()))
+				model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				model.provider.toLowerCase().includes(searchQuery.toLowerCase())
 		)
 
 		const grouped: Record<string, Array<(typeof AVAILABLE_MODELS)[number]>> = {}
@@ -36,7 +44,7 @@ export default function ModelSelectionModal({
 		})
 
 		return grouped
-	}, [selectedModels, searchQuery])
+	}, [searchQuery])
 
 	// Close on escape key
 	useEffect(() => {
@@ -55,13 +63,6 @@ export default function ModelSelectionModal({
 		}
 	}, [isOpen, onClose])
 
-	// Reset search when modal opens
-	useEffect(() => {
-		if (isOpen) {
-			setSearchQuery('')
-		}
-	}, [isOpen])
-
 	if (!isOpen) return null
 
 	const availableProviders = Object.keys(modelsByProvider).sort()
@@ -69,6 +70,20 @@ export default function ModelSelectionModal({
 		(sum, models) => sum + models.length,
 		0
 	)
+
+	const handleModelClick = (modelId: string) => {
+		setTempSelectedModels((prev) => {
+			if (prev.includes(modelId)) {
+				return prev.filter((id) => id !== modelId)
+			}
+			return [...prev, modelId]
+		})
+	}
+
+	const handleConfirm = () => {
+		onAddModel(tempSelectedModels)
+		onClose()
+	}
 
 	return (
 		<div className="fixed inset-0 z-50 overflow-y-auto" onClick={onClose}>
@@ -91,6 +106,12 @@ export default function ModelSelectionModal({
 							<h2 className="text-xl font-semibold text-primary">
 								Select AI Models
 							</h2>
+							{tempSelectedModels.length > 0 && (
+								<p className="text-sm text-secondary mt-1">
+									{tempSelectedModels.length} model
+									{tempSelectedModels.length !== 1 ? 's' : ''} selected
+								</p>
+							)}
 						</div>
 						<button
 							onClick={onClose}
@@ -122,9 +143,7 @@ export default function ModelSelectionModal({
 						{totalAvailableModels === 0 ? (
 							<div className="text-center py-12">
 								<p className="text-secondary">
-									{searchQuery
-										? `No models found matching "${searchQuery}"`
-										: 'All available models are already selected'}
+									No models found matching "{searchQuery}"
 								</p>
 							</div>
 						) : (
@@ -147,10 +166,8 @@ export default function ModelSelectionModal({
 														key={model.id}
 														model={model}
 														className="border border-neutral"
-														onClick={() => {
-															onAddModel(model.id)
-															// Don't close modal, allow multiple selections
-														}}
+														onClick={() => handleModelClick(model.id)}
+														selected={tempSelectedModels.includes(model.id)}
 													/>
 												))}
 											</div>
@@ -159,6 +176,22 @@ export default function ModelSelectionModal({
 								})}
 							</div>
 						)}
+					</div>
+
+					{/* Footer with Confirm Button */}
+					<div className="border-t border-neutral p-6 flex justify-end gap-3">
+						<button
+							onClick={onClose}
+							className="px-4 py-2 text-secondary hover:bg-neutral-hover rounded transition-colors"
+						>
+							Cancel
+						</button>
+						<button
+							onClick={handleConfirm}
+							className="px-4 py-2 bg-secondary text-white rounded hover:bg-secondary-dark transition-colors"
+						>
+							Confirm Selection
+						</button>
 					</div>
 				</div>
 			</div>

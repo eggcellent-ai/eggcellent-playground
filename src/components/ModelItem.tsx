@@ -1,4 +1,4 @@
-import { TrashIcon } from '@heroicons/react/24/outline'
+import { TrashIcon, CheckIcon } from '@heroicons/react/24/outline'
 import type { Model } from '../lib/models'
 
 // Import logos
@@ -33,6 +33,7 @@ interface ModelItemProps {
 	hasValidKey?: boolean
 	className?: string
 	onClick?: () => void
+	selected?: boolean
 }
 
 export default function ModelItem({
@@ -44,6 +45,7 @@ export default function ModelItem({
 	hasValidKey = true,
 	className = '',
 	onClick,
+	selected = false,
 }: ModelItemProps) {
 	const status = {
 		hasValidKey,
@@ -59,7 +61,7 @@ export default function ModelItem({
 				onClick
 					? 'cursor-pointer hover:border-secondary hover:bg-secondary-light transition-all'
 					: ''
-			} ${className}`}
+			} ${selected ? 'bg-secondary-light border-secondary' : ''} ${className}`}
 			onClick={onClick}
 		>
 			{showRemoveButton && onRemove && (
@@ -106,6 +108,11 @@ export default function ModelItem({
 						)}
 					</div>
 				</div>
+				{selected && (
+					<div className="flex-shrink-0">
+						<CheckIcon className="w-5 h-5 text-secondary" />
+					</div>
+				)}
 			</div>
 		</div>
 	)

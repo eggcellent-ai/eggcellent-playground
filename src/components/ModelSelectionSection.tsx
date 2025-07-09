@@ -7,7 +7,7 @@ import ModelItem from './ModelItem'
 
 interface ModelSelectionSectionProps {
 	selectedModels: string[]
-	onAddModel: (modelId: string) => void
+	onAddModel: (modelId: string | string[]) => void
 	onRemoveModel: (modelId: string) => void
 }
 
@@ -19,8 +19,8 @@ export default function ModelSelectionSection({
 	const [showModelModal, setShowModelModal] = useState(false)
 	const { hasValidKeyForModel } = useAIService()
 
-	const handleAddModel = (modelId: string) => {
-		onAddModel(modelId)
+	const handleAddModels = (modelIds: string[]) => {
+		onAddModel(modelIds)
 		setShowModelModal(false)
 	}
 
@@ -84,7 +84,7 @@ export default function ModelSelectionSection({
 				isOpen={showModelModal}
 				onClose={() => setShowModelModal(false)}
 				selectedModels={selectedModels}
-				onAddModel={handleAddModel}
+				onAddModel={handleAddModels}
 			/>
 		</div>
 	)

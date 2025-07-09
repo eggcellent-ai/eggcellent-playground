@@ -112,18 +112,23 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	}
 
 	const handleRemoveModel = (modelId: string) => {
-		// Don't allow removing the last model
-		if (selectedModels.length <= 1) return
-
-		const newModels = selectedModels.filter((id) => id !== modelId)
-		if (activePromptId && activeVersionId) {
-			updateSelectedModels(activePromptId || '', activeVersionId, newModels)
+		if (selectedModels.includes(modelId)) {
+			const newModels = selectedModels.filter((id) => id !== modelId)
+			if (activePromptId && activeVersionId) {
+				updateSelectedModels(activePromptId || '', activeVersionId, newModels)
+			}
 		}
 	}
 
-	const handleAddModel = (modelId: string) => {
-		if (!selectedModels.includes(modelId)) {
-			const newModels = [...selectedModels, modelId]
+	const handleAddModel = (modelIds: string | string[]) => {
+		// If it's an array from the modal, treat it as the complete new selection
+		if (Array.isArray(modelIds)) {
+			if (activePromptId && activeVersionId) {
+				updateSelectedModels(activePromptId || '', activeVersionId, modelIds)
+			}
+		} else {
+			// Single model ID case (from "Add Model" button)
+			const newModels = [...new Set([...selectedModels, modelIds])]
 			if (activePromptId && activeVersionId) {
 				updateSelectedModels(activePromptId || '', activeVersionId, newModels)
 			}
