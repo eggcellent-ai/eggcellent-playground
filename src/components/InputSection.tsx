@@ -162,7 +162,7 @@ export default function InputSection({
 	return (
 		<div>
 			{/* Section Header */}
-			<div className="bg-neutral-50 pb-2 pt-8 px-2 flex justify-between items-center">
+			<div className="pb-2 pt-8 px-2 flex justify-between items-center">
 				<h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
 					Input
 				</h2>

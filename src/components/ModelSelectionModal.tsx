@@ -188,7 +188,7 @@ export default function ModelSelectionModal({
 						</button>
 						<button
 							onClick={handleConfirm}
-							className="px-4 py-2 bg-secondary text-white rounded hover:bg-secondary-dark transition-colors"
+							className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors"
 						>
 							Confirm Selection
 						</button>

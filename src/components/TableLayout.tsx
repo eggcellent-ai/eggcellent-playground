@@ -518,7 +518,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					{/* ===== SYSTEM PROMPT SECTION ===== */}
 					<div>
 						{/* Section Header */}
-						<div className="bg-neutral-50 px-2 pb-2 pt-8">
+						<div className="px-2 pb-2 pt-8">
 							<div className="flex justify-between items-center">
 								<h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
 									System Prompt
@@ -626,7 +626,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					{detectedVariables.length > 0 && (
 						<div>
 							{/* Section Header */}
-							<div className="bg-neutral-50 px-2 pb-2 pt-8">
+							<div className="px-2 pb-2 pt-8">
 								<h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
 									Variables
 								</h2>
@@ -741,7 +741,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					{/* ===== RESPONSE SECTION ===== */}
 					<div className="flex-1 flex flex-col overflow-hidden">
 						{/* Section Header */}
-						<div className="bg-neutral-50 px-2 pb-2 pt-8">
+						<div className="px-2 pb-2 pt-8">
 							<h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
 								Responses
 							</h2>

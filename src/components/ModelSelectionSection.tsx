@@ -27,7 +27,7 @@ export default function ModelSelectionSection({
 	return (
 		<div>
 			{/* Section Header */}
-			<div className="bg-neutral-50 px-2 pb-2 pt-8">
+			<div className="px-2 pb-2 pt-8">
 				<h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
 					Models
 				</h2>
