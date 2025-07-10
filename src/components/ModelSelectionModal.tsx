@@ -132,6 +132,8 @@ export default function ModelSelectionModal({
 								placeholder="Search models or providers..."
 								value={searchQuery}
 								onChange={(e) => setSearchQuery(e.target.value)}
+								id="model-search"
+								name="model-search"
 								className="w-full pl-10 pr-4 py-3 border border-neutral focus:outline-none focus:border-secondary text-primary placeholder-text-muted"
 								autoFocus
 							/>

@@ -456,6 +456,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										value={titleContent}
 										onChange={(e) => setTitleContent(e.target.value)}
 										onBlur={handleSaveTitle}
+										id="prompt-title"
+										name="prompt-title"
 										className="text-lg font-semibold text-primary bg-transparent border-none outline-none focus:outline-none w-full"
 										placeholder="Enter prompt title..."
 									/>
@@ -559,6 +561,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 												: `${editorHeight}px`,
 										}}
 										value={promptContent}
+										id="system-prompt"
+										name="system-prompt"
 										placeholder="Enter system prompt..."
 										onChange={(e) => {
 											setPromptContent(e.target.value)
@@ -676,6 +680,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 																onChange={(e) =>
 																	handleUpdateVariable(variable, e.target.value)
 																}
+																id={`var-${variable}`}
+																name={`var-${variable}`}
 																placeholder="Enter value..."
 																className="w-full px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-secondary text-primary"
 															/>
@@ -714,6 +720,9 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 										className={`text-sm text-primary whitespace-pre-wrap break-words bg-amber-50 p-4 border border-amber-200 ${
 											!showFullPreview ? 'hidden' : ''
 										}`}
+										id="prompt-preview"
+										role="textbox"
+										aria-label="Final prompt preview"
 									>
 										{activePromptId && activeVersionId
 											? substituteVariables(

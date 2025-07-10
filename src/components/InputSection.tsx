@@ -187,6 +187,8 @@ export default function InputSection({
 						<textarea
 							value={jsonInputValue}
 							onChange={handleTextareaChange}
+							id="json-input"
+							name="json-input"
 							placeholder={`Current input rows are automatically loaded. Edit the JSON to manage multiple rows.
 
 Examples of valid formats:

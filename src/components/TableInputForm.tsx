@@ -45,6 +45,8 @@ export default function TableInputForm({
 						<textarea
 							value={row.input}
 							onChange={(e) => handleInputChange(row.id, e.target.value)}
+							id={`input-row-${row.id}`}
+							name={`input-row-${row.id}`}
 							placeholder="Enter input..."
 							className="flex-1 p-2 border border-[#f3f3f3] text-sm resize-y min-h-[60px] focus:outline-none focus:ring-1 focus:ring-primary"
 						/>
