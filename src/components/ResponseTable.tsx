@@ -125,89 +125,98 @@ export default function ResponseTable({
 						</tr>
 					</thead>
 					<tbody>
-						{tableData.map((row, rowIndex) => (
-							<tr key={row.id}>
-								<td
-									className={`p-3 align-top border-r border-neutral ${
-										rowIndex < tableData.length - 1 ? 'border-b' : ''
-									}`}
-									style={{
-										width: isFullScreen ? '400px' : '300px',
-										minWidth: isFullScreen ? '400px' : '300px',
-									}}
-								>
-									<div className="space-y-3">
-										<InputComponent
-											value={row.input}
-											onChange={(value: string) =>
-												onUpdateRowInput(row.id, value)
-											}
-											placeholder="Enter your test input..."
-											rows={isFullScreen ? 4 : 3}
-										/>
+						{tableData.map((row, rowIndex) => {
+							// Check if any model is currently loading for this row
+							const isRowLoading = selectedModels.some(
+								(modelId) => row.responses[modelId] === '<loading>'
+							)
 
-										{/* Action Buttons */}
-										<div className="flex gap-2">
-											{/* Run All Models Button */}
-											<button
-												onClick={() => onRunAllModels(row.id, row.input)}
-												disabled={!row.input.trim()}
-												className={`px-3 py-1 bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1 ${
-													isFullScreen ? 'text-sm' : 'text-xs'
-												}`}
-											>
-												<PlayIcon
-													className={`${isFullScreen ? 'w-4 h-4' : 'w-3 h-3'}`}
-												/>
-												Run All
-											</button>
-
-											{/* Remove Row Button */}
-											{tableData.length > 1 && (
-												<button
-													onClick={() => onRemoveRow(row.id)}
-													className={`px-3 py-1 border border-neutral text-primary hover:border-neutral-dark hover:bg-neutral-hover transition-colors ${
-														isFullScreen ? 'text-sm' : 'text-xs'
-													}`}
-													title="Remove row"
-												>
-													Remove
-												</button>
-											)}
-										</div>
-									</div>
-								</td>
-								{selectedModels.map((modelId, colIndex) => (
+							return (
+								<tr key={row.id}>
 									<td
-										key={`${row.id}-${modelId}`}
-										className={`p-3 align-top border-neutral ${
+										className={`p-3 align-top border-r border-neutral ${
 											rowIndex < tableData.length - 1 ? 'border-b' : ''
-										} ${
-											colIndex < selectedModels.length - 1
-												? 'border-r border-neutral'
-												: ''
 										}`}
 										style={{
 											width: isFullScreen ? '400px' : '300px',
 											minWidth: isFullScreen ? '400px' : '300px',
 										}}
 									>
-										<TableCell
-											key={`${row.id}-${modelId}-${
-												row.responses[modelId] || 'empty'
-											}`}
-											rowId={row.id}
-											modelId={modelId}
-											input={row.input}
-											systemPrompt={inputPromptContent}
-											activePromptId={activePromptId}
-											activeVersionId={activeVersionId}
-											isFullScreen={isFullScreen}
-										/>
+										<div className="space-y-3">
+											<InputComponent
+												value={row.input}
+												onChange={(value: string) =>
+													onUpdateRowInput(row.id, value)
+												}
+												placeholder="Enter your test input..."
+												rows={isFullScreen ? 4 : 3}
+											/>
+
+											{/* Action Buttons */}
+											<div className="flex gap-2">
+												{/* Run All Models Button */}
+												<button
+													onClick={() => onRunAllModels(row.id, row.input)}
+													disabled={!row.input.trim() || isRowLoading}
+													className={`px-3 py-1 bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1 ${
+														isFullScreen ? 'text-sm' : 'text-xs'
+													}`}
+												>
+													<PlayIcon
+														className={`${
+															isFullScreen ? 'w-4 h-4' : 'w-3 h-3'
+														} ${isRowLoading ? 'animate-spin' : ''}`}
+													/>
+													{isRowLoading ? 'Running...' : 'Run All'}
+												</button>
+
+												{/* Remove Row Button */}
+												{tableData.length > 1 && (
+													<button
+														onClick={() => onRemoveRow(row.id)}
+														className={`px-3 py-1 border border-neutral text-primary hover:border-neutral-dark hover:bg-neutral-hover transition-colors ${
+															isFullScreen ? 'text-sm' : 'text-xs'
+														}`}
+														title="Remove row"
+													>
+														Remove
+													</button>
+												)}
+											</div>
+										</div>
 									</td>
-								))}
-							</tr>
-						))}
+									{selectedModels.map((modelId, colIndex) => (
+										<td
+											key={`${row.id}-${modelId}`}
+											className={`p-3 align-top border-neutral ${
+												rowIndex < tableData.length - 1 ? 'border-b' : ''
+											} ${
+												colIndex < selectedModels.length - 1
+													? 'border-r border-neutral'
+													: ''
+											}`}
+											style={{
+												width: isFullScreen ? '400px' : '300px',
+												minWidth: isFullScreen ? '400px' : '300px',
+											}}
+										>
+											<TableCell
+												key={`${row.id}-${modelId}-${
+													row.responses[modelId] || 'empty'
+												}`}
+												rowId={row.id}
+												modelId={modelId}
+												input={row.input}
+												systemPrompt={inputPromptContent}
+												activePromptId={activePromptId}
+												activeVersionId={activeVersionId}
+												isFullScreen={isFullScreen}
+											/>
+										</td>
+									))}
+								</tr>
+							)
+						})}
 					</tbody>
 				</table>
 			</div>
