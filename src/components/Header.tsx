@@ -59,20 +59,16 @@ export default function Header() {
 							{!isHomePage && (
 								<Link
 									to="/"
-									className="text-secondary px-4 py-2 font-semibold transition-colors hover:text-warning pl-10"
+									className="text-secondary px-4 py-2 font-semibold transition-colors cursor-pointer hover:opacity-50 pl-10"
 								>
 									All Prompts
 								</Link>
 							)}
-						</div>
-
-						{/* Action Buttons */}
-						<div className="pr-6 flex items-center gap-4">
 							<a
 								href="https://github.com/eggcellent-ai/eggcellent-playground"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="text-secondary px-4 py-2 font-semibold transition-colors hover:text-warning flex items-center gap-2"
+								className="text-secondary px-4 py-2 font-semibold transition-colors hover:text-warning flex items-center gap-2 cursor-pointer hover:opacity-50"
 							>
 								<svg
 									viewBox="0 0 24 24"
@@ -86,15 +82,19 @@ export default function Header() {
 							</a>
 							<button
 								onClick={handleCreateNewPrompt}
-								className="bg-[#f3f3f3] hover:bg-primary text-primary px-4 py-2 font-medium transition-colors flex items-center gap-2 border border-[#dfdfdf]"
+								className="text-secondary px-4 py-2 font-semibold transition-colors cursor-pointer hover:opacity-50 flex items-center gap-2"
 							>
-								<PlusIcon className="w-5 h-5" />
+								{/* <PlusIcon className="w-5 h-5" /> */}
 								<span className="hidden sm:inline">New Prompt</span>
 								<span className="sm:hidden">New</span>
 							</button>
+						</div>
+
+						{/* Action Buttons */}
+						<div className="pr-6 flex items-center gap-4">
 							<button
 								onClick={() => setShowApiKeySettings(true)}
-								className="bg-amber-50 hover:bg-primary text-amber-700 px-4 py-2 font-medium transition-colors flex items-center gap-2 border border-amber-300"
+								className="cursor-pointer hover:opacity-50 text-primary px-4 py-2 font-medium transition-colors flex items-center gap-2 border border-neutral bg-neutral-light"
 								title="Configure API Keys"
 							>
 								<KeyIcon className="w-5 h-5" />
