@@ -21,6 +21,7 @@ interface ResponseTableProps {
 	onRunAllModels: (rowId: string, input: string) => void
 	onRemoveRow: (rowId: string) => void
 	onUpdateRowInput: (rowId: string, input: string) => void
+	onRemoveModel?: (modelId: string) => void
 	isFullScreen?: boolean
 	onClose?: () => void
 }
@@ -35,6 +36,7 @@ export default function ResponseTable({
 	onRunAllModels,
 	onRemoveRow,
 	onUpdateRowInput,
+	onRemoveModel,
 	isFullScreen = false,
 	onClose,
 }: ResponseTableProps) {
@@ -118,6 +120,9 @@ export default function ResponseTable({
 											showStatus
 											hasValidKey={hasValidKeyForModel(modelId)}
 											className={'h-15 p-3'}
+											showRemoveButton={!!onRemoveModel}
+											onRemove={() => onRemoveModel?.(modelId)}
+											disableRemove={selectedModels.length <= 1}
 										/>
 									</th>
 								)
