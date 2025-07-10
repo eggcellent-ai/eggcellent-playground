@@ -22,7 +22,7 @@ export default function InputComponent({
 			placeholder={placeholder}
 			rows={rows}
 			disabled={disabled}
-			className={`w-full p-2 border border-neutral text-sm resize-y focus:outline-none focus:ring-1 focus:ring-primary ${className}`}
+			className={`w-full p-2 border border-[#f3f3f3] text-sm resize-y focus:outline-none focus:ring-1 focus:ring-primary ${className}`}
 		/>
 	)
 }
