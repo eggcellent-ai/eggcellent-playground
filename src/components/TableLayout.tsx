@@ -758,6 +758,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							onRunAllModels={handleRunAllModels}
 							onRemoveRow={handleRemoveRow}
 							onUpdateRowInput={handleUpdateRowInput}
+							onRemoveModel={handleRemoveModel}
 							isFullScreen={showFullScreenResponses}
 							onClose={() => setShowFullScreenResponses(false)}
 						/>
