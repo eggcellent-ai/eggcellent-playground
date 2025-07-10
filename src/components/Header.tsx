@@ -1,6 +1,6 @@
 import { useLocation, Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { KeyIcon, PlusIcon } from '@heroicons/react/24/outline'
+import { KeyIcon } from '@heroicons/react/24/outline'
 import ApiKeySettings from './ApiKeySettings'
 import { useSystemPromptStore } from '../lib/stores'
 
@@ -64,6 +64,19 @@ export default function Header() {
 									All Prompts
 								</Link>
 							)}
+
+							<button
+								onClick={handleCreateNewPrompt}
+								className="text-secondary px-4 py-2 font-semibold transition-colors cursor-pointer hover:opacity-50 flex items-center gap-2"
+							>
+								{/* <PlusIcon className="w-5 h-5" /> */}
+								<span className="hidden sm:inline">New Prompt</span>
+								<span className="sm:hidden">New</span>
+							</button>
+						</div>
+
+						{/* Action Buttons */}
+						<div className="pr-6 flex items-center gap-4">
 							<a
 								href="https://github.com/eggcellent-ai/eggcellent-playground"
 								target="_blank"
@@ -80,18 +93,6 @@ export default function Header() {
 								<span className="hidden sm:inline">GitHub</span>
 								<span className="sm:hidden">Code</span>
 							</a>
-							<button
-								onClick={handleCreateNewPrompt}
-								className="text-secondary px-4 py-2 font-semibold transition-colors cursor-pointer hover:opacity-50 flex items-center gap-2"
-							>
-								{/* <PlusIcon className="w-5 h-5" /> */}
-								<span className="hidden sm:inline">New Prompt</span>
-								<span className="sm:hidden">New</span>
-							</button>
-						</div>
-
-						{/* Action Buttons */}
-						<div className="pr-6 flex items-center gap-4">
 							<button
 								onClick={() => setShowApiKeySettings(true)}
 								className="cursor-pointer hover:opacity-50 text-primary px-4 py-2 font-medium transition-colors flex items-center gap-2 border border-neutral bg-neutral-light"
