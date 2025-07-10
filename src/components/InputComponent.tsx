@@ -5,6 +5,8 @@ interface InputComponentProps {
 	rows?: number
 	disabled?: boolean
 	className?: string
+	id?: string
+	name?: string
 }
 
 export default function InputComponent({
@@ -14,6 +16,8 @@ export default function InputComponent({
 	rows = 3,
 	disabled = false,
 	className = '',
+	id,
+	name,
 }: InputComponentProps) {
 	return (
 		<textarea
@@ -22,6 +26,8 @@ export default function InputComponent({
 			placeholder={placeholder}
 			rows={rows}
 			disabled={disabled}
+			id={id}
+			name={name}
 			className={`w-full p-2 border border-[#f3f3f3] text-sm resize-y focus:outline-none focus:ring-1 focus:ring-primary ${className}`}
 		/>
 	)

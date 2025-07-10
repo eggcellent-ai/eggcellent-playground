@@ -155,6 +155,8 @@ export default function ResponseTable({
 												}
 												placeholder="Enter your test input..."
 												rows={isFullScreen ? 4 : 3}
+												id={`response-input-${row.id}`}
+												name={`response-input-${row.id}`}
 											/>
 
 											{/* Action Buttons */}
