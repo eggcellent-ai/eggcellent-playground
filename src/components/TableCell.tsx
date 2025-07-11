@@ -182,12 +182,12 @@ export default function TableCell({
 					) : response ? (
 						<div>
 							{duration !== null && (
-								<div className="absolute top-0 left-0 text-xs text-secondary p-2 bg-neutral-100 w-full">
+								<div className="absolute bottom-0 left-0 text-xs text-secondary p-2 bg-surface-card w-full text-right">
 									Response time: {(duration / 1000).toFixed(2)}s
 								</div>
 							)}
 
-							<div className="pt-10 whitespace-pre-wrap text-primary break-words p-2">
+							<div className="pb-10 whitespace-pre-wrap text-primary break-words p-2">
 								{response}
 							</div>
 						</div>
@@ -197,7 +197,7 @@ export default function TableCell({
 				</div>
 
 				{/* Floating Actions Tooltip */}
-				<div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-white shadow-lg p-0 flex gap-1 z-10">
+				<div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-white shadow-lg p-0 flex gap-1 z-10">
 					<button
 						onClick={handleRun}
 						disabled={isLoading}
