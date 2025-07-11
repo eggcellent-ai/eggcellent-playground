@@ -59,9 +59,9 @@ export default function ModelItem({
 		<div
 			className={`bg-surface-input p-4 flex items-center justify-between group relative h-15 ${
 				onClick
-					? 'cursor-pointer hover:border-secondary hover:bg-secondary-light transition-all'
+					? 'cursor-pointer hover:border-secondary hover:bg-neutral-light transition-all'
 					: ''
-			} ${selected ? 'bg-secondary-light border-secondary' : ''} ${className}`}
+			} ${selected ? 'bg-neutral-light border-secondary' : ''} ${className}`}
 			onClick={onClick}
 		>
 			{showRemoveButton && onRemove && (
@@ -80,7 +80,7 @@ export default function ModelItem({
 					<span className="text-sm font-medium">Remove</span>
 				</button>
 			)}
-			<div className="flex gap-4 items-start justify-between w-full">
+			<div className="flex gap-4 items-center justify-between w-full">
 				<div className="flex gap-4 items-center min-w-0">
 					{PROVIDER_LOGOS[model.provider] && (
 						<img
@@ -109,7 +109,7 @@ export default function ModelItem({
 					</div>
 				</div>
 				{selected && (
-					<div className="flex-shrink-0">
+					<div className="">
 						<CheckIcon className="w-5 h-5 text-secondary" />
 					</div>
 				)}
