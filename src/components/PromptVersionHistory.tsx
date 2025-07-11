@@ -112,24 +112,8 @@ const PromptVersionHistory: React.FC<PromptVersionHistoryProps> = ({
 								})()}
 							</p>
 
-							<div className="text-sm text-primary">
-								{version.content ? (
-									<div className="space-y-1">
-										{version.content
-											.split('\n')
-											.slice(0, 3)
-											.map((line, index) => (
-												<div key={index} className="truncate" title={line}>
-													{line || '\u00A0'}
-												</div>
-											))}
-										{version.content.split('\n').length > 3 && (
-											<div className="text-muted italic text-xs">...</div>
-										)}
-									</div>
-								) : (
-									<div className="text-muted italic text-xs">Empty prompt</div>
-								)}
+							<div className="text-sm text-primary line-clamp-3">
+								{version.content}
 							</div>
 						</div>
 					</div>
