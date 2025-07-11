@@ -195,7 +195,7 @@ export default function ResponseTable({
 									{selectedModels.map((modelId, colIndex) => (
 										<td
 											key={`${row.id}-${modelId}`}
-											className={`p-3 align-top border-neutral ${
+											className={`align-top border-neutral ${
 												rowIndex < tableData.length - 1 ? 'border-b' : ''
 											} ${
 												colIndex < selectedModels.length - 1

@@ -198,7 +198,9 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					)
 
 					console.log(
-						`Completed request for ${modelId}, response length: ${fullResponse.length}, duration: ${duration}ms`
+						`Completed request for ${modelId}, response length: ${
+							fullResponse.length
+						}, duration: ${(duration / 1000).toFixed(2)}s`
 					)
 
 					// Save response to store with timing data
@@ -317,7 +319,9 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							)
 
 							console.log(
-								`Completed table request for ${modelId}, response length: ${fullResponse.length}, duration: ${duration}ms`
+								`Completed table request for ${modelId}, response length: ${
+									fullResponse.length
+								}, duration: ${(duration / 1000).toFixed(2)}s`
 							)
 
 							// Save response to store with timing data
