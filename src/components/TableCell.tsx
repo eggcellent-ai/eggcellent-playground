@@ -31,6 +31,7 @@ export default function TableCell({
 	const [isLoading, setIsLoading] = useState(false)
 	const [hasRun, setHasRun] = useState(false)
 	const [showFullModal, setShowFullModal] = useState(false)
+	const [duration, setDuration] = useState<number | null>(null)
 
 	const { getTableCellResponse, updateTableCellResponse } =
 		useSystemPromptStore()
@@ -51,8 +52,17 @@ export default function TableCell({
 					setResponse('')
 					setIsLoading(true)
 					setHasRun(false)
+					setDuration(null)
 				} else {
-					setResponse(existingResponse)
+					// Check if response includes timing data
+					const parts = existingResponse.split('__TIMING__')
+					if (parts.length > 1) {
+						setResponse(parts[0])
+						setDuration(parseFloat(parts[1]))
+					} else {
+						setResponse(existingResponse)
+						setDuration(null)
+					}
 					setIsLoading(false)
 					setHasRun(true)
 				}
@@ -60,6 +70,7 @@ export default function TableCell({
 				setResponse('')
 				setIsLoading(false)
 				setHasRun(false)
+				setDuration(null)
 			}
 		}
 	}, [activePromptId, activeVersionId, rowId, modelId, getTableCellResponse])
@@ -79,6 +90,7 @@ export default function TableCell({
 		setIsLoading(true)
 		setResponse('')
 		setHasRun(false)
+		setDuration(null)
 
 		try {
 			// Build messages array for AI service
@@ -94,18 +106,19 @@ export default function TableCell({
 			]
 
 			// Use streaming AI service
-			const fullResponse = await streamText(messages, modelId, (text) =>
-				setResponse(text)
-			)
+			const { text: fullResponse, duration: responseDuration } =
+				await streamText(messages, modelId, (text) => setResponse(text))
 
-			// Save response to store
+			setDuration(responseDuration)
+
+			// Save response to store with timing data
 			if (activePromptId && activeVersionId) {
 				updateTableCellResponse(
 					activePromptId,
 					activeVersionId,
 					rowId,
 					modelId,
-					fullResponse
+					`${fullResponse}__TIMING__${responseDuration}`
 				)
 			}
 
@@ -151,8 +164,16 @@ export default function TableCell({
 					{isLoading ? (
 						<div className="animate-pulse text-muted">Running prompt...</div>
 					) : response ? (
-						<div className="whitespace-pre-wrap text-primary break-words">
-							{response}
+						<div>
+							{duration !== null && (
+								<div className="text-xs text-secondary">
+									Response time: {duration.toFixed(2)}ms
+								</div>
+							)}
+
+							<div className="whitespace-pre-wrap text-primary break-words">
+								{response}
+							</div>
 						</div>
 					) : (
 						<div className="text-muted">Click Run to test</div>

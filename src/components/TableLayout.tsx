@@ -171,6 +171,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							modelId,
 							response: errorMessage,
 							error: new Error('Missing API key'),
+							duration: 0,
 						}
 					}
 
@@ -191,22 +192,25 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					]
 
 					// Use AI service for generation
-					const fullResponse = await streamText(messages, modelId)
-
-					console.log(
-						`Completed request for ${modelId}, response length: ${fullResponse.length}`
+					const { text: fullResponse, duration } = await streamText(
+						messages,
+						modelId
 					)
 
-					// Save response to store
+					console.log(
+						`Completed request for ${modelId}, response length: ${fullResponse.length}, duration: ${duration}ms`
+					)
+
+					// Save response to store with timing data
 					updateTableCellResponse(
 						activePromptId || '',
 						activeVersionId,
 						rowId,
 						modelId,
-						fullResponse
+						`${fullResponse}__TIMING__${duration}`
 					)
 
-					return { modelId, response: fullResponse, error: null }
+					return { modelId, response: fullResponse, error: null, duration }
 				} catch (error) {
 					console.error(`Error with ${modelId}:`, error)
 					const errorMessage =
@@ -221,7 +225,12 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						modelId,
 						fullErrorMessage
 					)
-					return { modelId, response: fullErrorMessage, error: error }
+					return {
+						modelId,
+						response: fullErrorMessage,
+						error: error,
+						duration: 0,
+					}
 				}
 			})
 
@@ -281,6 +290,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									modelId,
 									response: errorMessage,
 									error: new Error('Missing API key'),
+									duration: 0,
 								}
 							}
 
@@ -301,22 +311,25 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							]
 
 							// Use AI service for generation
-							const fullResponse = await streamText(messages, modelId)
-
-							console.log(
-								`Completed table request for ${modelId}, response length: ${fullResponse.length}`
+							const { text: fullResponse, duration } = await streamText(
+								messages,
+								modelId
 							)
 
-							// Save response to store
+							console.log(
+								`Completed table request for ${modelId}, response length: ${fullResponse.length}, duration: ${duration}ms`
+							)
+
+							// Save response to store with timing data
 							updateTableCellResponse(
 								activePromptId || '',
 								activeVersionId,
 								row.id,
 								modelId,
-								fullResponse
+								`${fullResponse}__TIMING__${duration}`
 							)
 
-							return { modelId, response: fullResponse, error: null }
+							return { modelId, response: fullResponse, error: null, duration }
 						} catch (error) {
 							console.error(`Error with ${modelId}:`, error)
 							const errorMessage =
@@ -331,7 +344,12 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 								modelId,
 								fullErrorMessage
 							)
-							return { modelId, response: fullErrorMessage, error: error }
+							return {
+								modelId,
+								response: fullErrorMessage,
+								error: error,
+								duration: 0,
+							}
 						}
 					})
 

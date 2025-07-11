@@ -163,7 +163,7 @@ export function useAIService() {
 			messages: ChatMessage[],
 			modelId: string,
 			onUpdate?: (text: string) => void
-		): Promise<string> => {
+		): Promise<{ text: string; duration: number }> => {
 			const { model, providerName } = getProviderAndModel(modelId)
 
 			try {
@@ -171,6 +171,7 @@ export function useAIService() {
 					`Streaming text with ${providerName} provider for model: ${modelId}`
 				)
 
+				const startTime = performance.now()
 				const result = streamText({
 					model,
 					messages,
@@ -183,7 +184,11 @@ export function useAIService() {
 						onUpdate(fullText)
 					}
 				}
-				return fullText
+				const endTime = performance.now()
+				const duration = endTime - startTime
+
+				console.log(`${modelId} completed in ${duration}ms`)
+				return { text: fullText, duration }
 			} catch (error) {
 				console.error(
 					`Error with ${providerName} provider for model ${modelId}:`,
