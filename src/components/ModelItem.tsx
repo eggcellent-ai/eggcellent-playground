@@ -34,6 +34,7 @@ interface ModelItemProps {
 	className?: string
 	onClick?: () => void
 	selected?: boolean
+	showLogo?: boolean // New prop to control logo visibility
 }
 
 export default function ModelItem({
@@ -46,6 +47,7 @@ export default function ModelItem({
 	className = '',
 	onClick,
 	selected = false,
+	showLogo = true, // Default to showing logo
 }: ModelItemProps) {
 	const status = {
 		hasValidKey,
@@ -82,7 +84,7 @@ export default function ModelItem({
 			)}
 			<div className="flex gap-4 items-center justify-between w-full">
 				<div className="flex gap-4 items-center min-w-0">
-					{PROVIDER_LOGOS[model.provider] && (
+					{showLogo && PROVIDER_LOGOS[model.provider] && (
 						<img
 							src={PROVIDER_LOGOS[model.provider]}
 							alt={`${model.provider} logo`}
@@ -97,6 +99,7 @@ export default function ModelItem({
 						<div className="font-medium text-primary text-sm truncate max-w-full">
 							{model.name}
 						</div>
+						{!showLogo && <div className="text-muted text-xs">{model.id}</div>}
 						{showStatus && !status.hasValidKey && (
 							<div className="mt-1 transition-opacity">
 								<span

@@ -3,6 +3,19 @@ import { AVAILABLE_MODELS } from '../lib/stores'
 import ModelItem from './ModelItem'
 import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 
+// Import provider logos
+import googleLogo from '../assets/logos/google.svg'
+import openaiLogo from '../assets/logos/openai.svg'
+import anthropicLogo from '../assets/logos/anthropic.svg'
+import xaiLogo from '../assets/logos/grok.svg'
+
+const PROVIDER_LOGOS: Record<string, string> = {
+	Google: googleLogo,
+	OpenAI: openaiLogo,
+	Anthropic: anthropicLogo,
+	xAI: xaiLogo,
+}
+
 interface ModelSelectionModalProps {
 	isOpen: boolean
 	onClose: () => void
@@ -149,17 +162,29 @@ export default function ModelSelectionModal({
 								</p>
 							</div>
 						) : (
-							<div className="space-y-6">
+							<div className="space-y-8">
 								{availableProviders.map((provider) => {
 									const models = modelsByProvider[provider]
 									if (!models || models.length === 0) return null
 
 									return (
-										<div key={provider} className="space-y-3">
+										<div key={provider} className="space-y-4">
 											{/* Provider Header */}
-											<h3 className="font-semibold text-primary capitalize pl-2">
-												{provider}
-											</h3>
+											<div className="flex items-center gap-3 pl-2">
+												{PROVIDER_LOGOS[provider] && (
+													<img
+														src={PROVIDER_LOGOS[provider]}
+														alt={`${provider} logo`}
+														className="w-8 h-8 object-contain"
+													/>
+												)}
+												<h3 className="font-semibold text-primary text-lg capitalize">
+													{provider}
+												</h3>
+												<span className="text-sm text-secondary">
+													({models.length} models)
+												</span>
+											</div>
 
 											{/* Models Grid */}
 											<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -167,6 +192,7 @@ export default function ModelSelectionModal({
 													<ModelItem
 														key={model.id}
 														model={model}
+														showLogo={false}
 														className="border border-neutral"
 														onClick={() => handleModelClick(model.id)}
 														selected={tempSelectedModels.includes(model.id)}
