@@ -99,7 +99,7 @@ export default function Header() {
 								title="Configure API Keys"
 							>
 								<KeyIcon className="w-5 h-5" />
-								<span className="hidden sm:inline">Setup API Keys</span>
+								<span className="hidden sm:inline">API Keys</span>
 								<span className="sm:hidden">Keys</span>
 							</button>
 						</div>
