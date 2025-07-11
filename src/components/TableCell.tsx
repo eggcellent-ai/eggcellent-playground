@@ -6,7 +6,10 @@ import {
 	PlayIcon,
 	XMarkIcon,
 	ArrowsPointingOutIcon,
+	CheckIcon,
 } from '@heroicons/react/24/solid'
+
+import { DocumentDuplicateIcon } from '@heroicons/react/24/outline'
 
 interface TableCellProps {
 	rowId: string
@@ -32,6 +35,7 @@ export default function TableCell({
 	const [hasRun, setHasRun] = useState(false)
 	const [showFullModal, setShowFullModal] = useState(false)
 	const [duration, setDuration] = useState<number | null>(null)
+	const [isCopied, setIsCopied] = useState(false)
 
 	const { getTableCellResponse, updateTableCellResponse } =
 		useSystemPromptStore()
@@ -148,6 +152,16 @@ export default function TableCell({
 		}
 	}
 
+	const handleCopy = async () => {
+		try {
+			await navigator.clipboard.writeText(response)
+			setIsCopied(true)
+			setTimeout(() => setIsCopied(false), 2000) // Reset after 2 seconds
+		} catch (err) {
+			console.error('Failed to copy text:', err)
+		}
+	}
+
 	return (
 		<>
 			<div
@@ -195,24 +209,41 @@ export default function TableCell({
 						<PlayIcon className="w-4 h-4" />
 					</button>
 					{hasRun && (
-						<button
-							onClick={handleClear}
-							className={`p-2 text-neutral-700 hover:bg-neutral-100 transition-all ${
-								isFullScreen ? 'text-sm' : 'text-xs'
-							}`}
-							title="Clear"
-						>
-							<XMarkIcon className="w-4 h-4" />
-						</button>
-					)}
-					{response && !isLoading && (
-						<button
-							onClick={() => setShowFullModal(true)}
-							className="p-2 text-neutral-700 hover:bg-neutral-100 transition-all"
-							title="View Full Response"
-						>
-							<ArrowsPointingOutIcon className="w-4 h-4" />
-						</button>
+						<>
+							<button
+								onClick={handleClear}
+								className={`p-2 text-neutral-700 hover:bg-neutral-100 transition-all ${
+									isFullScreen ? 'text-sm' : 'text-xs'
+								}`}
+								title="Clear"
+							>
+								<XMarkIcon className="w-4 h-4" />
+							</button>
+							{response && !isLoading && (
+								<>
+									<button
+										onClick={handleCopy}
+										className={`p-2 text-neutral-700 hover:bg-neutral-100 transition-all ${
+											isFullScreen ? 'text-sm' : 'text-xs'
+										}`}
+										title={isCopied ? 'Copied!' : 'Copy Response'}
+									>
+										{isCopied ? (
+											<CheckIcon className="w-4 h-4 text-success" />
+										) : (
+											<DocumentDuplicateIcon className="w-4 h-4" />
+										)}
+									</button>
+									<button
+										onClick={() => setShowFullModal(true)}
+										className="p-2 text-neutral-700 hover:bg-neutral-100 transition-all"
+										title="View Full Response"
+									>
+										<ArrowsPointingOutIcon className="w-4 h-4" />
+									</button>
+								</>
+							)}
+						</>
 					)}
 				</div>
 			</div>
