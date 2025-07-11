@@ -162,21 +162,23 @@ export default function TableCell({
 					}`}
 				>
 					{isLoading ? (
-						<div className="animate-pulse text-muted">Running prompt...</div>
+						<div className="animate-pulse text-muted p-2">
+							Running prompt...
+						</div>
 					) : response ? (
 						<div>
 							{duration !== null && (
-								<div className="absolute bottom-0 left-0 text-xs text-secondary p-2 bg-neutral-100 w-full">
+								<div className="absolute top-0 left-0 text-xs text-secondary p-2 bg-neutral-100 w-full">
 									Response time: {(duration / 1000).toFixed(2)}s
 								</div>
 							)}
 
-							<div className="pb-10 whitespace-pre-wrap text-primary break-words p-2">
+							<div className="pt-10 whitespace-pre-wrap text-primary break-words p-2">
 								{response}
 							</div>
 						</div>
 					) : (
-						<div className="text-muted">Click Run to test</div>
+						<div className="text-muted p-2">Click Run to test</div>
 					)}
 				</div>
 
