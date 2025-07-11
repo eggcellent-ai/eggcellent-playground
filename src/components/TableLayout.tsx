@@ -758,17 +758,20 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							</div>
 						</div>
 					)}
+
+					{/* ===== INPUT SECTION ===== */}
+					<InputSection
+						activePromptId={activePromptId}
+						activeVersionId={activeVersionId}
+					/>
+
 					{/* ===== MODELS SECTION ===== */}
 					<ModelSelectionSection
 						selectedModels={selectedModels}
 						onAddModel={handleAddModel}
 						onRemoveModel={handleRemoveModel}
 					/>
-					{/* ===== INPUT SECTION ===== */}
-					<InputSection
-						activePromptId={activePromptId}
-						activeVersionId={activeVersionId}
-					/>
+
 					{/* ===== RESPONSE SECTION ===== */}
 					<div className="flex-1 flex flex-col overflow-hidden">
 						{/* Section Header */}
