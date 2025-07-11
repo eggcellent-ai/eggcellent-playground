@@ -1,6 +1,6 @@
 # 🥚 Eggcellent
 
-Eggcellent is the fastest way to test and debug AI prompts for your application. Compare outputs across models, manage prompt versions, and validate structured results — all in a clean, local-first playground.
+A powerful, local-first playground to test and optimize AI prompts — with version control, multi-model testing, batch input, and schema validation.
 
 ## ✨ Features
 
