@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useSystemPromptStore } from '../lib/stores'
-import { generateExampleSchema } from '../lib/schemaValidation'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline'
 
 interface SchemaInputProps {
@@ -62,19 +61,6 @@ export default function SchemaInput({
 		}
 	}
 
-	// Load example schema
-	const loadExampleSchema = (
-		type: 'user' | 'product' | 'article' | 'custom'
-	) => {
-		const example = generateExampleSchema(type)
-		setSchemaValue(example)
-		validateSchema(example)
-
-		if (activePromptId && activeVersionId) {
-			updateOutputSchema(activePromptId, activeVersionId, example)
-		}
-	}
-
 	// Clear schema
 	const clearSchema = () => {
 		setSchemaValue('')
@@ -98,7 +84,7 @@ export default function SchemaInput({
 						Output Schema Validation
 					</h3>
 					{schemaValue.trim() && (
-						<span className="text-xs px-2 py-1 rounded bg-primary text-white">
+						<span className="text-xs px-2 py-1 bg-primary text-white">
 							Active
 						</span>
 					)}
@@ -117,39 +103,6 @@ export default function SchemaInput({
 					<div className="text-sm text-secondary">
 						Define a JSON schema to validate AI model outputs. The schema will
 						be used to check if responses match the expected format.
-					</div>
-
-					{/* Example Schemas */}
-					<div className="space-y-2">
-						<label className="text-sm font-medium text-primary">
-							Quick Examples:
-						</label>
-						<div className="flex flex-wrap gap-2">
-							<button
-								onClick={() => loadExampleSchema('user')}
-								className="px-3 py-1 text-xs bg-neutral-100 hover:bg-neutral-200 text-primary rounded transition-colors"
-							>
-								User Object
-							</button>
-							<button
-								onClick={() => loadExampleSchema('product')}
-								className="px-3 py-1 text-xs bg-neutral-100 hover:bg-neutral-200 text-primary rounded transition-colors"
-							>
-								Product Object
-							</button>
-							<button
-								onClick={() => loadExampleSchema('article')}
-								className="px-3 py-1 text-xs bg-neutral-100 hover:bg-neutral-200 text-primary rounded transition-colors"
-							>
-								Article Object
-							</button>
-							<button
-								onClick={() => loadExampleSchema('custom')}
-								className="px-3 py-1 text-xs bg-neutral-100 hover:bg-neutral-200 text-primary rounded transition-colors"
-							>
-								Custom Response
-							</button>
-						</div>
 					</div>
 
 					{/* Schema Input */}
@@ -181,7 +134,7 @@ Example:
   },
   "required": ["name"]
 }`}
-							className={`w-full h-48 resize-none p-3 text-sm font-mono bg-surface-card border rounded transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 ${
+							className={`w-full h-48 resize-none p-3 text-sm font-mono bg-surface-card border  transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 ${
 								schemaValue.trim()
 									? isValidSchema
 										? 'border-success'
@@ -194,7 +147,7 @@ Example:
 					{/* Validation Status */}
 					{validationMessage && (
 						<div
-							className={`text-xs p-2 rounded ${
+							className={`text-xs p-2  ${
 								isValidSchema
 									? 'bg-success/10 text-success-dark'
 									: 'bg-error/10 text-error-dark'
@@ -206,7 +159,7 @@ Example:
 
 					{/* Info */}
 					{schemaValue.trim() && isValidSchema && (
-						<div className="text-xs text-secondary bg-neutral-50 p-3 rounded">
+						<div className="text-xs text-secondary bg-neutral-50 p-3 ">
 							<strong>How it works:</strong> When you run AI models, their
 							responses will be automatically validated against this schema.
 							Valid responses will show a green checkmark, while invalid ones
