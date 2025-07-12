@@ -65,6 +65,7 @@ export default function ModelItem({
 					: ''
 			} ${selected ? 'bg-neutral-light border-secondary' : ''} ${className}`}
 			onClick={onClick}
+			title={model.id} // Add tooltip showing model ID on hover
 		>
 			{showRemoveButton && onRemove && (
 				<button
@@ -99,7 +100,6 @@ export default function ModelItem({
 						<div className="font-medium text-primary text-sm truncate max-w-full">
 							{model.name}
 						</div>
-						{!showLogo && <div className="text-muted text-xs">{model.id}</div>}
 						{showStatus && !status.hasValidKey && (
 							<div className="mt-1 transition-opacity">
 								<span
