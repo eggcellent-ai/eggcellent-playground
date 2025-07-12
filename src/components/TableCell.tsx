@@ -225,48 +225,70 @@ export default function TableCell({
 						</div>
 					) : response ? (
 						<div>
-							{/* Validation Status */}
-							{validationResult && (
-								<div
-									className={`p-2 mb-2 rounded text-xs ${
-										validationResult.isValid
-											? 'bg-success/10 text-success-dark border border-success/20'
-											: 'bg-error/10 text-error-dark border border-error/20'
-									}`}
-								>
-									<div className="flex items-center gap-1 mb-1">
-										{validationResult.isValid ? (
-											<CheckIcon className="w-3 h-3" />
-										) : (
-											<XMarkIcon className="w-3 h-3" />
-										)}
-										<span className="font-medium">
-											{validationResult.isValid ? 'Valid' : 'Invalid'} Schema
-										</span>
-									</div>
-									{!validationResult.isValid &&
-										validationResult.errors.length > 0 && (
-											<div className="text-xs">
-												{validationResult.errors
-													.slice(0, 2)
-													.map((error, index) => (
-														<div key={index} className="text-error-dark">
-															• {error}
-														</div>
-													))}
-												{validationResult.errors.length > 2 && (
-													<div className="text-error-dark">
-														• ...and {validationResult.errors.length - 2} more
-														errors
-													</div>
-												)}
-											</div>
-										)}
-								</div>
-							)}
-
 							{duration !== null && (
-								<div className="absolute bottom-0 left-0 text-xs text-secondary p-2 bg-surface-card w-full text-right">
+								<div className="absolute bottom-0 left-0 text-xs text-secondary p-2 bg-surface-card w-full text-right flex justify-between items-end">
+									{/* Validation Status */}
+									{validationResult && (
+										<div
+											className={`text-xs ${
+												validationResult.isValid
+													? 'text-success-dark'
+													: 'text-error-dark'
+											}`}
+										>
+											{isFullScreen ? (
+												<>
+													<div className="flex items-center gap-1">
+														{validationResult.isValid ? (
+															<CheckIcon className="w-3 h-3" />
+														) : (
+															<XMarkIcon className="w-3 h-3" />
+														)}
+														<span className="font-medium">
+															{validationResult.isValid ? 'Valid' : 'Invalid'}{' '}
+															Schema
+														</span>
+													</div>
+													{!validationResult.isValid &&
+														validationResult.errors.length > 0 && (
+															<div className="text-xs">
+																{validationResult.errors
+																	.slice(0, 2)
+																	.map((error, index) => (
+																		<div
+																			key={index}
+																			className="text-error-dark"
+																		>
+																			• {error}
+																		</div>
+																	))}
+																{validationResult.errors.length > 2 && (
+																	<div className="text-error-dark">
+																		• ...and{' '}
+																		{validationResult.errors.length - 2} more
+																		errors
+																	</div>
+																)}
+															</div>
+														)}
+												</>
+											) : (
+												<div className="flex items-center justify-center">
+													{validationResult.isValid ? (
+														<CheckIcon
+															className="w-4 h-4 text-success"
+															title="Valid Schema"
+														/>
+													) : (
+														<XMarkIcon
+															className="w-4 h-4 text-error"
+															title={`Invalid Schema - ${validationResult.errors.length} error(s)`}
+														/>
+													)}
+												</div>
+											)}
+										</div>
+									)}
 									Response time: {(duration / 1000).toFixed(2)}s
 								</div>
 							)}
