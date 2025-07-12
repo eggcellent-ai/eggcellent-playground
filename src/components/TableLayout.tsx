@@ -798,12 +798,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						</div>
 					)}
 
-					{/* ===== SCHEMA VALIDATION SECTION ===== */}
-					<SchemaInput
-						activePromptId={activePromptId}
-						activeVersionId={activeVersionId}
-					/>
-
 					{/* ===== INPUT SECTION ===== */}
 					<InputSection
 						activePromptId={activePromptId}
@@ -818,7 +812,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					/>
 
 					{/* ===== RESPONSE SECTION ===== */}
-					<div className="flex-1 flex flex-col overflow-hidden">
+					<div className="flex-1 flex flex-col overflow-hidden gap-4">
 						{/* Section Header */}
 						<div className="px-2 pb-2 pt-8">
 							<h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
@@ -840,6 +834,12 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							onRemoveModel={handleRemoveModel}
 							isFullScreen={showFullScreenResponses}
 							onClose={() => setShowFullScreenResponses(false)}
+						/>
+
+						{/* ===== SCHEMA VALIDATION SECTION ===== */}
+						<SchemaInput
+							activePromptId={activePromptId}
+							activeVersionId={activeVersionId}
 						/>
 					</div>
 				</>
