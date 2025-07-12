@@ -496,7 +496,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 	return (
 		<div
-			className="flex flex-col w-full h-full overflow-hidden"
+			className="flex flex-col w-full h-full overflow-hidden gap-4"
 			style={{
 				paddingBottom: '400px', // Fixed padding for floating control panel
 			}}
@@ -812,7 +812,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					/>
 
 					{/* ===== RESPONSE SECTION ===== */}
-					<div className="flex-1 flex flex-col overflow-hidden gap-4">
+					<div className="flex-1 flex flex-col overflow-hidden">
 						{/* Section Header */}
 						<div className="px-2 pb-2 pt-8">
 							<h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
@@ -835,13 +835,13 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							isFullScreen={showFullScreenResponses}
 							onClose={() => setShowFullScreenResponses(false)}
 						/>
-
-						{/* ===== SCHEMA VALIDATION SECTION ===== */}
-						<SchemaInput
-							activePromptId={activePromptId}
-							activeVersionId={activeVersionId}
-						/>
 					</div>
+
+					{/* ===== SCHEMA VALIDATION SECTION ===== */}
+					<SchemaInput
+						activePromptId={activePromptId}
+						activeVersionId={activeVersionId}
+					/>
 				</>
 			) : (
 				// Show message when no prompt is selected

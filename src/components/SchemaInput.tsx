@@ -73,7 +73,7 @@ export default function SchemaInput({
 	}
 
 	return (
-		<div className="border border-neutral bg-surface-card">
+		<div className="border border-neutral bg-surface-card mt-4">
 			{/* Header */}
 			<div
 				className="flex justify-between items-center p-4 cursor-pointer hover:bg-neutral-hover transition-colors"
