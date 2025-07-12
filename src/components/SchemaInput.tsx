@@ -134,12 +134,12 @@ Example:
   },
   "required": ["name"]
 }`}
-							className={`w-full h-48 resize-none p-3 text-sm font-mono bg-surface-card border  transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 ${
+							className={`w-full h-48 resize-none p-3 text-sm font-mono border transition-colors focus:outline-none ${
 								schemaValue.trim()
 									? isValidSchema
-										? 'border-success'
-										: 'border-error'
-									: 'border-neutral'
+										? 'border-success bg-green-50'
+										: 'border-error bg-red-50'
+									: 'border-neutral bg-surface-card'
 							}`}
 						/>
 					</div>
