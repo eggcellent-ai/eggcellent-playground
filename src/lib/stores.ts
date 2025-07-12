@@ -29,6 +29,20 @@ interface PromptVersion {
 	responses: Record<string, Record<string, string>>
 	// Store selected models for table layout
 	selectedModels?: string[]
+	// JSON schema for output validation
+	outputSchema?: string
+	// Schema validation results (rowId -> modelId -> validation result)
+	schemaValidationResults?: Record<
+		string,
+		Record<
+			string,
+			{
+				isValid: boolean
+				errors: string[]
+				parsedData?: unknown
+			}
+		>
+	>
 }
 
 // New interface for input data at prompt level
@@ -156,6 +170,26 @@ interface SystemPromptState {
 		promptId: string,
 		versionId: string,
 		models: string[]
+	) => void
+	// Schema validation management
+	getOutputSchema: (promptId: string, versionId: string) => string | undefined
+	updateOutputSchema: (
+		promptId: string,
+		versionId: string,
+		schema: string
+	) => void
+	getSchemaValidationResult: (
+		promptId: string,
+		versionId: string,
+		rowId: string,
+		modelId: string
+	) => { isValid: boolean; errors: string[]; parsedData?: unknown } | undefined
+	updateSchemaValidationResult: (
+		promptId: string,
+		versionId: string,
+		rowId: string,
+		modelId: string,
+		result: { isValid: boolean; errors: string[]; parsedData?: unknown }
 	) => void
 }
 
@@ -824,6 +858,75 @@ export const useSystemPromptStore = create<SystemPromptState>()(
 									versions: prompt.versions.map((version) =>
 										version.versionId === versionId
 											? { ...version, selectedModels: models }
+											: version
+									),
+							  }
+							: prompt
+					),
+				}))
+			},
+			// Schema validation management
+			getOutputSchema: (promptId: string, versionId: string) => {
+				const state = get()
+				const prompt = state.prompts.find((p) => p.id === promptId)
+				const version = prompt?.versions.find((v) => v.versionId === versionId)
+				return version?.outputSchema
+			},
+			updateOutputSchema: (
+				promptId: string,
+				versionId: string,
+				schema: string
+			) => {
+				set((state) => ({
+					prompts: state.prompts.map((prompt) =>
+						prompt.id === promptId
+							? {
+									...prompt,
+									versions: prompt.versions.map((version) =>
+										version.versionId === versionId
+											? { ...version, outputSchema: schema }
+											: version
+									),
+							  }
+							: prompt
+					),
+				}))
+			},
+			getSchemaValidationResult: (
+				promptId: string,
+				versionId: string,
+				rowId: string,
+				modelId: string
+			) => {
+				const state = get()
+				const prompt = state.prompts.find((p) => p.id === promptId)
+				const version = prompt?.versions.find((v) => v.versionId === versionId)
+				return version?.schemaValidationResults?.[rowId]?.[modelId]
+			},
+			updateSchemaValidationResult: (
+				promptId: string,
+				versionId: string,
+				rowId: string,
+				modelId: string,
+				result: { isValid: boolean; errors: string[]; parsedData?: unknown }
+			) => {
+				set((state) => ({
+					prompts: state.prompts.map((prompt) =>
+						prompt.id === promptId
+							? {
+									...prompt,
+									versions: prompt.versions.map((version) =>
+										version.versionId === versionId
+											? {
+													...version,
+													schemaValidationResults: {
+														...version.schemaValidationResults,
+														[rowId]: {
+															...version.schemaValidationResults?.[rowId],
+															[modelId]: result,
+														},
+													},
+											  }
 											: version
 									),
 							  }

@@ -1,5 +1,9 @@
-import { type UploadedImage } from '../components/InputComponent'
 import { type ChatMessage } from './aiService'
+
+// Simple interface for uploaded images
+interface UploadedImage {
+	base64: string
+}
 
 export interface TableRow {
 	id: string

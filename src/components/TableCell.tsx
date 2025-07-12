@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSystemPromptStore, AVAILABLE_MODELS } from '../lib/stores'
 import { useAIService, type ChatMessage } from '../lib/aiService'
+import { validateResponseAgainstSchema } from '../lib/schemaValidation'
 import ModelItem from './ModelItem'
 import {
 	PlayIcon,
@@ -36,13 +37,23 @@ export default function TableCell({
 	const [showFullModal, setShowFullModal] = useState(false)
 	const [duration, setDuration] = useState<number | null>(null)
 	const [isCopied, setIsCopied] = useState(false)
+	const [validationResult, setValidationResult] = useState<{
+		isValid: boolean
+		errors: string[]
+		parsedData?: unknown
+	} | null>(null)
 
-	const { getTableCellResponse, updateTableCellResponse } =
-		useSystemPromptStore()
+	const {
+		getTableCellResponse,
+		updateTableCellResponse,
+		getOutputSchema,
+		getSchemaValidationResult,
+		updateSchemaValidationResult,
+	} = useSystemPromptStore()
 
 	const { streamText, hasValidKeyForModel } = useAIService()
 
-	// Load existing response
+	// Load existing response and validation result
 	useEffect(() => {
 		if (activePromptId && activeVersionId) {
 			const existingResponse = getTableCellResponse(
@@ -51,12 +62,20 @@ export default function TableCell({
 				rowId,
 				modelId
 			)
+			const existingValidation = getSchemaValidationResult(
+				activePromptId,
+				activeVersionId,
+				rowId,
+				modelId
+			)
+
 			if (existingResponse) {
 				if (existingResponse === '<loading>') {
 					setResponse('')
 					setIsLoading(true)
 					setHasRun(false)
 					setDuration(null)
+					setValidationResult(null)
 				} else {
 					// Check if response includes timing data
 					const parts = existingResponse.split('__TIMING__')
@@ -69,15 +88,24 @@ export default function TableCell({
 					}
 					setIsLoading(false)
 					setHasRun(true)
+					setValidationResult(existingValidation || null)
 				}
 			} else {
 				setResponse('')
 				setIsLoading(false)
 				setHasRun(false)
 				setDuration(null)
+				setValidationResult(null)
 			}
 		}
-	}, [activePromptId, activeVersionId, rowId, modelId, getTableCellResponse])
+	}, [
+		activePromptId,
+		activeVersionId,
+		rowId,
+		modelId,
+		getTableCellResponse,
+		getSchemaValidationResult,
+	])
 
 	const handleRun = async () => {
 		// Allow if there's text input
@@ -124,6 +152,22 @@ export default function TableCell({
 					modelId,
 					`${fullResponse}__TIMING__${responseDuration}`
 				)
+
+				// Validate response against schema if one exists
+				const schema = getOutputSchema(activePromptId, activeVersionId)
+				if (schema) {
+					const validation = validateResponseAgainstSchema(fullResponse, {
+						schema,
+					})
+					setValidationResult(validation)
+					updateSchemaValidationResult(
+						activePromptId,
+						activeVersionId,
+						rowId,
+						modelId,
+						validation
+					)
+				}
 			}
 
 			setHasRun(true)
@@ -181,6 +225,46 @@ export default function TableCell({
 						</div>
 					) : response ? (
 						<div>
+							{/* Validation Status */}
+							{validationResult && (
+								<div
+									className={`p-2 mb-2 rounded text-xs ${
+										validationResult.isValid
+											? 'bg-success/10 text-success-dark border border-success/20'
+											: 'bg-error/10 text-error-dark border border-error/20'
+									}`}
+								>
+									<div className="flex items-center gap-1 mb-1">
+										{validationResult.isValid ? (
+											<CheckIcon className="w-3 h-3" />
+										) : (
+											<XMarkIcon className="w-3 h-3" />
+										)}
+										<span className="font-medium">
+											{validationResult.isValid ? 'Valid' : 'Invalid'} Schema
+										</span>
+									</div>
+									{!validationResult.isValid &&
+										validationResult.errors.length > 0 && (
+											<div className="text-xs">
+												{validationResult.errors
+													.slice(0, 2)
+													.map((error, index) => (
+														<div key={index} className="text-error-dark">
+															• {error}
+														</div>
+													))}
+												{validationResult.errors.length > 2 && (
+													<div className="text-error-dark">
+														• ...and {validationResult.errors.length - 2} more
+														errors
+													</div>
+												)}
+											</div>
+										)}
+								</div>
+							)}
+
 							{duration !== null && (
 								<div className="absolute bottom-0 left-0 text-xs text-secondary p-2 bg-surface-card w-full text-right">
 									Response time: {(duration / 1000).toFixed(2)}s

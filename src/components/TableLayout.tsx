@@ -12,7 +12,9 @@ import ModelSelectionSection from './ModelSelectionSection'
 import { useAIService, type ChatMessage } from '../lib/aiService'
 import ResponseTable from './ResponseTable'
 import InputSection from './InputSection'
+import SchemaInput from './SchemaInput'
 import { getTableValidation, getVariableFormats } from '../lib/tableUtils'
+import { validateResponseAgainstSchema } from '../lib/schemaValidation'
 
 interface TableLayoutProps {
 	inputPromptContent: string
@@ -34,6 +36,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		substituteVariables,
 		getSelectedModels,
 		updateSelectedModels,
+		getOutputSchema,
+		updateSchemaValidationResult,
 	} = useSystemPromptStore()
 
 	const { streamText, hasValidKeyForModel } = useAIService()
@@ -212,6 +216,21 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						`${fullResponse}__TIMING__${duration}`
 					)
 
+					// Validate response against schema if one exists
+					const schema = getOutputSchema(activePromptId || '', activeVersionId)
+					if (schema) {
+						const validation = validateResponseAgainstSchema(fullResponse, {
+							schema,
+						})
+						updateSchemaValidationResult(
+							activePromptId || '',
+							activeVersionId,
+							rowId,
+							modelId,
+							validation
+						)
+					}
+
 					return { modelId, response: fullResponse, error: null, duration }
 				} catch (error) {
 					console.error(`Error with ${modelId}:`, error)
@@ -333,6 +352,24 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 								`${fullResponse}__TIMING__${duration}`
 							)
 
+							// Validate response against schema if one exists
+							const schema = getOutputSchema(
+								activePromptId || '',
+								activeVersionId
+							)
+							if (schema) {
+								const validation = validateResponseAgainstSchema(fullResponse, {
+									schema,
+								})
+								updateSchemaValidationResult(
+									activePromptId || '',
+									activeVersionId,
+									row.id,
+									modelId,
+									validation
+								)
+							}
+
 							return { modelId, response: fullResponse, error: null, duration }
 						} catch (error) {
 							console.error(`Error with ${modelId}:`, error)
@@ -386,6 +423,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		updateTableCellResponse,
 		substituteVariables,
 		inputPromptContent,
+		getOutputSchema,
+		updateSchemaValidationResult,
 	])
 
 	const handleSavePrompt = () => {
@@ -758,6 +797,12 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							</div>
 						</div>
 					)}
+
+					{/* ===== SCHEMA VALIDATION SECTION ===== */}
+					<SchemaInput
+						activePromptId={activePromptId}
+						activeVersionId={activeVersionId}
+					/>
 
 					{/* ===== INPUT SECTION ===== */}
 					<InputSection
