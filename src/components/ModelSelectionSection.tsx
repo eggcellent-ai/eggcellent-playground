@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { PlusIcon } from '@heroicons/react/24/outline'
+import { PlusIcon, TableCellsIcon } from '@heroicons/react/24/outline'
 import { AVAILABLE_MODELS } from '../lib/stores'
 import { useAIService } from '../lib/aiService'
 import ModelSelectionModal from './ModelSelectionModal'
+import ModelComparisonTable from './ModelComparisonTable'
 import ModelItem from './ModelItem'
 
 interface ModelSelectionSectionProps {
@@ -17,6 +18,7 @@ export default function ModelSelectionSection({
 	onRemoveModel,
 }: ModelSelectionSectionProps) {
 	const [showModelModal, setShowModelModal] = useState(false)
+	const [showComparisonTable, setShowComparisonTable] = useState(false)
 	const { hasValidKeyForModel } = useAIService()
 
 	const handleAddModels = (modelIds: string[]) => {
@@ -27,10 +29,17 @@ export default function ModelSelectionSection({
 	return (
 		<div>
 			{/* Section Header */}
-			<div className="px-2 pb-2 pt-8">
+			<div className="px-2 pb-2 pt-8 flex items-center justify-between">
 				<h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
 					Models
 				</h2>
+				<button
+					onClick={() => setShowComparisonTable(true)}
+					className="px-3 py-1 text-xs bg-secondary text-white rounded hover:bg-secondary-dark transition-colors flex items-center gap-1"
+				>
+					<TableCellsIcon className="w-3 h-3" />
+					Compare All
+				</button>
 			</div>
 
 			{/* Models Display */}
@@ -85,6 +94,12 @@ export default function ModelSelectionSection({
 				onClose={() => setShowModelModal(false)}
 				selectedModels={selectedModels}
 				onAddModel={handleAddModels}
+			/>
+
+			{/* Model Comparison Table Modal */}
+			<ModelComparisonTable
+				isOpen={showComparisonTable}
+				onClose={() => setShowComparisonTable(false)}
 			/>
 		</div>
 	)
