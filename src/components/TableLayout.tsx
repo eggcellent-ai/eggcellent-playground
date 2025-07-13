@@ -263,6 +263,141 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		}
 	}
 
+	// Function to run a specific model for all rows with content
+	const handleRunModelForAllRows = async (modelId: string) => {
+		if (!activePromptId || !activeVersionId) return
+
+		// Get all rows with content
+		const rowsWithContent = tableData.filter((row) => row.input.trim())
+
+		if (rowsWithContent.length === 0) return
+
+		try {
+			// Clear existing responses and set loading state for this model only
+			rowsWithContent.forEach((row) => {
+				updateTableCellResponse(
+					activePromptId || '',
+					activeVersionId,
+					row.id,
+					modelId,
+					'<loading>' // Special marker to indicate loading state
+				)
+			})
+
+			// Run the specific model for all rows in parallel
+			const promises = rowsWithContent.map(async (row) => {
+				try {
+					console.log(
+						`Starting request for ${modelId} with input: ${row.input}`
+					)
+
+					// Check if we have a valid API key for this model
+					if (!hasValidKeyForModel(modelId)) {
+						const errorMessage = `Error: API key required for ${modelId}`
+						updateTableCellResponse(
+							activePromptId || '',
+							activeVersionId,
+							row.id,
+							modelId,
+							errorMessage
+						)
+						return {
+							rowId: row.id,
+							response: errorMessage,
+							error: new Error('Missing API key'),
+							duration: 0,
+						}
+					}
+
+					// Build messages array for AI service
+					const messages: ChatMessage[] = [
+						{
+							role: 'system',
+							content: substituteVariables(
+								activePromptId,
+								activeVersionId,
+								inputPromptContent
+							),
+						},
+						{
+							role: 'user',
+							content: row.input.trim(),
+						},
+					]
+
+					// Use AI service for generation
+					const { text: fullResponse, duration } = await streamText(
+						messages,
+						modelId
+					)
+
+					console.log(
+						`Completed request for ${modelId}, response length: ${
+							fullResponse.length
+						}, duration: ${(duration / 1000).toFixed(2)}s`
+					)
+
+					// Save response to store with timing data
+					updateTableCellResponse(
+						activePromptId || '',
+						activeVersionId,
+						row.id,
+						modelId,
+						`${fullResponse}__TIMING__${duration}`
+					)
+
+					// Validate response against schema if one exists
+					const schema = getOutputSchema(activePromptId || '', activeVersionId)
+					if (schema) {
+						const validation = validateResponseAgainstSchema(fullResponse, {
+							schema,
+						})
+						updateSchemaValidationResult(
+							activePromptId || '',
+							activeVersionId,
+							row.id,
+							modelId,
+							validation
+						)
+					}
+
+					return {
+						rowId: row.id,
+						response: fullResponse,
+						error: null,
+						duration,
+					}
+				} catch (error) {
+					console.error(`Error with ${modelId} for row ${row.id}:`, error)
+					const errorMessage =
+						error instanceof Error
+							? error.message
+							: `Failed to get response from ${modelId}`
+					const fullErrorMessage = `Error: ${errorMessage}`
+					updateTableCellResponse(
+						activePromptId || '',
+						activeVersionId,
+						row.id,
+						modelId,
+						fullErrorMessage
+					)
+					return {
+						rowId: row.id,
+						response: fullErrorMessage,
+						error: error,
+						duration: 0,
+					}
+				}
+			})
+
+			// Wait for all rows to complete
+			const results = await Promise.all(promises)
+			console.log(`All rows completed for model ${modelId}:`, results)
+		} catch (error) {
+			console.error('Error in handleRunModelForAllRows:', error)
+		}
+	}
+
 	const handleRunAllTable = useCallback(async () => {
 		if (!activePromptId || !activeVersionId || runningAllTable) return
 
@@ -829,6 +964,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							inputPromptContent={inputPromptContent}
 							hasValidKeyForModel={hasValidKeyForModel}
 							onRunAllModels={handleRunAllModels}
+							onRunModelForAllRows={handleRunModelForAllRows}
 							onRemoveRow={handleRemoveRow}
 							onUpdateRowInput={handleUpdateRowInput}
 							onRemoveModel={handleRemoveModel}

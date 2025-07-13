@@ -19,6 +19,7 @@ interface ResponseTableProps {
 	inputPromptContent: string
 	hasValidKeyForModel: (modelId: string) => boolean
 	onRunAllModels: (rowId: string, input: string) => void
+	onRunModelForAllRows: (modelId: string) => void
 	onRemoveRow: (rowId: string) => void
 	onUpdateRowInput: (rowId: string, input: string) => void
 	onRemoveModel?: (modelId: string) => void
@@ -34,6 +35,7 @@ export default function ResponseTable({
 	inputPromptContent,
 	hasValidKeyForModel,
 	onRunAllModels,
+	onRunModelForAllRows,
 	onRemoveRow,
 	onUpdateRowInput,
 	onRemoveModel,
@@ -76,6 +78,17 @@ export default function ResponseTable({
 		}
 	}, [isFullScreen])
 
+	// Function to run all inputs for a specific model column
+	const handleRunAllInputsForModel = (modelId: string) => {
+		// Use the new function that runs only the specific model for all rows
+		onRunModelForAllRows(modelId)
+	}
+
+	// Check if any model is currently loading for a specific model column
+	const isModelColumnLoading = (modelId: string) => {
+		return tableData.some((row) => row.responses[modelId] === '<loading>')
+	}
+
 	const tableContent = (
 		<div className="flex-1 overflow-auto bg-surface-card">
 			<div className="overflow-x-auto min-w-full">
@@ -102,6 +115,9 @@ export default function ResponseTable({
 							</th>
 							{selectedModels.map((modelId, index) => {
 								const model = AVAILABLE_MODELS.find((m) => m.id === modelId)
+								const isLoading = isModelColumnLoading(modelId)
+								const hasContent = tableData.some((row) => row.input.trim())
+
 								return (
 									<th
 										key={modelId}
@@ -123,6 +139,10 @@ export default function ResponseTable({
 											showRemoveButton={!!onRemoveModel}
 											onRemove={() => onRemoveModel?.(modelId)}
 											disableRemove={selectedModels.length <= 1}
+											showRunButton={true}
+											onRun={() => handleRunAllInputsForModel(modelId)}
+											isLoading={isLoading}
+											disabled={!hasContent || !hasValidKeyForModel(modelId)}
 										/>
 									</th>
 								)

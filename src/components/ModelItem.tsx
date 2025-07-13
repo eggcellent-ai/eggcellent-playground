@@ -1,4 +1,5 @@
 import { TrashIcon, CheckIcon } from '@heroicons/react/24/outline'
+import { PlayIcon } from '@heroicons/react/24/solid'
 import type { Model } from '../lib/models'
 
 // Import logos
@@ -35,6 +36,10 @@ interface ModelItemProps {
 	onClick?: () => void
 	selected?: boolean
 	showLogo?: boolean // New prop to control logo visibility
+	showRunButton?: boolean // New prop to show run button on hover
+	onRun?: () => void // New prop for run button click handler
+	isLoading?: boolean // New prop to show loading state
+	disabled?: boolean // New prop to disable the run button
 }
 
 export default function ModelItem({
@@ -48,6 +53,10 @@ export default function ModelItem({
 	onClick,
 	selected = false,
 	showLogo = true, // Default to showing logo
+	showRunButton = false, // Default to not showing run button
+	onRun,
+	isLoading = false,
+	disabled = false,
 }: ModelItemProps) {
 	const status = {
 		hasValidKey,
@@ -83,6 +92,28 @@ export default function ModelItem({
 					<span className="text-sm font-medium">Remove</span>
 				</button>
 			)}
+
+			{/* Run Button - appears on hover when showRunButton is true */}
+			{showRunButton && onRun && (
+				<button
+					onClick={(e) => {
+						e.stopPropagation()
+						onRun()
+					}}
+					disabled={disabled || isLoading}
+					className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-white shadow-lg p-2 text-neutral-700 hover:bg-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed z-10"
+					title={
+						isLoading
+							? 'Running...'
+							: disabled
+							? 'No content to run'
+							: 'Run all inputs for this model'
+					}
+				>
+					<PlayIcon className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+				</button>
+			)}
+
 			<div className="flex gap-4 items-center justify-between w-full">
 				<div className="flex gap-4 items-center min-w-0">
 					{showLogo && PROVIDER_LOGOS[model.provider] && (
