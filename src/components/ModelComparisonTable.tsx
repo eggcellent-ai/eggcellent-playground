@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react'
 import {
 	XMarkIcon,
-	FunnelIcon,
 	MagnifyingGlassIcon,
 	ChevronUpIcon,
 	ChevronDownIcon,
@@ -35,7 +34,7 @@ export default function ModelComparisonTable({
 	const [selectedStrengths, setSelectedStrengths] = useState<string[]>([])
 	const [selectedLatency, setSelectedLatency] = useState<string[]>([])
 	const [selectedQuality, setSelectedQuality] = useState<string[]>([])
-	const [showFilters, setShowFilters] = useState(false)
+	const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([])
 	const [sortField, setSortField] = useState<string>('name')
 	const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
 
@@ -71,6 +70,18 @@ export default function ModelComparisonTable({
 		return Array.from(quality).sort()
 	}, [])
 
+	const allPriceRanges = useMemo(() => {
+		return ['cheap', 'medium', 'expensive']
+	}, [])
+
+	// Helper function to get price range for a model
+	const getPriceRange = (price?: number): string => {
+		if (!price) return 'unknown'
+		if (price < 0.001) return 'cheap'
+		if (price <= 0.01) return 'medium'
+		return 'expensive'
+	}
+
 	// Sort function
 	const sortModels = (models: typeof AVAILABLE_MODELS) => {
 		return [...models].sort((a, b) => {
@@ -90,6 +101,10 @@ export default function ModelComparisonTable({
 				case 'pricePer1KToken':
 					aValue = a.pricePer1KToken || 0
 					bValue = b.pricePer1KToken || 0
+					break
+				case 'priceRange':
+					aValue = getPriceRange(a.pricePer1KToken)
+					bValue = getPriceRange(b.pricePer1KToken)
 					break
 				case 'latency':
 					aValue = a.latency || ''
@@ -175,12 +190,18 @@ export default function ModelComparisonTable({
 				selectedQuality.length === 0 ||
 				(model.quality && selectedQuality.includes(model.quality))
 
+			// Price filter
+			const matchesPriceRange =
+				selectedPriceRanges.length === 0 ||
+				selectedPriceRanges.includes(getPriceRange(model.pricePer1KToken))
+
 			return (
 				matchesSearch &&
 				matchesProvider &&
 				matchesStrengths &&
 				matchesLatency &&
-				matchesQuality
+				matchesQuality &&
+				matchesPriceRange
 			)
 		})
 
@@ -191,6 +212,7 @@ export default function ModelComparisonTable({
 		selectedStrengths,
 		selectedLatency,
 		selectedQuality,
+		selectedPriceRanges,
 		sortField,
 		sortDirection,
 	])
@@ -244,6 +266,13 @@ export default function ModelComparisonTable({
 						: [...prev, value]
 				)
 				break
+			case 'priceRange':
+				setSelectedPriceRanges((prev) =>
+					prev.includes(value)
+						? prev.filter((p) => p !== value)
+						: [...prev, value]
+				)
+				break
 		}
 	}
 
@@ -253,6 +282,7 @@ export default function ModelComparisonTable({
 		setSelectedStrengths([])
 		setSelectedLatency([])
 		setSelectedQuality([])
+		setSelectedPriceRanges([])
 		setSearchQuery('')
 	}
 
@@ -307,25 +337,12 @@ export default function ModelComparisonTable({
 									className="w-full pl-10 pr-4 py-2 border border-neutral focus:outline-none focus:border-secondary text-primary placeholder-text-muted"
 								/>
 							</div>
-
-							{/* Filter Toggle */}
-							<button
-								onClick={() => setShowFilters(!showFilters)}
-								className={`px-4 py-2 flex items-center gap-2 border rounded transition-colors ${
-									showFilters
-										? 'bg-primary text-white border-primary'
-										: 'border-neutral text-secondary hover:border-secondary'
-								}`}
-							>
-								<FunnelIcon className="w-4 h-4" />
-								Filters
-							</button>
-
 							{/* Clear Filters */}
 							{(selectedProviders.length > 0 ||
 								selectedStrengths.length > 0 ||
 								selectedLatency.length > 0 ||
 								selectedQuality.length > 0 ||
+								selectedPriceRanges.length > 0 ||
 								searchQuery) && (
 								<button
 									onClick={clearFilters}
@@ -335,101 +352,118 @@ export default function ModelComparisonTable({
 								</button>
 							)}
 						</div>
-
-						{/* Filter Panel */}
-						{showFilters && (
-							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-4 border-t border-neutral">
-								{/* Provider Filter */}
-								<div>
-									<h4 className="font-medium text-primary mb-2">Provider</h4>
-									<div className="space-y-1">
-										{allProviders.map((provider) => (
-											<label
-												key={provider}
-												className="flex items-center gap-2 text-sm"
-											>
-												<input
-													type="checkbox"
-													checked={selectedProviders.includes(provider)}
-													onChange={() => toggleFilter('provider', provider)}
-													className="rounded border-neutral"
-												/>
-												<span className="text-secondary">{provider}</span>
-											</label>
-										))}
-									</div>
-								</div>
-
-								{/* Strengths Filter */}
-								<div>
-									<h4 className="font-medium text-primary mb-2">Strengths</h4>
-									<div className="space-y-1">
-										{allStrengths.map((strength) => (
-											<label
-												key={strength}
-												className="flex items-center gap-2 text-sm"
-											>
-												<input
-													type="checkbox"
-													checked={selectedStrengths.includes(strength)}
-													onChange={() => toggleFilter('strength', strength)}
-													className="rounded border-neutral"
-												/>
-												<span className="text-secondary capitalize">
-													{strength}
-												</span>
-											</label>
-										))}
-									</div>
-								</div>
-
-								{/* Latency Filter */}
-								<div>
-									<h4 className="font-medium text-primary mb-2">Latency</h4>
-									<div className="space-y-1">
-										{allLatency.map((latency) => (
-											<label
-												key={latency}
-												className="flex items-center gap-2 text-sm"
-											>
-												<input
-													type="checkbox"
-													checked={selectedLatency.includes(latency)}
-													onChange={() => toggleFilter('latency', latency)}
-													className="rounded border-neutral"
-												/>
-												<span className="text-secondary capitalize">
-													{latency}
-												</span>
-											</label>
-										))}
-									</div>
-								</div>
-
-								{/* Quality Filter */}
-								<div>
-									<h4 className="font-medium text-primary mb-2">Quality</h4>
-									<div className="space-y-1">
-										{allQuality.map((quality) => (
-											<label
-												key={quality}
-												className="flex items-center gap-2 text-sm"
-											>
-												<input
-													type="checkbox"
-													checked={selectedQuality.includes(quality)}
-													onChange={() => toggleFilter('quality', quality)}
-													className="rounded border-neutral"
-												/>
-												<span className="text-secondary capitalize">
-													{quality}
-												</span>
-											</label>
-										))}
-									</div>
+						{/* Filter Panel - always visible now */}
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 pt-4">
+							{/* Provider Filter */}
+							<div>
+								<h4 className="font-medium text-primary mb-2">Provider</h4>
+								<div className="flex flex-wrap gap-2">
+									{allProviders.map((provider) => (
+										<button
+											key={provider}
+											type="button"
+											onClick={() => toggleFilter('provider', provider)}
+											className={`px-3 py-1 rounded-full border text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50
+					${
+						selectedProviders.includes(provider)
+							? 'bg-primary text-white border-primary'
+							: 'bg-white text-secondary border-neutral hover:bg-neutral-hover'
+					}`}
+										>
+											{provider}
+										</button>
+									))}
 								</div>
 							</div>
-						)}
+
+							{/* Strengths Filter */}
+							<div>
+								<h4 className="font-medium text-primary mb-2">Strengths</h4>
+								<div className="flex flex-wrap gap-2">
+									{allStrengths.map((strength) => (
+										<button
+											key={strength}
+											type="button"
+											onClick={() => toggleFilter('strength', strength)}
+											className={`px-3 py-1 rounded-full border text-sm capitalize transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50
+					${
+						selectedStrengths.includes(strength)
+							? 'bg-primary text-white border-primary'
+							: 'bg-white text-secondary border-neutral hover:bg-neutral-hover'
+					}`}
+										>
+											{strength}
+										</button>
+									))}
+								</div>
+							</div>
+
+							{/* Latency Filter */}
+							<div>
+								<h4 className="font-medium text-primary mb-2">Latency</h4>
+								<div className="flex flex-wrap gap-2">
+									{allLatency.map((latency) => (
+										<button
+											key={latency}
+											type="button"
+											onClick={() => toggleFilter('latency', latency)}
+											className={`px-3 py-1 rounded-full border text-sm capitalize transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50
+					${
+						selectedLatency.includes(latency)
+							? 'bg-primary text-white border-primary'
+							: 'bg-white text-secondary border-neutral hover:bg-neutral-hover'
+					}`}
+										>
+											{latency}
+										</button>
+									))}
+								</div>
+							</div>
+
+							{/* Quality Filter */}
+							<div>
+								<h4 className="font-medium text-primary mb-2">Quality</h4>
+								<div className="flex flex-wrap gap-2">
+									{allQuality.map((quality) => (
+										<button
+											key={quality}
+											type="button"
+											onClick={() => toggleFilter('quality', quality)}
+											className={`px-3 py-1 rounded-full border text-sm capitalize transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50
+					${
+						selectedQuality.includes(quality)
+							? 'bg-primary text-white border-primary'
+							: 'bg-white text-secondary border-neutral hover:bg-neutral-hover'
+					}`}
+										>
+											{quality}
+										</button>
+									))}
+								</div>
+							</div>
+
+							{/* Price Range Filter */}
+							<div>
+								<h4 className="font-medium text-primary mb-2">Price Range</h4>
+								<div className="flex flex-wrap gap-2">
+									{allPriceRanges.map((range) => (
+										<button
+											key={range}
+											type="button"
+											onClick={() => toggleFilter('priceRange', range)}
+											className={`px-3 py-1 rounded-full border text-sm capitalize transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50
+					${
+						selectedPriceRanges.includes(range)
+							? 'bg-primary text-white border-primary'
+							: 'bg-white text-secondary border-neutral hover:bg-neutral-hover'
+					}`}
+										>
+											{range}
+										</button>
+									))}
+								</div>
+							</div>
+						</div>
 					</div>
 
 					{/* Table */}
@@ -474,6 +508,20 @@ export default function ModelComparisonTable({
 											<div className="flex items-center gap-2">
 												Price (1M tokens)
 												{sortField === 'pricePer1KToken' &&
+													(sortDirection === 'asc' ? (
+														<ChevronUpIcon className="w-4 h-4" />
+													) : (
+														<ChevronDownIcon className="w-4 h-4" />
+													))}
+											</div>
+										</th>
+										<th
+											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[120px] cursor-pointer hover:bg-neutral-hover transition-colors"
+											onClick={() => handleSort('priceRange')}
+										>
+											<div className="flex items-center gap-2">
+												Price Range
+												{sortField === 'priceRange' &&
 													(sortDirection === 'asc' ? (
 														<ChevronUpIcon className="w-4 h-4" />
 													) : (
@@ -628,6 +676,23 @@ export default function ModelComparisonTable({
 											</td>
 											<td className="p-3 border-r border-neutral text-sm text-secondary">
 												{formatPrice(model.pricePer1KToken)}
+											</td>
+											<td className="p-3 border-r border-neutral text-sm">
+												<span
+													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+														getPriceRange(model.pricePer1KToken) === 'cheap'
+															? 'bg-green-100 text-green-800'
+															: getPriceRange(model.pricePer1KToken) ===
+															  'medium'
+															? 'bg-yellow-100 text-yellow-800'
+															: getPriceRange(model.pricePer1KToken) ===
+															  'expensive'
+															? 'bg-red-100 text-red-800'
+															: 'bg-gray-100 text-gray-800'
+													}`}
+												>
+													{getPriceRange(model.pricePer1KToken)}
+												</span>
 											</td>
 											<td className="p-3 border-r border-neutral text-sm">
 												<span
