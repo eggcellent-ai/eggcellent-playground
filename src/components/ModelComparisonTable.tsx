@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react'
 import {
-	XMarkIcon,
 	MagnifyingGlassIcon,
 	ChevronUpIcon,
 	ChevronDownIcon,
@@ -20,15 +19,7 @@ const PROVIDER_LOGOS: Record<string, string> = {
 	xAI: xaiLogo,
 }
 
-interface ModelComparisonTableProps {
-	isOpen: boolean
-	onClose: () => void
-}
-
-export default function ModelComparisonTable({
-	isOpen,
-	onClose,
-}: ModelComparisonTableProps) {
+export default function ModelComparisonTable() {
 	const [searchQuery, setSearchQuery] = useState('')
 	const [selectedProviders, setSelectedProviders] = useState<string[]>([])
 	const [selectedStrengths, setSelectedStrengths] = useState<string[]>([])
@@ -286,43 +277,19 @@ export default function ModelComparisonTable({
 		setSearchQuery('')
 	}
 
-	if (!isOpen) return null
-
 	return (
-		<div className="fixed inset-0 z-50 overflow-y-auto" onClick={onClose}>
-			{/* Backdrop */}
-			<div
-				className="fixed inset-0 bg-black/50 transition-opacity"
-				aria-hidden="true"
-			/>
-
-			{/* Modal */}
-			<div className="relative min-h-screen flex items-center justify-center">
-				<div
-					className="relative bg-white shadow-xl w-full flex flex-col"
-					onClick={(e) => e.stopPropagation()}
-					onMouseDown={(e) => e.stopPropagation()}
-				>
-					{/* Header */}
-					<div className="flex items-center justify-between p-6 border-b border-neutral">
-						<div>
-							<h2 className="text-xl font-semibold text-primary">
-								Model Comparison Table
-							</h2>
-							<p className="text-sm text-secondary mt-1">
-								{filteredModels.length} of {AVAILABLE_MODELS.length} models
-							</p>
-						</div>
-						<button
-							onClick={onClose}
-							className="p-2 hover:bg-neutral-hover rounded-full transition-colors"
-						>
-							<XMarkIcon className="w-5 h-5 text-secondary" />
-						</button>
-					</div>
-
+		<div className="min-h-screen py-10">
+			<div className="flex items-center justify-between mb-6 px-6">
+				<div>
+					<h2 className="text-2xl font-semibold text-primary">
+						Model Comparison Table
+					</h2>
+				</div>
+			</div>
+			<div className="max-w-7xl mx-auto px-4">
+				<div>
 					{/* Search and Filters */}
-					<div className="p-6 border-b border-neutral">
+					<div className="mb-8 p-4 bg-surface-card border border-neutral">
 						<div className="flex gap-4 items-center mb-4">
 							{/* Search */}
 							<div className="relative flex-1 max-w-md">
@@ -346,7 +313,7 @@ export default function ModelComparisonTable({
 								searchQuery) && (
 								<button
 									onClick={clearFilters}
-									className="px-4 py-2 text-secondary hover:bg-neutral-hover rounded transition-colors"
+									className="px-4 py-2 text-secondary hover:bg-neutral-hover transition-colors border border-neutral"
 								>
 									Clear All
 								</button>
@@ -465,337 +432,340 @@ export default function ModelComparisonTable({
 							</div>
 						</div>
 					</div>
-
 					{/* Table */}
-					<div className="flex-1 overflow-auto">
-						<div className="overflow-x-auto">
-							<table className="w-full border-collapse">
-								<thead className="sticky top-0 bg-white border-b border-neutral">
-									<tr>
-										<th
-											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[200px] cursor-pointer hover:bg-neutral-hover transition-colors"
-											onClick={() => handleSort('name')}
-										>
-											<div className="flex items-center gap-2">
-												Model
-												{sortField === 'name' &&
-													(sortDirection === 'asc' ? (
-														<ChevronUpIcon className="w-4 h-4" />
-													) : (
-														<ChevronDownIcon className="w-4 h-4" />
-													))}
-											</div>
-										</th>
+					<div className="pb-2 px-1">
+						<p className="text-sm text-secondary mt-1">
+							{filteredModels.length} of {AVAILABLE_MODELS.length} models
+						</p>
+					</div>
+					<div className="overflow-x-auto border border-neutral bg-surface-card">
+						<table className="w-full border-collapse">
+							<thead className="sticky top-0 border-b border-neutral">
+								<tr>
+									<th
+										className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[200px] cursor-pointer hover:bg-neutral-hover transition-colors"
+										onClick={() => handleSort('name')}
+									>
+										<div className="flex items-center gap-2">
+											Model
+											{sortField === 'name' &&
+												(sortDirection === 'asc' ? (
+													<ChevronUpIcon className="w-4 h-4" />
+												) : (
+													<ChevronDownIcon className="w-4 h-4" />
+												))}
+										</div>
+									</th>
 
-										<th
-											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[120px] cursor-pointer hover:bg-neutral-hover transition-colors"
-											onClick={() => handleSort('contextWindow')}
-										>
-											<div className="flex items-center gap-2">
-												Context Window
-												{sortField === 'contextWindow' &&
-													(sortDirection === 'asc' ? (
-														<ChevronUpIcon className="w-4 h-4" />
-													) : (
-														<ChevronDownIcon className="w-4 h-4" />
-													))}
-											</div>
-										</th>
-										<th
-											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[150px] cursor-pointer hover:bg-neutral-hover transition-colors"
-											onClick={() => handleSort('pricePer1KToken')}
-										>
-											<div className="flex items-center gap-2">
-												Price (1M tokens)
-												{sortField === 'pricePer1KToken' &&
-													(sortDirection === 'asc' ? (
-														<ChevronUpIcon className="w-4 h-4" />
-													) : (
-														<ChevronDownIcon className="w-4 h-4" />
-													))}
-											</div>
-										</th>
-										<th
-											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[120px] cursor-pointer hover:bg-neutral-hover transition-colors"
-											onClick={() => handleSort('priceRange')}
-										>
-											<div className="flex items-center gap-2">
-												Price Range
-												{sortField === 'priceRange' &&
-													(sortDirection === 'asc' ? (
-														<ChevronUpIcon className="w-4 h-4" />
-													) : (
-														<ChevronDownIcon className="w-4 h-4" />
-													))}
-											</div>
-										</th>
-										<th
-											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[100px] cursor-pointer hover:bg-neutral-hover transition-colors"
-											onClick={() => handleSort('latency')}
-										>
-											<div className="flex items-center gap-2">
-												Latency
-												{sortField === 'latency' &&
-													(sortDirection === 'asc' ? (
-														<ChevronUpIcon className="w-4 h-4" />
-													) : (
-														<ChevronDownIcon className="w-4 h-4" />
-													))}
-											</div>
-										</th>
-										<th
-											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[100px] cursor-pointer hover:bg-neutral-hover transition-colors"
-											onClick={() => handleSort('quality')}
-										>
-											<div className="flex items-center gap-2">
-												Quality
-												{sortField === 'quality' &&
-													(sortDirection === 'asc' ? (
-														<ChevronUpIcon className="w-4 h-4" />
-													) : (
-														<ChevronDownIcon className="w-4 h-4" />
-													))}
-											</div>
-										</th>
-										<th
-											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[200px] cursor-pointer hover:bg-neutral-hover transition-colors"
-											onClick={() => handleSort('strengths')}
-										>
-											<div className="flex items-center gap-2">
-												Strengths
-												{sortField === 'strengths' &&
-													(sortDirection === 'asc' ? (
-														<ChevronUpIcon className="w-4 h-4" />
-													) : (
-														<ChevronDownIcon className="w-4 h-4" />
-													))}
-											</div>
-										</th>
-										<th
-											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[100px] cursor-pointer hover:bg-neutral-hover transition-colors"
-											onClick={() => handleSort('supportsImageInput')}
-										>
-											<div className="flex items-center gap-2">
-												Image Input
-												{sortField === 'supportsImageInput' &&
-													(sortDirection === 'asc' ? (
-														<ChevronUpIcon className="w-4 h-4" />
-													) : (
-														<ChevronDownIcon className="w-4 h-4" />
-													))}
-											</div>
-										</th>
-										<th
-											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[120px] cursor-pointer hover:bg-neutral-hover transition-colors"
-											onClick={() => handleSort('supportsObjectGeneration')}
-										>
-											<div className="flex items-center gap-2">
-												Object Gen
-												{sortField === 'supportsObjectGeneration' &&
-													(sortDirection === 'asc' ? (
-														<ChevronUpIcon className="w-4 h-4" />
-													) : (
-														<ChevronDownIcon className="w-4 h-4" />
-													))}
-											</div>
-										</th>
-										<th
-											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[100px] cursor-pointer hover:bg-neutral-hover transition-colors"
-											onClick={() => handleSort('supportsToolUsage')}
-										>
-											<div className="flex items-center gap-2">
-												Tools
-												{sortField === 'supportsToolUsage' &&
-													(sortDirection === 'asc' ? (
-														<ChevronUpIcon className="w-4 h-4" />
-													) : (
-														<ChevronDownIcon className="w-4 h-4" />
-													))}
-											</div>
-										</th>
-										<th
-											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[120px] cursor-pointer hover:bg-neutral-hover transition-colors"
-											onClick={() => handleSort('supportsToolStreaming')}
-										>
-											<div className="flex items-center gap-2">
-												Tool Stream
-												{sortField === 'supportsToolStreaming' &&
-													(sortDirection === 'asc' ? (
-														<ChevronUpIcon className="w-4 h-4" />
-													) : (
-														<ChevronDownIcon className="w-4 h-4" />
-													))}
-											</div>
-										</th>
-										<th
-											className="p-3 text-left text-sm font-semibold text-primary min-w-[100px] cursor-pointer hover:bg-neutral-hover transition-colors"
-											onClick={() => handleSort('isMultimodal')}
-										>
-											<div className="flex items-center gap-2">
-												Multimodal
-												{sortField === 'isMultimodal' &&
-													(sortDirection === 'asc' ? (
-														<ChevronUpIcon className="w-4 h-4" />
-													) : (
-														<ChevronDownIcon className="w-4 h-4" />
-													))}
-											</div>
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									{filteredModels.map((model, index) => (
-										<tr
-											key={model.id}
-											className={`border-b border-neutral hover:bg-neutral-hover transition-colors ${
-												index % 2 === 0 ? 'bg-white' : 'bg-neutral-light'
-											}`}
-										>
-											<td className="p-3 border-r border-neutral">
-												<div className="flex items-center gap-3">
-													{PROVIDER_LOGOS[model.provider] && (
-														<img
-															src={PROVIDER_LOGOS[model.provider]}
-															alt={`${model.provider} logo`}
-															className="w-6 h-6 object-contain"
-														/>
-													)}
-													<div>
-														<div className="font-medium text-primary text-sm">
-															{model.name}
-														</div>
-														<div className="text-xs text-secondary">
-															{model.id}
-														</div>
+									<th
+										className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[120px] cursor-pointer hover:bg-neutral-hover transition-colors"
+										onClick={() => handleSort('contextWindow')}
+									>
+										<div className="flex items-center gap-2">
+											Context Window
+											{sortField === 'contextWindow' &&
+												(sortDirection === 'asc' ? (
+													<ChevronUpIcon className="w-4 h-4" />
+												) : (
+													<ChevronDownIcon className="w-4 h-4" />
+												))}
+										</div>
+									</th>
+									<th
+										className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[150px] cursor-pointer hover:bg-neutral-hover transition-colors"
+										onClick={() => handleSort('pricePer1KToken')}
+									>
+										<div className="flex items-center gap-2">
+											Price (1M tokens)
+											{sortField === 'pricePer1KToken' &&
+												(sortDirection === 'asc' ? (
+													<ChevronUpIcon className="w-4 h-4" />
+												) : (
+													<ChevronDownIcon className="w-4 h-4" />
+												))}
+										</div>
+									</th>
+									<th
+										className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[120px] cursor-pointer hover:bg-neutral-hover transition-colors"
+										onClick={() => handleSort('priceRange')}
+									>
+										<div className="flex items-center gap-2">
+											Price Range
+											{sortField === 'priceRange' &&
+												(sortDirection === 'asc' ? (
+													<ChevronUpIcon className="w-4 h-4" />
+												) : (
+													<ChevronDownIcon className="w-4 h-4" />
+												))}
+										</div>
+									</th>
+									<th
+										className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[100px] cursor-pointer hover:bg-neutral-hover transition-colors"
+										onClick={() => handleSort('latency')}
+									>
+										<div className="flex items-center gap-2">
+											Latency
+											{sortField === 'latency' &&
+												(sortDirection === 'asc' ? (
+													<ChevronUpIcon className="w-4 h-4" />
+												) : (
+													<ChevronDownIcon className="w-4 h-4" />
+												))}
+										</div>
+									</th>
+									<th
+										className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[100px] cursor-pointer hover:bg-neutral-hover transition-colors"
+										onClick={() => handleSort('quality')}
+									>
+										<div className="flex items-center gap-2">
+											Quality
+											{sortField === 'quality' &&
+												(sortDirection === 'asc' ? (
+													<ChevronUpIcon className="w-4 h-4" />
+												) : (
+													<ChevronDownIcon className="w-4 h-4" />
+												))}
+										</div>
+									</th>
+									<th
+										className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[200px] cursor-pointer hover:bg-neutral-hover transition-colors"
+										onClick={() => handleSort('strengths')}
+									>
+										<div className="flex items-center gap-2">
+											Strengths
+											{sortField === 'strengths' &&
+												(sortDirection === 'asc' ? (
+													<ChevronUpIcon className="w-4 h-4" />
+												) : (
+													<ChevronDownIcon className="w-4 h-4" />
+												))}
+										</div>
+									</th>
+									<th
+										className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[100px] cursor-pointer hover:bg-neutral-hover transition-colors"
+										onClick={() => handleSort('supportsImageInput')}
+									>
+										<div className="flex items-center gap-2">
+											Image Input
+											{sortField === 'supportsImageInput' &&
+												(sortDirection === 'asc' ? (
+													<ChevronUpIcon className="w-4 h-4" />
+												) : (
+													<ChevronDownIcon className="w-4 h-4" />
+												))}
+										</div>
+									</th>
+									<th
+										className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[120px] cursor-pointer hover:bg-neutral-hover transition-colors"
+										onClick={() => handleSort('supportsObjectGeneration')}
+									>
+										<div className="flex items-center gap-2">
+											Object Gen
+											{sortField === 'supportsObjectGeneration' &&
+												(sortDirection === 'asc' ? (
+													<ChevronUpIcon className="w-4 h-4" />
+												) : (
+													<ChevronDownIcon className="w-4 h-4" />
+												))}
+										</div>
+									</th>
+									<th
+										className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[100px] cursor-pointer hover:bg-neutral-hover transition-colors"
+										onClick={() => handleSort('supportsToolUsage')}
+									>
+										<div className="flex items-center gap-2">
+											Tools
+											{sortField === 'supportsToolUsage' &&
+												(sortDirection === 'asc' ? (
+													<ChevronUpIcon className="w-4 h-4" />
+												) : (
+													<ChevronDownIcon className="w-4 h-4" />
+												))}
+										</div>
+									</th>
+									<th
+										className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[120px] cursor-pointer hover:bg-neutral-hover transition-colors"
+										onClick={() => handleSort('supportsToolStreaming')}
+									>
+										<div className="flex items-center gap-2">
+											Tool Stream
+											{sortField === 'supportsToolStreaming' &&
+												(sortDirection === 'asc' ? (
+													<ChevronUpIcon className="w-4 h-4" />
+												) : (
+													<ChevronDownIcon className="w-4 h-4" />
+												))}
+										</div>
+									</th>
+									<th
+										className="p-3 text-left text-sm font-semibold text-primary min-w-[100px] cursor-pointer hover:bg-neutral-hover transition-colors"
+										onClick={() => handleSort('isMultimodal')}
+									>
+										<div className="flex items-center gap-2">
+											Multimodal
+											{sortField === 'isMultimodal' &&
+												(sortDirection === 'asc' ? (
+													<ChevronUpIcon className="w-4 h-4" />
+												) : (
+													<ChevronDownIcon className="w-4 h-4" />
+												))}
+										</div>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								{filteredModels.map((model, index) => (
+									<tr
+										key={model.id}
+										className={`border-b border-neutral hover:bg-neutral-hover transition-colors ${
+											index % 2 === 0 ? 'bg-white' : 'bg-[#fafafa]'
+										}`}
+									>
+										<td className="p-3 border-r border-neutral">
+											<div className="flex items-center gap-3">
+												{PROVIDER_LOGOS[model.provider] && (
+													<img
+														src={PROVIDER_LOGOS[model.provider]}
+														alt={`${model.provider} logo`}
+														className="w-6 h-6 object-contain"
+													/>
+												)}
+												<div>
+													<div className="font-medium text-primary text-sm">
+														{model.name}
+													</div>
+													<div className="text-xs text-secondary">
+														{model.id}
 													</div>
 												</div>
-											</td>
+											</div>
+										</td>
 
-											<td className="p-3 border-r border-neutral text-sm text-secondary">
-												{formatContextWindow(model.contextWindow)}
-											</td>
-											<td className="p-3 border-r border-neutral text-sm text-secondary">
-												{formatPrice(model.pricePer1KToken)}
-											</td>
-											<td className="p-3 border-r border-neutral text-sm">
-												<span
-													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-														getPriceRange(model.pricePer1KToken) === 'cheap'
-															? 'bg-green-100 text-green-800'
-															: getPriceRange(model.pricePer1KToken) ===
-															  'medium'
-															? 'bg-yellow-100 text-yellow-800'
-															: getPriceRange(model.pricePer1KToken) ===
-															  'expensive'
-															? 'bg-red-100 text-red-800'
-															: 'bg-gray-100 text-gray-800'
-													}`}
-												>
-													{getPriceRange(model.pricePer1KToken)}
-												</span>
-											</td>
-											<td className="p-3 border-r border-neutral text-sm">
-												<span
-													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-														model.latency === 'low'
-															? 'bg-green-100 text-green-800'
-															: model.latency === 'medium'
-															? 'bg-yellow-100 text-yellow-800'
-															: model.latency === 'high'
-															? 'bg-red-100 text-red-800'
-															: 'bg-gray-100 text-gray-800'
-													}`}
-												>
-													{model.latency || 'N/A'}
-												</span>
-											</td>
-											<td className="p-3 border-r border-neutral text-sm">
-												<span
-													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-														model.quality === 'high'
-															? 'bg-green-100 text-green-800'
-															: model.quality === 'medium'
-															? 'bg-yellow-100 text-yellow-800'
-															: model.quality === 'low'
-															? 'bg-red-100 text-red-800'
-															: 'bg-gray-100 text-gray-800'
-													}`}
-												>
-													{model.quality || 'N/A'}
-												</span>
-											</td>
-											<td className="p-3 border-r border-neutral text-sm">
-												<div className="flex flex-wrap gap-1">
-													{model.strengths?.map((strength) => (
-														<span
-															key={strength}
-															className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800"
-														>
-															{strength}
-														</span>
-													)) || 'N/A'}
-												</div>
-											</td>
-											<td className="p-3 border-r border-neutral text-sm">
-												<span
-													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-														model.supportsImageInput
-															? 'bg-green-100 text-green-800'
-															: 'bg-gray-100 text-gray-800'
-													}`}
-												>
-													{model.supportsImageInput ? 'Yes' : 'No'}
-												</span>
-											</td>
-											<td className="p-3 border-r border-neutral text-sm">
-												<span
-													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-														model.supportsObjectGeneration
-															? 'bg-green-100 text-green-800'
-															: 'bg-gray-100 text-gray-800'
-													}`}
-												>
-													{model.supportsObjectGeneration ? 'Yes' : 'No'}
-												</span>
-											</td>
-											<td className="p-3 border-r border-neutral text-sm">
-												<span
-													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-														model.supportsToolUsage
-															? 'bg-green-100 text-green-800'
-															: 'bg-gray-100 text-gray-800'
-													}`}
-												>
-													{model.supportsToolUsage ? 'Yes' : 'No'}
-												</span>
-											</td>
-											<td className="p-3 border-r border-neutral text-sm">
-												<span
-													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-														model.supportsToolStreaming
-															? 'bg-green-100 text-green-800'
-															: 'bg-gray-100 text-gray-800'
-													}`}
-												>
-													{model.supportsToolStreaming ? 'Yes' : 'No'}
-												</span>
-											</td>
-											<td className="p-3 text-sm">
-												<span
-													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-														model.isMultimodal
-															? 'bg-green-100 text-green-800'
-															: 'bg-gray-100 text-gray-800'
-													}`}
-												>
-													{model.isMultimodal ? 'Yes' : 'No'}
-												</span>
-											</td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-						</div>
+										<td className="p-3 border-r border-neutral text-sm text-secondary">
+											{formatContextWindow(model.contextWindow)}
+										</td>
+										<td className="p-3 border-r border-neutral text-sm text-secondary">
+											{formatPrice(model.pricePer1KToken)}
+										</td>
+										<td className="p-3 border-r border-neutral text-sm">
+											<span
+												className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+													getPriceRange(model.pricePer1KToken) === 'cheap'
+														? 'bg-green-100 text-green-800'
+														: getPriceRange(model.pricePer1KToken) === 'medium'
+														? 'bg-yellow-100 text-yellow-800'
+														: getPriceRange(model.pricePer1KToken) ===
+														  'expensive'
+														? 'bg-red-100 text-red-800'
+														: 'bg-gray-100 text-gray-800'
+												}`}
+											>
+												{getPriceRange(model.pricePer1KToken)}
+											</span>
+										</td>
+										<td className="p-3 border-r border-neutral text-sm">
+											<span
+												className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+													model.latency === 'low'
+														? 'bg-green-100 text-green-800'
+														: model.latency === 'medium'
+														? 'bg-yellow-100 text-yellow-800'
+														: model.latency === 'high'
+														? 'bg-red-100 text-red-800'
+														: 'bg-gray-100 text-gray-800'
+												}`}
+											>
+												{model.latency || 'N/A'}
+											</span>
+										</td>
+										<td className="p-3 border-r border-neutral text-sm">
+											<span
+												className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+													model.quality === 'high'
+														? 'bg-green-100 text-green-800'
+														: model.quality === 'medium'
+														? 'bg-yellow-100 text-yellow-800'
+														: model.quality === 'low'
+														? 'bg-red-100 text-red-800'
+														: 'bg-gray-100 text-gray-800'
+												}`}
+											>
+												{model.quality || 'N/A'}
+											</span>
+										</td>
+										<td className="p-3 border-r border-neutral text-sm">
+											<div className="flex flex-wrap gap-1">
+												{model.strengths && model.strengths.length > 0
+													? model.strengths.map((strength: string) => (
+															<span
+																key={strength}
+																className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800"
+															>
+																{strength}
+															</span>
+													  ))
+													: 'N/A'}
+											</div>
+										</td>
+										<td className="p-3 border-r border-neutral text-sm">
+											<span
+												className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+													model.supportsImageInput
+														? 'bg-green-100 text-green-800'
+														: 'bg-gray-100 text-gray-800'
+												}`}
+											>
+												{model.supportsImageInput ? 'Yes' : 'No'}
+											</span>
+										</td>
+										<td className="p-3 border-r border-neutral text-sm">
+											<span
+												className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+													model.supportsObjectGeneration
+														? 'bg-green-100 text-green-800'
+														: 'bg-gray-100 text-gray-800'
+												}`}
+											>
+												{model.supportsObjectGeneration ? 'Yes' : 'No'}
+											</span>
+										</td>
+										<td className="p-3 border-r border-neutral text-sm">
+											<span
+												className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+													model.supportsToolUsage
+														? 'bg-green-100 text-green-800'
+														: 'bg-gray-100 text-gray-800'
+												}`}
+											>
+												{model.supportsToolUsage ? 'Yes' : 'No'}
+											</span>
+										</td>
+										<td className="p-3 border-r border-neutral text-sm">
+											<span
+												className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+													model.supportsToolStreaming
+														? 'bg-green-100 text-green-800'
+														: 'bg-gray-100 text-gray-800'
+												}`}
+											>
+												{model.supportsToolStreaming ? 'Yes' : 'No'}
+											</span>
+										</td>
+										<td className="p-3 text-sm">
+											<span
+												className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+													model.isMultimodal
+														? 'bg-green-100 text-green-800'
+														: 'bg-gray-100 text-gray-800'
+												}`}
+											>
+												{model.isMultimodal ? 'Yes' : 'No'}
+											</span>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>

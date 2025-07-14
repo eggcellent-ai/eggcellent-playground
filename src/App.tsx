@@ -3,6 +3,7 @@ import './App.css'
 import Header from './components/Header'
 import Home from './pages/Home'
 import PromptDetailPage from './pages/PromptDetail'
+import Models from './pages/Models'
 
 function App() {
 	return (
@@ -13,6 +14,7 @@ function App() {
 					<Routes>
 						<Route path="/" element={<Home />} />
 						<Route path="/prompt/:id" element={<PromptDetailPage />} />
+						<Route path="/models" element={<Models />} />
 					</Routes>
 				</div>
 			</div>

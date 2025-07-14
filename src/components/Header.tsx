@@ -56,6 +56,7 @@ export default function Header() {
 									}}
 								/>
 							</Link>
+
 							{!isHomePage && (
 								<Link
 									to="/"
@@ -73,6 +74,12 @@ export default function Header() {
 								<span className="hidden sm:inline">New Prompt</span>
 								<span className="sm:hidden">New</span>
 							</button>
+							<Link
+								to="/models"
+								className="text-secondary px-4 py-2 font-semibold transition-colors cursor-pointer hover:opacity-50"
+							>
+								Models
+							</Link>
 						</div>
 
 						{/* Action Buttons */}

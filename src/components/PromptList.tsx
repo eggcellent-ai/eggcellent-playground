@@ -61,7 +61,7 @@ export default function PromptList() {
 	}
 
 	return (
-		<div className="flex flex-col h-full">
+		<div className="flex flex-col h-full py-10">
 			<div className="flex-1 overflow-y-auto">
 				{prompts.length === 0 ? (
 					<div className="h-full flex items-center justify-center">

@@ -3,8 +3,8 @@ import { PlusIcon, SparklesIcon } from '@heroicons/react/24/outline'
 import { AVAILABLE_MODELS } from '../lib/stores'
 import { useAIService } from '../lib/aiService'
 import ModelSelectionModal from './ModelSelectionModal'
-import ModelComparisonTable from './ModelComparisonTable'
 import ModelItem from './ModelItem'
+import { useNavigate } from 'react-router-dom'
 
 interface ModelSelectionSectionProps {
 	selectedModels: string[]
@@ -18,8 +18,8 @@ export default function ModelSelectionSection({
 	onRemoveModel,
 }: ModelSelectionSectionProps) {
 	const [showModelModal, setShowModelModal] = useState(false)
-	const [showComparisonTable, setShowComparisonTable] = useState(false)
 	const { hasValidKeyForModel } = useAIService()
+	const navigate = useNavigate()
 
 	const handleAddModels = (modelIds: string[]) => {
 		onAddModel(modelIds)
@@ -34,14 +34,13 @@ export default function ModelSelectionSection({
 					Models
 				</h2>
 				<button
-					onClick={() => setShowComparisonTable(true)}
+					onClick={() => navigate('/models')}
 					className="text-xs font-semibold text-primary transition-colors flex items-center gap-1"
 				>
 					<SparklesIcon className="w-3 h-3" />
 					Find best fit
 				</button>
 			</div>
-
 			{/* Models Display */}
 			<div>
 				{selectedModels.length === 0 ? (
@@ -87,7 +86,6 @@ export default function ModelSelectionSection({
 					</div>
 				)}
 			</div>
-
 			{/* Model Selection Modal */}
 			<ModelSelectionModal
 				isOpen={showModelModal}
@@ -95,12 +93,11 @@ export default function ModelSelectionSection({
 				selectedModels={selectedModels}
 				onAddModel={handleAddModels}
 			/>
-
 			{/* Model Comparison Table Modal */}
-			<ModelComparisonTable
+			{/* <ModelComparisonTable
 				isOpen={showComparisonTable}
 				onClose={() => setShowComparisonTable(false)}
-			/>
+			/> */}
 		</div>
 	)
 }
