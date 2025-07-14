@@ -106,10 +106,7 @@ export default function ModelComparisonTable({
 					aValue = a.strengths?.length || 0
 					bValue = b.strengths?.length || 0
 					break
-				case 'languages':
-					aValue = a.languages?.length || 0
-					bValue = b.languages?.length || 0
-					break
+
 				case 'isMultimodal':
 					aValue = a.isMultimodal ? 1 : 0
 					bValue = b.isMultimodal ? 1 : 0
@@ -527,20 +524,7 @@ export default function ModelComparisonTable({
 													))}
 											</div>
 										</th>
-										<th
-											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[120px] cursor-pointer hover:bg-neutral-hover transition-colors"
-											onClick={() => handleSort('languages')}
-										>
-											<div className="flex items-center gap-2">
-												Languages
-												{sortField === 'languages' &&
-													(sortDirection === 'asc' ? (
-														<ChevronUpIcon className="w-4 h-4" />
-													) : (
-														<ChevronDownIcon className="w-4 h-4" />
-													))}
-											</div>
-										</th>
+
 										<th
 											className="p-3 text-left text-sm font-semibold text-primary min-w-[100px] cursor-pointer hover:bg-neutral-hover transition-colors"
 											onClick={() => handleSort('isMultimodal')}
@@ -635,11 +619,7 @@ export default function ModelComparisonTable({
 													)) || 'N/A'}
 												</div>
 											</td>
-											<td className="p-3 border-r border-neutral text-sm text-secondary">
-												{model.languages?.length
-													? `${model.languages.length} languages`
-													: 'N/A'}
-											</td>
+
 											<td className="p-3 text-sm">
 												<span
 													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${

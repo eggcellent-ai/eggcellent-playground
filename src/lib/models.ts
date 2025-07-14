@@ -11,7 +11,6 @@ export interface Model {
 	latency?: 'low' | 'medium' | 'high'
 	quality?: 'low' | 'medium' | 'high'
 	strengths?: string[] // e.g., ["chat", "code", "json", "creative"]
-	languages?: string[] // e.g., ["en", "vi", "jp"]
 	isMultimodal?: boolean // if supports image/audio
 }
 
