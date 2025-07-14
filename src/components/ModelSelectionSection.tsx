@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PlusIcon, TableCellsIcon } from '@heroicons/react/24/outline'
+import { PlusIcon, SparklesIcon } from '@heroicons/react/24/outline'
 import { AVAILABLE_MODELS } from '../lib/stores'
 import { useAIService } from '../lib/aiService'
 import ModelSelectionModal from './ModelSelectionModal'
@@ -35,9 +35,9 @@ export default function ModelSelectionSection({
 				</h2>
 				<button
 					onClick={() => setShowComparisonTable(true)}
-					className="px-3 py-1 text-xs bg-secondary text-white rounded hover:bg-secondary-dark transition-colors flex items-center gap-1"
+					className="text-xs font-semibold text-primary transition-colors flex items-center gap-1"
 				>
-					<TableCellsIcon className="w-3 h-3" />
+					<SparklesIcon className="w-3 h-3" />
 					Find best fit
 				</button>
 			</div>
