@@ -8,9 +8,18 @@
 			"pricePer1KToken": 0.005,
 			"latency": "medium",
 			"quality": "high",
-			"strengths": ["chat", "code", "json", "creative", "reasoning"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"creative",
+				"reasoning"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": true,
+			"supportsObjectGeneration": true,
+			"supportsToolUsage": true,
+			"supportsToolStreaming": true
 		},
 		{
 			"id": "gpt-4o-mini",
@@ -20,9 +29,16 @@
 			"pricePer1KToken": 0.00015,
 			"latency": "low",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": false
+			"strengths": [
+				"chat",
+				"code",
+				"json"
+			],
+			"isMultimodal": false,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": true,
+			"supportsToolUsage": true,
+			"supportsToolStreaming": true
 		},
 		{
 			"id": "gpt-4o-audio-preview",
@@ -32,9 +48,17 @@
 			"pricePer1KToken": 0.005,
 			"latency": "medium",
 			"quality": "high",
-			"strengths": ["chat", "audio", "speech", "creative"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"audio",
+				"speech",
+				"creative"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "gpt-4-turbo",
@@ -44,9 +68,18 @@
 			"pricePer1KToken": 0.01,
 			"latency": "medium",
 			"quality": "high",
-			"strengths": ["chat", "code", "json", "creative", "reasoning"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"creative",
+				"reasoning"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": true,
+			"supportsToolUsage": true,
+			"supportsToolStreaming": true
 		},
 		{
 			"id": "gpt-3.5-turbo",
@@ -56,9 +89,16 @@
 			"pricePer1KToken": 0.0005,
 			"latency": "low",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": false
+			"strengths": [
+				"chat",
+				"code",
+				"json"
+			],
+			"isMultimodal": false,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": true,
+			"supportsToolUsage": true,
+			"supportsToolStreaming": true
 		},
 		{
 			"id": "o4-mini",
@@ -68,9 +108,16 @@
 			"pricePer1KToken": 0.00015,
 			"latency": "low",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": false
+			"strengths": [
+				"chat",
+				"code",
+				"json"
+			],
+			"isMultimodal": false,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "o3",
@@ -80,9 +127,18 @@
 			"pricePer1KToken": 0.005,
 			"latency": "medium",
 			"quality": "high",
-			"strengths": ["chat", "code", "json", "creative", "reasoning"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"creative",
+				"reasoning"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "o3-mini",
@@ -92,9 +148,16 @@
 			"pricePer1KToken": 0.00015,
 			"latency": "low",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": false
+			"strengths": [
+				"chat",
+				"code",
+				"json"
+			],
+			"isMultimodal": false,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "o1",
@@ -104,9 +167,19 @@
 			"pricePer1KToken": 0.015,
 			"latency": "high",
 			"quality": "high",
-			"strengths": ["chat", "code", "json", "creative", "reasoning", "math"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"creative",
+				"reasoning",
+				"math"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": true,
+			"supportsToolUsage": true,
+			"supportsToolStreaming": true
 		},
 		{
 			"id": "o1-mini",
@@ -116,9 +189,18 @@
 			"pricePer1KToken": 0.003,
 			"latency": "medium",
 			"quality": "high",
-			"strengths": ["chat", "code", "json", "creative", "reasoning"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"creative",
+				"reasoning"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": true,
+			"supportsToolUsage": true,
+			"supportsToolStreaming": true
 		},
 		{
 			"id": "o1-preview",
@@ -128,9 +210,19 @@
 			"pricePer1KToken": 0.015,
 			"latency": "high",
 			"quality": "high",
-			"strengths": ["chat", "code", "json", "creative", "reasoning", "math"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"creative",
+				"reasoning",
+				"math"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": true,
+			"supportsToolUsage": true,
+			"supportsToolStreaming": true
 		},
 		{
 			"id": "claude-4-opus-20250514",
@@ -148,8 +240,11 @@
 				"reasoning",
 				"analysis"
 			],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "claude-4-sonnet-20250514",
@@ -159,9 +254,18 @@
 			"pricePer1KToken": 0.003,
 			"latency": "medium",
 			"quality": "high",
-			"strengths": ["chat", "code", "json", "creative", "reasoning"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"creative",
+				"reasoning"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "claude-3-7-sonnet-20250219",
@@ -171,9 +275,18 @@
 			"pricePer1KToken": 0.003,
 			"latency": "medium",
 			"quality": "high",
-			"strengths": ["chat", "code", "json", "creative", "reasoning"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"creative",
+				"reasoning"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": true,
+			"supportsToolUsage": true,
+			"supportsToolStreaming": true
 		},
 		{
 			"id": "claude-3-5-sonnet-20241022",
@@ -183,9 +296,18 @@
 			"pricePer1KToken": 0.003,
 			"latency": "medium",
 			"quality": "high",
-			"strengths": ["chat", "code", "json", "creative", "reasoning"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"creative",
+				"reasoning"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": true,
+			"supportsToolUsage": true,
+			"supportsToolStreaming": true
 		},
 		{
 			"id": "claude-3-5-sonnet-20240620",
@@ -195,9 +317,18 @@
 			"pricePer1KToken": 0.003,
 			"latency": "medium",
 			"quality": "high",
-			"strengths": ["chat", "code", "json", "creative", "reasoning"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"creative",
+				"reasoning"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": true,
+			"supportsToolUsage": true,
+			"supportsToolStreaming": true
 		},
 		{
 			"id": "claude-3-5-haiku-20241022",
@@ -207,9 +338,16 @@
 			"pricePer1KToken": 0.00025,
 			"latency": "low",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": true,
+			"supportsToolUsage": true,
+			"supportsToolStreaming": true
 		},
 		{
 			"id": "claude-3-opus-20240229",
@@ -227,8 +365,11 @@
 				"reasoning",
 				"analysis"
 			],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "claude-3-sonnet-20240229",
@@ -238,9 +379,18 @@
 			"pricePer1KToken": 0.003,
 			"latency": "medium",
 			"quality": "high",
-			"strengths": ["chat", "code", "json", "creative", "reasoning"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"creative",
+				"reasoning"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "claude-3-haiku-20240307",
@@ -250,9 +400,16 @@
 			"pricePer1KToken": 0.00025,
 			"latency": "low",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "grok-3",
@@ -262,9 +419,18 @@
 			"pricePer1KToken": 0.002,
 			"latency": "medium",
 			"quality": "high",
-			"strengths": ["chat", "code", "json", "creative", "humor"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"creative",
+				"humor"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "grok-3-fast",
@@ -274,9 +440,16 @@
 			"pricePer1KToken": 0.001,
 			"latency": "low",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": false
+			"strengths": [
+				"chat",
+				"code",
+				"json"
+			],
+			"isMultimodal": false,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "grok-3-mini",
@@ -286,9 +459,16 @@
 			"pricePer1KToken": 0.0005,
 			"latency": "low",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": false
+			"strengths": [
+				"chat",
+				"code",
+				"json"
+			],
+			"isMultimodal": false,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "grok-3-mini-fast",
@@ -298,9 +478,15 @@
 			"pricePer1KToken": 0.00025,
 			"latency": "low",
 			"quality": "low",
-			"strengths": ["chat", "code"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": false
+			"strengths": [
+				"chat",
+				"code"
+			],
+			"isMultimodal": false,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "grok-2-1212",
@@ -310,9 +496,16 @@
 			"pricePer1KToken": 0.001,
 			"latency": "medium",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": false
+			"strengths": [
+				"chat",
+				"code",
+				"json"
+			],
+			"isMultimodal": false,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "grok-2-vision-1212",
@@ -322,9 +515,17 @@
 			"pricePer1KToken": 0.001,
 			"latency": "medium",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json", "vision"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"vision"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "grok-beta",
@@ -334,9 +535,16 @@
 			"pricePer1KToken": 0.001,
 			"latency": "medium",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": false
+			"strengths": [
+				"chat",
+				"code",
+				"json"
+			],
+			"isMultimodal": false,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "grok-vision-beta",
@@ -346,9 +554,17 @@
 			"pricePer1KToken": 0.001,
 			"latency": "medium",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json", "vision"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"vision"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "gemini-2.5-pro",
@@ -366,8 +582,11 @@
 				"reasoning",
 				"long-context"
 			],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "gemini-2.5-flash",
@@ -377,9 +596,17 @@
 			"pricePer1KToken": 0.000075,
 			"latency": "low",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json", "long-context"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"long-context"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "gemini-2.5-pro-preview-05-06",
@@ -397,8 +624,11 @@
 				"reasoning",
 				"long-context"
 			],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "gemini-2.5-flash-preview-04-17",
@@ -408,9 +638,17 @@
 			"pricePer1KToken": 0.000075,
 			"latency": "low",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json", "long-context"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"long-context"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "gemini-2.5-pro-exp-03-25",
@@ -428,8 +666,11 @@
 				"reasoning",
 				"long-context"
 			],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "gemini-2.0-flash",
@@ -439,9 +680,17 @@
 			"pricePer1KToken": 0.000075,
 			"latency": "low",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json", "long-context"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"long-context"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "gemini-1.5-pro",
@@ -459,8 +708,11 @@
 				"reasoning",
 				"long-context"
 			],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": true,
+			"supportsToolUsage": true,
+			"supportsToolStreaming": true
 		},
 		{
 			"id": "gemini-1.5-pro-latest",
@@ -478,8 +730,11 @@
 				"reasoning",
 				"long-context"
 			],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "gemini-1.5-flash",
@@ -489,9 +744,17 @@
 			"pricePer1KToken": 0.000075,
 			"latency": "low",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json", "long-context"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"long-context"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": true,
+			"supportsToolUsage": true,
+			"supportsToolStreaming": true
 		},
 		{
 			"id": "gemini-1.5-flash-latest",
@@ -501,9 +764,17 @@
 			"pricePer1KToken": 0.000075,
 			"latency": "low",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json", "long-context"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"long-context"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "gemini-1.5-flash-8b",
@@ -513,9 +784,17 @@
 			"pricePer1KToken": 0.000075,
 			"latency": "low",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json", "long-context"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"long-context"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		},
 		{
 			"id": "gemini-1.5-flash-8b-latest",
@@ -525,9 +804,17 @@
 			"pricePer1KToken": 0.000075,
 			"latency": "low",
 			"quality": "medium",
-			"strengths": ["chat", "code", "json", "long-context"],
-			"languages": ["en", "vi", "jp", "zh", "ko", "es", "fr", "de", "it", "pt"],
-			"isMultimodal": true
+			"strengths": [
+				"chat",
+				"code",
+				"json",
+				"long-context"
+			],
+			"isMultimodal": true,
+			"supportsImageInput": false,
+			"supportsObjectGeneration": false,
+			"supportsToolUsage": false,
+			"supportsToolStreaming": false
 		}
 	]
 }

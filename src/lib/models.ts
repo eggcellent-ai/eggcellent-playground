@@ -12,6 +12,12 @@ export interface Model {
 	quality?: 'low' | 'medium' | 'high'
 	strengths?: string[] // e.g., ["chat", "code", "json", "creative"]
 	isMultimodal?: boolean // if supports image/audio
+
+	// AI SDK capabilities
+	supportsImageInput?: boolean
+	supportsObjectGeneration?: boolean
+	supportsToolUsage?: boolean
+	supportsToolStreaming?: boolean
 }
 
 // Available models configuration imported from JSON

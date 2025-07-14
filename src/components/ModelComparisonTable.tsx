@@ -82,10 +82,7 @@ export default function ModelComparisonTable({
 					aValue = a.name.toLowerCase()
 					bValue = b.name.toLowerCase()
 					break
-				case 'provider':
-					aValue = a.provider.toLowerCase()
-					bValue = b.provider.toLowerCase()
-					break
+
 				case 'contextWindow':
 					aValue = a.contextWindow || 0
 					bValue = b.contextWindow || 0
@@ -106,7 +103,22 @@ export default function ModelComparisonTable({
 					aValue = a.strengths?.length || 0
 					bValue = b.strengths?.length || 0
 					break
-
+				case 'supportsImageInput':
+					aValue = a.supportsImageInput ? 1 : 0
+					bValue = b.supportsImageInput ? 1 : 0
+					break
+				case 'supportsObjectGeneration':
+					aValue = a.supportsObjectGeneration ? 1 : 0
+					bValue = b.supportsObjectGeneration ? 1 : 0
+					break
+				case 'supportsToolUsage':
+					aValue = a.supportsToolUsage ? 1 : 0
+					bValue = b.supportsToolUsage ? 1 : 0
+					break
+				case 'supportsToolStreaming':
+					aValue = a.supportsToolStreaming ? 1 : 0
+					bValue = b.supportsToolStreaming ? 1 : 0
+					break
 				case 'isMultimodal':
 					aValue = a.isMultimodal ? 1 : 0
 					bValue = b.isMultimodal ? 1 : 0
@@ -440,20 +452,7 @@ export default function ModelComparisonTable({
 													))}
 											</div>
 										</th>
-										<th
-											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[120px] cursor-pointer hover:bg-neutral-hover transition-colors"
-											onClick={() => handleSort('provider')}
-										>
-											<div className="flex items-center gap-2">
-												Provider
-												{sortField === 'provider' &&
-													(sortDirection === 'asc' ? (
-														<ChevronUpIcon className="w-4 h-4" />
-													) : (
-														<ChevronDownIcon className="w-4 h-4" />
-													))}
-											</div>
-										</th>
+
 										<th
 											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[120px] cursor-pointer hover:bg-neutral-hover transition-colors"
 											onClick={() => handleSort('contextWindow')}
@@ -524,7 +523,62 @@ export default function ModelComparisonTable({
 													))}
 											</div>
 										</th>
-
+										<th
+											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[100px] cursor-pointer hover:bg-neutral-hover transition-colors"
+											onClick={() => handleSort('supportsImageInput')}
+										>
+											<div className="flex items-center gap-2">
+												Image Input
+												{sortField === 'supportsImageInput' &&
+													(sortDirection === 'asc' ? (
+														<ChevronUpIcon className="w-4 h-4" />
+													) : (
+														<ChevronDownIcon className="w-4 h-4" />
+													))}
+											</div>
+										</th>
+										<th
+											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[120px] cursor-pointer hover:bg-neutral-hover transition-colors"
+											onClick={() => handleSort('supportsObjectGeneration')}
+										>
+											<div className="flex items-center gap-2">
+												Object Gen
+												{sortField === 'supportsObjectGeneration' &&
+													(sortDirection === 'asc' ? (
+														<ChevronUpIcon className="w-4 h-4" />
+													) : (
+														<ChevronDownIcon className="w-4 h-4" />
+													))}
+											</div>
+										</th>
+										<th
+											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[100px] cursor-pointer hover:bg-neutral-hover transition-colors"
+											onClick={() => handleSort('supportsToolUsage')}
+										>
+											<div className="flex items-center gap-2">
+												Tools
+												{sortField === 'supportsToolUsage' &&
+													(sortDirection === 'asc' ? (
+														<ChevronUpIcon className="w-4 h-4" />
+													) : (
+														<ChevronDownIcon className="w-4 h-4" />
+													))}
+											</div>
+										</th>
+										<th
+											className="p-3 text-left text-sm font-semibold text-primary border-r border-neutral min-w-[120px] cursor-pointer hover:bg-neutral-hover transition-colors"
+											onClick={() => handleSort('supportsToolStreaming')}
+										>
+											<div className="flex items-center gap-2">
+												Tool Stream
+												{sortField === 'supportsToolStreaming' &&
+													(sortDirection === 'asc' ? (
+														<ChevronUpIcon className="w-4 h-4" />
+													) : (
+														<ChevronDownIcon className="w-4 h-4" />
+													))}
+											</div>
+										</th>
 										<th
 											className="p-3 text-left text-sm font-semibold text-primary min-w-[100px] cursor-pointer hover:bg-neutral-hover transition-colors"
 											onClick={() => handleSort('isMultimodal')}
@@ -568,9 +622,7 @@ export default function ModelComparisonTable({
 													</div>
 												</div>
 											</td>
-											<td className="p-3 border-r border-neutral text-sm text-secondary">
-												{model.provider}
-											</td>
+
 											<td className="p-3 border-r border-neutral text-sm text-secondary">
 												{formatContextWindow(model.contextWindow)}
 											</td>
@@ -619,7 +671,50 @@ export default function ModelComparisonTable({
 													)) || 'N/A'}
 												</div>
 											</td>
-
+											<td className="p-3 border-r border-neutral text-sm">
+												<span
+													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+														model.supportsImageInput
+															? 'bg-green-100 text-green-800'
+															: 'bg-gray-100 text-gray-800'
+													}`}
+												>
+													{model.supportsImageInput ? 'Yes' : 'No'}
+												</span>
+											</td>
+											<td className="p-3 border-r border-neutral text-sm">
+												<span
+													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+														model.supportsObjectGeneration
+															? 'bg-green-100 text-green-800'
+															: 'bg-gray-100 text-gray-800'
+													}`}
+												>
+													{model.supportsObjectGeneration ? 'Yes' : 'No'}
+												</span>
+											</td>
+											<td className="p-3 border-r border-neutral text-sm">
+												<span
+													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+														model.supportsToolUsage
+															? 'bg-green-100 text-green-800'
+															: 'bg-gray-100 text-gray-800'
+													}`}
+												>
+													{model.supportsToolUsage ? 'Yes' : 'No'}
+												</span>
+											</td>
+											<td className="p-3 border-r border-neutral text-sm">
+												<span
+													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+														model.supportsToolStreaming
+															? 'bg-green-100 text-green-800'
+															: 'bg-gray-100 text-gray-800'
+													}`}
+												>
+													{model.supportsToolStreaming ? 'Yes' : 'No'}
+												</span>
+											</td>
 											<td className="p-3 text-sm">
 												<span
 													className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${

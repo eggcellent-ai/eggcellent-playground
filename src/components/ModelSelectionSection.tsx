@@ -38,7 +38,7 @@ export default function ModelSelectionSection({
 					className="px-3 py-1 text-xs bg-secondary text-white rounded hover:bg-secondary-dark transition-colors flex items-center gap-1"
 				>
 					<TableCellsIcon className="w-3 h-3" />
-					Compare All
+					Find best fit
 				</button>
 			</div>
 
