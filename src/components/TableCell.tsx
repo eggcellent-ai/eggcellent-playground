@@ -227,7 +227,7 @@ export default function TableCell({
 						<div>
 							{duration !== null && (
 								<div
-									className={`absolute bottom-0 left-0 text-xs text-secondary p-2 w-full text-right flex justify-between items-end ${
+									className={`absolute bottom-0 left-0 text-xs text-muted p-2 w-full text-right flex justify-between items-end ${
 										validationResult?.isValid
 											? 'bg-green-50'
 											: validationResult
