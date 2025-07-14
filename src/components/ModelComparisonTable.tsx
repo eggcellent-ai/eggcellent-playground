@@ -297,9 +297,9 @@ export default function ModelComparisonTable({
 			/>
 
 			{/* Modal */}
-			<div className="relative min-h-screen flex items-center justify-center p-4">
+			<div className="relative min-h-screen flex items-center justify-center">
 				<div
-					className="relative bg-white shadow-xl max-w-7xl w-full max-h-[95vh] flex flex-col"
+					className="relative bg-white shadow-xl w-full flex flex-col"
 					onClick={(e) => e.stopPropagation()}
 					onMouseDown={(e) => e.stopPropagation()}
 				>
