@@ -285,7 +285,7 @@ export default function ModelComparisonTable() {
 			<div className="max-w-7xl mx-auto px-4">
 				<div>
 					{/* Search and Filters */}
-					<div className="mb-8 p-4 bg-surface-card border border-neutral">
+					<div>
 						<div className="flex gap-4 items-center mb-4">
 							{/* Search */}
 							<div className="relative flex-1 max-w-md">
@@ -297,7 +297,7 @@ export default function ModelComparisonTable() {
 									placeholder="Search models or providers..."
 									value={searchQuery}
 									onChange={(e) => setSearchQuery(e.target.value)}
-									className="w-full pl-10 pr-4 py-2 border border-neutral focus:outline-none focus:border-secondary text-primary placeholder-text-muted"
+									className="w-full pl-10 pr-4 py-2 border border-neutral focus:outline-none focus:border-secondary text-primary placeholder-text-muted bg-surface-card"
 								/>
 							</div>
 							{/* Clear Filters */}
