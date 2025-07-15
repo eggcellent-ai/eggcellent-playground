@@ -1,11 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { useEffect } from 'react'
 import './App.css'
 import Header from './components/Header'
 import Home from './pages/Home'
 import PromptDetailPage from './pages/PromptDetail'
 import Models from './pages/Models'
+import { initializeAuth } from './lib/authStore'
 
 function App() {
+	useEffect(() => {
+		initializeAuth()
+	}, [])
+
 	return (
 		<Router>
 			<div className="min-h-screen bg-background">

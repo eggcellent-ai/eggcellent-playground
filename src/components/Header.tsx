@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { KeyIcon } from '@heroicons/react/24/outline'
 import ApiKeySettings from './ApiKeySettings'
 import { useSystemPromptStore } from '../lib/stores'
+import GoogleLogin from './GoogleLogin'
 
 export default function Header() {
 	const location = useLocation()
@@ -109,6 +110,7 @@ export default function Header() {
 								<span className="hidden sm:inline">API Keys</span>
 								<span className="sm:hidden">Keys</span>
 							</button>
+							<GoogleLogin />
 						</div>
 					</div>
 				</div>
