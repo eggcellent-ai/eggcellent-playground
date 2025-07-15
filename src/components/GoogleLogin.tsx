@@ -1,5 +1,6 @@
 import { useAuthStore } from '../lib/authStore'
 import { UserIcon } from '@heroicons/react/24/outline'
+import SyncStatus from './SyncStatus'
 
 export default function GoogleLogin() {
 	const { user, loading, error, signInWithGoogle, logout, clearError } =
@@ -55,6 +56,9 @@ export default function GoogleLogin() {
 				>
 					Logout
 				</button>
+
+				{/* Sync Status */}
+				<SyncStatus />
 			</div>
 		)
 	}

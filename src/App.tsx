@@ -6,10 +6,12 @@ import Home from './pages/Home'
 import PromptDetailPage from './pages/PromptDetail'
 import Models from './pages/Models'
 import { initializeAuth } from './lib/authStore'
+import { setupAutoSync } from './lib/syncStore'
 
 function App() {
 	useEffect(() => {
 		initializeAuth()
+		setupAutoSync()
 	}, [])
 
 	return (

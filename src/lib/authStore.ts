@@ -7,6 +7,7 @@ import {
 	type User,
 } from 'firebase/auth'
 import { auth, googleProvider } from './firebase'
+import { useSyncStore } from './syncStore'
 
 interface AuthState {
 	user: User | null
@@ -32,6 +33,8 @@ export const useAuthStore = create<AuthState>()(
 					set({ loading: true, error: null })
 					const result = await signInWithPopup(auth, googleProvider)
 					set({ user: result.user, loading: false })
+					useSyncStore.getState().enableSync(result.user.uid)
+					await useSyncStore.getState().loadFromCloud()
 				} catch (error) {
 					console.error('Google sign-in error:', error)
 					const errorMessage =
@@ -45,6 +48,7 @@ export const useAuthStore = create<AuthState>()(
 					set({ loading: true, error: null })
 					await signOut(auth)
 					set({ user: null, loading: false })
+					useSyncStore.getState().disableSync()
 				} catch (error) {
 					console.error('Logout error:', error)
 					const errorMessage =
@@ -61,15 +65,20 @@ export const useAuthStore = create<AuthState>()(
 		{
 			name: 'auth-storage',
 			storage: createJSONStorage(() => localStorage),
-			partialize: (state) => ({ user: state.user }), // Only persist user data
+			partialize: (state) => ({ user: state.user }),
 		}
 	)
 )
 
-// Initialize auth state listener
 export const initializeAuth = () => {
 	onAuthStateChanged(auth, (user) => {
 		useAuthStore.getState().setUser(user)
 		useAuthStore.getState().setLoading(false)
+		if (user) {
+			useSyncStore.getState().enableSync(user.uid)
+			useSyncStore.getState().loadFromCloud()
+		} else {
+			useSyncStore.getState().disableSync()
+		}
 	})
 }
