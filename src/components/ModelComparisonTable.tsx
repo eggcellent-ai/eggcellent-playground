@@ -73,9 +73,64 @@ export default function ModelComparisonTable() {
 		return 'expensive'
 	}
 
-	// Sort function
-	const sortModels = (models: typeof AVAILABLE_MODELS) => {
-		return [...models].sort((a, b) => {
+	// Handle sort column click
+	const handleSort = (field: string) => {
+		if (sortField === field) {
+			setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+		} else {
+			setSortField(field)
+			setSortDirection('asc')
+		}
+	}
+
+	// Filter models based on search and filters
+	const filteredModels = useMemo(() => {
+		const filtered = AVAILABLE_MODELS.filter((model) => {
+			// Search filter
+			const matchesSearch =
+				!searchQuery ||
+				model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				model.provider.toLowerCase().includes(searchQuery.toLowerCase())
+
+			// Provider filter
+			const matchesProvider =
+				selectedProviders.length === 0 ||
+				selectedProviders.includes(model.provider)
+
+			// Strengths filter
+			const matchesStrengths =
+				selectedStrengths.length === 0 ||
+				selectedStrengths.some((strength) =>
+					model.strengths?.includes(strength)
+				)
+
+			// Latency filter
+			const matchesLatency =
+				selectedLatency.length === 0 ||
+				(model.latency && selectedLatency.includes(model.latency))
+
+			// Quality filter
+			const matchesQuality =
+				selectedQuality.length === 0 ||
+				(model.quality && selectedQuality.includes(model.quality))
+
+			// Price filter
+			const matchesPriceRange =
+				selectedPriceRanges.length === 0 ||
+				selectedPriceRanges.includes(getPriceRange(model.pricePer1KToken))
+
+			return (
+				matchesSearch &&
+				matchesProvider &&
+				matchesStrengths &&
+				matchesLatency &&
+				matchesQuality &&
+				matchesPriceRange
+			)
+		})
+
+		// Sort the filtered models
+		return [...filtered].sort((a, b) => {
 			let aValue: string | number
 			let bValue: string | number
 
@@ -138,65 +193,6 @@ export default function ModelComparisonTable() {
 			if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1
 			return 0
 		})
-	}
-
-	// Handle sort column click
-	const handleSort = (field: string) => {
-		if (sortField === field) {
-			setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
-		} else {
-			setSortField(field)
-			setSortDirection('asc')
-		}
-	}
-
-	// Filter models based on search and filters
-	const filteredModels = useMemo(() => {
-		const filtered = AVAILABLE_MODELS.filter((model) => {
-			// Search filter
-			const matchesSearch =
-				!searchQuery ||
-				model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				model.provider.toLowerCase().includes(searchQuery.toLowerCase())
-
-			// Provider filter
-			const matchesProvider =
-				selectedProviders.length === 0 ||
-				selectedProviders.includes(model.provider)
-
-			// Strengths filter
-			const matchesStrengths =
-				selectedStrengths.length === 0 ||
-				selectedStrengths.some((strength) =>
-					model.strengths?.includes(strength)
-				)
-
-			// Latency filter
-			const matchesLatency =
-				selectedLatency.length === 0 ||
-				(model.latency && selectedLatency.includes(model.latency))
-
-			// Quality filter
-			const matchesQuality =
-				selectedQuality.length === 0 ||
-				(model.quality && selectedQuality.includes(model.quality))
-
-			// Price filter
-			const matchesPriceRange =
-				selectedPriceRanges.length === 0 ||
-				selectedPriceRanges.includes(getPriceRange(model.pricePer1KToken))
-
-			return (
-				matchesSearch &&
-				matchesProvider &&
-				matchesStrengths &&
-				matchesLatency &&
-				matchesQuality &&
-				matchesPriceRange
-			)
-		})
-
-		return sortModels(filtered)
 	}, [
 		searchQuery,
 		selectedProviders,
