@@ -5,6 +5,20 @@
 		<link rel="icon" type="image/png" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Eggcellent Playground</title>
+		<!-- Google tag (gtag.js) -->
+		<script
+			async
+			src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_MEASUREMENT_ID%"
+		></script>
+		<script>
+			window.dataLayer = window.dataLayer || []
+			function gtag() {
+				dataLayer.push(arguments)
+			}
+			gtag('js', new Date())
+			gtag('config', '%VITE_GA_MEASUREMENT_ID%')
+		</script>
+		<!-- End Google Analytics -->
 	</head>
 	<body>
 		<div id="root"></div>
