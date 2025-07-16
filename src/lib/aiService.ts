@@ -130,7 +130,17 @@ export function useAIService() {
 	)
 
 	const generateAIText = useCallback(
-		async (messages: ChatMessage[], modelId: string): Promise<string> => {
+		async (
+			messages: ChatMessage[],
+			modelId: string
+		): Promise<{
+			text: string
+			usage?: {
+				promptTokens: number
+				completionTokens: number
+				totalTokens: number
+			}
+		}> => {
 			const { model, providerName } = getProviderAndModel(modelId)
 
 			try {
@@ -142,7 +152,7 @@ export function useAIService() {
 					model,
 					messages,
 				})
-				return result.text
+				return { text: result.text, usage: result.usage }
 			} catch (error) {
 				console.error(
 					`Error with ${providerName} provider for model ${modelId}:`,

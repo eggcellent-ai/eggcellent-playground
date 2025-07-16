@@ -197,23 +197,20 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 					// Use non-streaming AI service
 					const startTime = performance.now()
-					const fullResponse = await generateText(messages, modelId)
+					const result = await generateText(messages, modelId)
 					const endTime = performance.now()
 					const duration = endTime - startTime
-
-					console.log(
-						`Completed request for ${modelId}, response length: ${
-							fullResponse.length
-						}, duration: ${(duration / 1000).toFixed(2)}s`
-					)
-
-					// Save response to store with timing data
+					const fullResponse = result.text
+					let usageStr = ''
+					if (result.usage) {
+						usageStr = `__USAGE__${result.usage.promptTokens},${result.usage.completionTokens},${result.usage.totalTokens}`
+					}
 					updateTableCellResponse(
 						activePromptId || '',
 						activeVersionId,
 						rowId,
 						modelId,
-						`${fullResponse}__TIMING__${duration}`
+						`${fullResponse}__TIMING__${duration}${usageStr}`
 					)
 
 					// Validate response against schema if one exists
@@ -327,23 +324,20 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 					// Use non-streaming AI service
 					const startTime = performance.now()
-					const fullResponse = await generateText(messages, modelId)
+					const result = await generateText(messages, modelId)
 					const endTime = performance.now()
 					const duration = endTime - startTime
-
-					console.log(
-						`Completed request for ${modelId}, response length: ${
-							fullResponse.length
-						}, duration: ${(duration / 1000).toFixed(2)}s`
-					)
-
-					// Save response to store with timing data
+					const fullResponse = result.text
+					let usageStr = ''
+					if (result.usage) {
+						usageStr = `__USAGE__${result.usage.promptTokens},${result.usage.completionTokens},${result.usage.totalTokens}`
+					}
 					updateTableCellResponse(
 						activePromptId || '',
 						activeVersionId,
 						row.id,
 						modelId,
-						`${fullResponse}__TIMING__${duration}`
+						`${fullResponse}__TIMING__${duration}${usageStr}`
 					)
 
 					// Validate response against schema if one exists
@@ -468,23 +462,20 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 							// Use non-streaming AI service
 							const startTime = performance.now()
-							const fullResponse = await generateText(messages, modelId)
+							const result = await generateText(messages, modelId)
 							const endTime = performance.now()
 							const duration = endTime - startTime
-
-							console.log(
-								`Completed table request for ${modelId}, response length: ${
-									fullResponse.length
-								}, duration: ${(duration / 1000).toFixed(2)}s`
-							)
-
-							// Save response to store with timing data
+							const fullResponse = result.text
+							let usageStr = ''
+							if (result.usage) {
+								usageStr = `__USAGE__${result.usage.promptTokens},${result.usage.completionTokens},${result.usage.totalTokens}`
+							}
 							updateTableCellResponse(
 								activePromptId || '',
 								activeVersionId,
 								row.id,
 								modelId,
-								`${fullResponse}__TIMING__${duration}`
+								`${fullResponse}__TIMING__${duration}${usageStr}`
 							)
 
 							// Validate response against schema if one exists

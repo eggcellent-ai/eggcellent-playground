@@ -42,6 +42,11 @@ export default function TableCell({
 		errors: string[]
 		parsedData?: unknown
 	} | null>(null)
+	const [tokenUsage, setTokenUsage] = useState<{
+		promptTokens: number
+		completionTokens: number
+		totalTokens: number
+	} | null>(null)
 
 	const {
 		getTableCellResponse,
@@ -76,16 +81,29 @@ export default function TableCell({
 					setHasRun(false)
 					setDuration(null)
 					setValidationResult(null)
+					setTokenUsage(null)
 				} else {
-					// Check if response includes timing data
-					const parts = existingResponse.split('__TIMING__')
-					if (parts.length > 1) {
-						setResponse(parts[0])
-						setDuration(parseFloat(parts[1]))
-					} else {
-						setResponse(existingResponse)
-						setDuration(null)
+					// Parse response, timing, and usage
+					const timingSplit = existingResponse.split('__TIMING__')
+					const resp = timingSplit[0]
+					let duration: number | null = null
+					let usage: {
+						promptTokens: number
+						completionTokens: number
+						totalTokens: number
+					} | null = null
+					if (timingSplit.length > 1) {
+						const usageSplit = timingSplit[1].split('__USAGE__')
+						duration = parseFloat(usageSplit[0])
+						if (usageSplit.length > 1) {
+							const [promptTokens, completionTokens, totalTokens] =
+								usageSplit[1].split(',').map(Number)
+							usage = { promptTokens, completionTokens, totalTokens }
+						}
 					}
+					setResponse(resp)
+					setDuration(duration)
+					setTokenUsage(usage)
 					setIsLoading(false)
 					setHasRun(true)
 					setValidationResult(existingValidation || null)
@@ -96,6 +114,7 @@ export default function TableCell({
 				setHasRun(false)
 				setDuration(null)
 				setValidationResult(null)
+				setTokenUsage(null)
 			}
 		}
 	}, [
@@ -123,6 +142,7 @@ export default function TableCell({
 		setResponse('')
 		setHasRun(false)
 		setDuration(null)
+		setTokenUsage(null)
 
 		try {
 			// Build messages array for AI service
@@ -139,12 +159,14 @@ export default function TableCell({
 
 			// Use non-streaming AI service
 			const startTime = performance.now()
-			const fullResponse = await generateText(messages, modelId)
+			const result = await generateText(messages, modelId)
 			const endTime = performance.now()
 			const responseDuration = endTime - startTime
+			console.log('Token usage:', result.usage)
 
-			setResponse(fullResponse)
+			setResponse(result.text)
 			setDuration(responseDuration)
+			setTokenUsage(result.usage || null)
 
 			// Save response to store with timing data
 			if (activePromptId && activeVersionId) {
@@ -153,13 +175,13 @@ export default function TableCell({
 					activeVersionId,
 					rowId,
 					modelId,
-					`${fullResponse}__TIMING__${responseDuration}`
+					`${result.text}__TIMING__${responseDuration}`
 				)
 
 				// Validate response against schema if one exists
 				const schema = getOutputSchema(activePromptId, activeVersionId)
 				if (schema) {
-					const validation = validateResponseAgainstSchema(fullResponse, {
+					const validation = validateResponseAgainstSchema(result.text, {
 						schema,
 					})
 					setValidationResult(validation)
@@ -300,7 +322,17 @@ export default function TableCell({
 											)}
 										</div>
 									)}
-									Response time: {(duration / 1000).toFixed(2)}s
+									<div className="flex items-end gap-1 text-primary">
+										{tokenUsage && (
+											<span className="ml-2 ">
+												{/* Tokens: P {tokenUsage.promptTokens}, C{' '}
+												{tokenUsage.completionTokens}, T{' '}
+												{tokenUsage.totalTokens} */}
+												{tokenUsage.totalTokens} tokens,{' '}
+											</span>
+										)}
+										{(duration / 1000).toFixed(2)}s
+									</div>
 								</div>
 							)}
 
