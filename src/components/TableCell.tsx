@@ -51,7 +51,7 @@ export default function TableCell({
 		updateSchemaValidationResult,
 	} = useSystemPromptStore()
 
-	const { streamText, hasValidKeyForModel } = useAIService()
+	const { generateText, hasValidKeyForModel } = useAIService()
 
 	// Load existing response and validation result
 	useEffect(() => {
@@ -137,10 +137,13 @@ export default function TableCell({
 				},
 			]
 
-			// Use streaming AI service
-			const { text: fullResponse, duration: responseDuration } =
-				await streamText(messages, modelId, (text) => setResponse(text))
+			// Use non-streaming AI service
+			const startTime = performance.now()
+			const fullResponse = await generateText(messages, modelId)
+			const endTime = performance.now()
+			const responseDuration = endTime - startTime
 
+			setResponse(fullResponse)
 			setDuration(responseDuration)
 
 			// Save response to store with timing data

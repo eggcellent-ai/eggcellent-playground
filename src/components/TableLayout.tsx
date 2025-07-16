@@ -40,7 +40,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		updateSchemaValidationResult,
 	} = useSystemPromptStore()
 
-	const { streamText, hasValidKeyForModel } = useAIService()
+	const { generateText, hasValidKeyForModel } = useAIService()
 
 	// Get selected models from store
 	const selectedModels = getSelectedModels(
@@ -195,11 +195,11 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						},
 					]
 
-					// Use AI service for generation
-					const { text: fullResponse, duration } = await streamText(
-						messages,
-						modelId
-					)
+					// Use non-streaming AI service
+					const startTime = performance.now()
+					const fullResponse = await generateText(messages, modelId)
+					const endTime = performance.now()
+					const duration = endTime - startTime
 
 					console.log(
 						`Completed request for ${modelId}, response length: ${
@@ -325,11 +325,11 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						},
 					]
 
-					// Use AI service for generation
-					const { text: fullResponse, duration } = await streamText(
-						messages,
-						modelId
-					)
+					// Use non-streaming AI service
+					const startTime = performance.now()
+					const fullResponse = await generateText(messages, modelId)
+					const endTime = performance.now()
+					const duration = endTime - startTime
 
 					console.log(
 						`Completed request for ${modelId}, response length: ${
@@ -466,11 +466,11 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 								},
 							]
 
-							// Use AI service for generation
-							const { text: fullResponse, duration } = await streamText(
-								messages,
-								modelId
-							)
+							// Use non-streaming AI service
+							const startTime = performance.now()
+							const fullResponse = await generateText(messages, modelId)
+							const endTime = performance.now()
+							const duration = endTime - startTime
 
 							console.log(
 								`Completed table request for ${modelId}, response length: ${
@@ -554,7 +554,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		tableData,
 		selectedModels,
 		hasValidKeyForModel,
-		streamText,
+		generateText,
 		updateTableCellResponse,
 		substituteVariables,
 		inputPromptContent,
