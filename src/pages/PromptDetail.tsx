@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useSystemPromptStore } from '../lib/stores'
 import TableLayout from '../components/TableLayout'
 import { useEffect, useState } from 'react'
+import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 
 // Loading component to avoid duplication
 const LoadingSpinner = () => (
@@ -115,6 +116,16 @@ export default function PromptDetailPage() {
 	return (
 		<div className="min-h-screen bg-background">
 			<div className="max-w-full mx-auto h-full">
+				{/* Back Navigation */}
+				<div className="px-4 pt-4">
+					<Link
+						to="/"
+						className="text-secondary px-4 py-2 font-semibold transition-colors cursor-pointer hover:opacity-50 flex items-center gap-2"
+					>
+						<ArrowLeftIcon className="h-5 w-5" /> All Prompts
+					</Link>
+				</div>
+
 				{/* Content - Vertical Split Layout */}
 				<div className="flex flex-col h-screen">
 					{/* Table Layout */}

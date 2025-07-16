@@ -1,4 +1,4 @@
-import { useLocation, Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { KeyIcon } from '@heroicons/react/24/outline'
 import ApiKeySettings from './ApiKeySettings'
@@ -6,9 +6,7 @@ import { useSystemPromptStore } from '../lib/stores'
 import GoogleLogin from './GoogleLogin'
 
 export default function Header() {
-	const location = useLocation()
 	const navigate = useNavigate()
-	const isHomePage = location.pathname === '/'
 	const [showApiKeySettings, setShowApiKeySettings] = useState(false)
 	const { addPrompt, updatePromptTitle } = useSystemPromptStore()
 
@@ -57,15 +55,6 @@ export default function Header() {
 									}}
 								/>
 							</Link>
-
-							{!isHomePage && (
-								<Link
-									to="/"
-									className="text-secondary px-4 py-2 font-semibold transition-colors cursor-pointer hover:opacity-50 pl-10"
-								>
-									All Prompts
-								</Link>
-							)}
 
 							<button
 								onClick={handleCreateNewPrompt}
