@@ -622,7 +622,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 
 	return (
 		<div
-			className="flex flex-col w-full h-full overflow-hidden gap-4"
+			className="flex flex-col w-full gap-4"
 			style={{
 				paddingBottom: '400px', // Fixed padding for floating control panel
 			}}

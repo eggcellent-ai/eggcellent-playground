@@ -115,7 +115,7 @@ export default function PromptDetailPage() {
 
 	return (
 		<div className="min-h-screen bg-background">
-			<div className="mx-auto h-full">
+			<div className="mx-auto">
 				{/* Back Navigation */}
 				<div className="pt-10">
 					<Link
@@ -127,7 +127,7 @@ export default function PromptDetailPage() {
 				</div>
 
 				{/* Content - Vertical Split Layout */}
-				<div className="flex flex-col h-screen">
+				<div className="flex flex-col">
 					{/* Table Layout */}
 					<div className="flex-1 flex flex-col">
 						<TableLayout inputPromptContent={inputPromptContent} />
