@@ -245,7 +245,7 @@ export function useAICompletion(modelId: string) {
 			try {
 				const messages: ChatMessage[] = [{ role: 'user', content: prompt }]
 				const result = await generateText(messages, modelId)
-				setCompletion(result)
+				setCompletion(result.text)
 			} catch (err) {
 				const errorMessage =
 					err instanceof Error ? err.message : 'Failed to generate completion'
