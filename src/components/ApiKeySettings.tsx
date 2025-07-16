@@ -222,7 +222,7 @@ export default function ApiKeySettings({
 			/>
 
 			{/* Modal */}
-			<div className="relative bg-surface-card shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+			<div className="relative bg-surface-card shadow-xl w-full mx-4 max-h-[90vh] overflow-y-auto">
 				{/* Header */}
 				<div className="sticky top-0 bg-surface-card border-b border-neutral px-6 py-4 z-10">
 					<div className="flex items-center justify-between">

@@ -115,12 +115,12 @@ export default function PromptDetailPage() {
 
 	return (
 		<div className="min-h-screen bg-background">
-			<div className="max-w-full mx-auto h-full">
+			<div className="mx-auto h-full">
 				{/* Back Navigation */}
-				<div className="px-4 pt-4">
+				<div className="pt-10">
 					<Link
 						to="/"
-						className="text-secondary px-4 py-2 font-semibold transition-colors cursor-pointer hover:opacity-50 flex items-center gap-2"
+						className="text-secondary font-semibold transition-colors cursor-pointer hover:opacity-50 flex items-center gap-4"
 					>
 						<ArrowLeftIcon className="h-5 w-5" /> All Prompts
 					</Link>
@@ -129,7 +129,7 @@ export default function PromptDetailPage() {
 				{/* Content - Vertical Split Layout */}
 				<div className="flex flex-col h-screen">
 					{/* Table Layout */}
-					<div className="flex-1 flex flex-col p-4">
+					<div className="flex-1 flex flex-col">
 						<TableLayout inputPromptContent={inputPromptContent} />
 					</div>
 				</div>

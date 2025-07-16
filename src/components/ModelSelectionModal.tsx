@@ -109,7 +109,7 @@ export default function ModelSelectionModal({
 			{/* Modal */}
 			<div className="relative min-h-screen flex items-center justify-center p-4">
 				<div
-					className="relative bg-white shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col"
+					className="relative bg-white shadow-xl w-full max-h-[90vh] flex flex-col"
 					onClick={(e) => e.stopPropagation()}
 					onMouseDown={(e) => e.stopPropagation()}
 				>

@@ -404,7 +404,7 @@ export default function TableCell({
 					onClick={() => setShowFullModal(false)}
 				>
 					<div
-						className="bg-white shadow-lg max-w-4xl max-h-[90vh] w-full flex flex-col"
+						className="bg-white shadow-lg max-h-[90vh] w-full flex flex-col"
 						onClick={(e) => e.stopPropagation()}
 					>
 						{/* Modal Header */}

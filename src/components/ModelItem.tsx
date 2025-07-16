@@ -128,7 +128,7 @@ export default function ModelItem({
 						/>
 					)}
 					<div className="min-w-0">
-						<div className="font-medium text-primary text-sm truncate max-w-full">
+						<div className="font-medium text-primary text-sm truncate ">
 							{model.name}
 						</div>
 						{showStatus && !status.hasValidKey && (

@@ -35,8 +35,8 @@ export default function Header() {
 
 	return (
 		<>
-			<header className="w-full pl-6 pt-6">
-				<div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+			<header className="w-full px-6 py-1 sticky top-0 bg-surface-card z-10">
+				<div className="mx-auto">
 					<div className="flex items-center justify-between">
 						<div className="flex items-center">
 							<Link
@@ -50,8 +50,8 @@ export default function Header() {
 									style={{
 										width: 'auto',
 										height: 'auto',
-										maxWidth: '250px',
-										maxHeight: '250px',
+										maxWidth: '200px',
+										maxHeight: '200px',
 									}}
 								/>
 							</Link>

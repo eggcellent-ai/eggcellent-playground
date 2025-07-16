@@ -282,13 +282,13 @@ export default function ModelComparisonTable() {
 					</h2>
 				</div>
 			</div>
-			<div className="max-w-7xl mx-auto px-4">
+			<div className="mx-auto px-4">
 				<div>
 					{/* Search and Filters */}
 					<div>
 						<div className="flex gap-4 items-center mb-4">
 							{/* Search */}
-							<div className="relative flex-1 max-w-md">
+							<div className="relative flex-1 ">
 								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
 									<MagnifyingGlassIcon className="h-5 w-5 text-secondary" />
 								</div>

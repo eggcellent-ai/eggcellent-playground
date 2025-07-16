@@ -18,7 +18,7 @@ function App() {
 		<Router>
 			<div className="min-h-screen bg-background">
 				<Header />
-				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div className="mx-auto px-4 sm:px-6 lg:px-8">
 					<Routes>
 						<Route path="/" element={<Home />} />
 						<Route path="/prompt/:id" element={<PromptDetailPage />} />

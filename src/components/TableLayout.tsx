@@ -635,7 +635,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						className="fixed bottom-0 z-30 bg-white border-t border-neutral shadow-lg"
 						style={{ left: '0rem', right: '0rem' }}
 					>
-						<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+						<div className="mx-auto px-4 sm:px-6 lg:px-8">
 							<div className="flex justify-between items-center gap-2 p-4 bg-surface-card">
 								<div className="flex-1">
 									<input
