@@ -127,12 +127,12 @@ export default function ModelItem({
 							}}
 						/>
 					)}
-					<div className="min-w-0">
+					<div className="min-w-0 flex items-center gap-2">
 						<div className="font-medium text-primary text-sm truncate ">
 							{model.name}
 						</div>
 						{showStatus && !status.hasValidKey && (
-							<div className="mt-1 transition-opacity">
+							<div className="transition-opacity">
 								<span
 									className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${status.statusColor}`}
 								>
