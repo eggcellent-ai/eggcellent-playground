@@ -42,7 +42,7 @@ export default function GoogleLogin() {
 	if (loading) {
 		return (
 			<div className="flex items-center gap-2 text-secondary">
-				<div className="w-5 h-5 border-1 border-neutral border-t-transparent rounded-full animate-spin"></div>
+				{/* <div className="w-5 h-5 border-1 border-neutral border-t-transparent rounded-full animate-spin"></div> */}
 				<span className="hidden sm:inline">Loading...</span>
 			</div>
 		)
@@ -100,7 +100,7 @@ export default function GoogleLogin() {
 			)}
 			<button
 				onClick={handleSignIn}
-				className="flex items-center gap-2 text-primary px-4 py-2 font-medium transition-colors border border-neutral rounded-md hover:bg-primary hover:text-white"
+				className="flex items-center gap-2 text-primary px-4 py-2 font-medium transition-colors border border-neutral hover:bg-primary hover:text-white"
 			>
 				<svg className="w-5 h-5" viewBox="0 0 24 24">
 					<path
