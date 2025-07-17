@@ -35,7 +35,7 @@ export default function Header() {
 
 	return (
 		<>
-			<header className="w-full px-6 py-1 sticky top-0 bg-surface-card z-10 border-b border-neutral">
+			<header className="w-full pl-6 py-1 sticky top-0 bg-surface-card z-10 border-b border-neutral">
 				<div className="mx-auto">
 					<div className="flex items-center justify-between">
 						<div className="flex items-center">

@@ -1,3 +1,4 @@
+import { useRef, useState, useEffect } from 'react'
 import { useAuthStore } from '../lib/authStore'
 import { UserIcon } from '@heroicons/react/24/outline'
 import SyncStatus from './SyncStatus'
@@ -5,6 +6,9 @@ import SyncStatus from './SyncStatus'
 export default function GoogleLogin() {
 	const { user, loading, error, signInWithGoogle, logout, clearError } =
 		useAuthStore()
+
+	const [dropdownOpen, setDropdownOpen] = useState(false)
+	const avatarRef = useRef<HTMLDivElement>(null)
 
 	const handleSignIn = async () => {
 		clearError()
@@ -14,12 +18,31 @@ export default function GoogleLogin() {
 	const handleLogout = async () => {
 		clearError()
 		await logout()
+		setDropdownOpen(false)
 	}
+
+	// Close dropdown when clicking outside
+	useEffect(() => {
+		function handleClickOutside(event: MouseEvent) {
+			if (
+				avatarRef.current &&
+				!avatarRef.current.contains(event.target as Node)
+			) {
+				setDropdownOpen(false)
+			}
+		}
+		if (dropdownOpen) {
+			document.addEventListener('mousedown', handleClickOutside)
+			return () => {
+				document.removeEventListener('mousedown', handleClickOutside)
+			}
+		}
+	}, [dropdownOpen])
 
 	if (loading) {
 		return (
 			<div className="flex items-center gap-2 text-secondary">
-				<div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+				<div className="w-5 h-5 border-1 border-neutral border-t-transparent rounded-full animate-spin"></div>
 				<span className="hidden sm:inline">Loading...</span>
 			</div>
 		)
@@ -27,38 +50,45 @@ export default function GoogleLogin() {
 
 	if (user) {
 		return (
-			<div className="flex items-center gap-3">
-				{/* User Avatar */}
-				<div className="flex items-center gap-2">
+			<div className="relative" ref={avatarRef}>
+				{/* User Avatar Only */}
+				<div
+					className="flex items-center gap-2 cursor-pointer"
+					onClick={() => setDropdownOpen((open) => !open)}
+				>
 					{user.photoURL ? (
 						<img
 							src={user.photoURL}
 							alt={user.displayName || 'User'}
-							className="w-8 h-8 rounded-full border-2 border-neutral"
+							className="w-10 h-10 rounded-full border-2 border-neutral"
 						/>
 					) : (
-						<div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+						<div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
 							<UserIcon className="w-5 h-5 text-white" />
 						</div>
 					)}
-					<div className="hidden sm:block text-left">
-						<div className="text-sm font-medium text-primary">
-							{user.displayName || 'User'}
-						</div>
-						<div className="text-xs text-secondary">{user.email}</div>
-					</div>
 				</div>
+				{/* Dropdown Menu */}
+				{dropdownOpen && (
+					<div className="absolute right-0 mt-2 w-56 bg-surface-card border border-neutral rounded-md shadow-lg z-50">
+						<div className="px-4 py-2">
+							<SyncStatus />
+						</div>
 
-				{/* Logout Button */}
-				<button
-					onClick={handleLogout}
-					className="text-secondary px-3 py-1.5 text-sm font-medium transition-colors hover:text-primary border border-neutral rounded-md hover:border-primary"
-				>
-					Logout
-				</button>
-
-				{/* Sync Status */}
-				<SyncStatus />
+						<div className="p-4">
+							<div className="text-sm font-medium text-primary">
+								{user.displayName || 'User'}
+							</div>
+							<div className="text-xs text-secondary">{user.email}</div>
+						</div>
+						<button
+							onClick={handleLogout}
+							className="w-full text-left px-4 py-2 text-sm text-red-500 hover:text-primary hover:bg-neutral/10 border-t border-neutral"
+						>
+							Logout
+						</button>
+					</div>
+				)}
 			</div>
 		)
 	}
@@ -70,7 +100,7 @@ export default function GoogleLogin() {
 			)}
 			<button
 				onClick={handleSignIn}
-				className="flex items-center gap-2 text-primary px-4 py-2 font-medium transition-colors border border-primary rounded-md hover:bg-primary hover:text-white"
+				className="flex items-center gap-2 text-primary px-4 py-2 font-medium transition-colors border border-neutral rounded-md hover:bg-primary hover:text-white"
 			>
 				<svg className="w-5 h-5" viewBox="0 0 24 24">
 					<path
