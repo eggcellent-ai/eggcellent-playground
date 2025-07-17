@@ -2,7 +2,7 @@
   <a href="https://eggcellent.space">
     <picture>
       <source srcset="public/logo.png">
-      <img src="public/logo.png" alt="Eggcellent Logo">
+      <img src="public/logo.png" height="200" alt="Eggcellent Logo" style="height: 200px;">
     </picture>
   </a>
 </p>
