@@ -1,4 +1,4 @@
-<p align="center">
+<p align="left">
   <a href="https://eggcellent.space">
     <picture>
       <source srcset="public/logo.png">
