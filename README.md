@@ -7,7 +7,9 @@
   </a>
 </p>
 
-A powerful, local-first playground to test and optimize AI prompts — with version control, multi-model testing, batch input, and schema validation.
+<p align="center">A powerful, local-first playground to test and optimize AI prompts — with version control, multi-model testing, batch input, and schema validation.</p>
+
+![@screenshot.png](public/screenshot.png)
 
 ## ✨ Features
 
