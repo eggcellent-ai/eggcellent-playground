@@ -92,7 +92,7 @@ export default function Header() {
 							</a>
 							<button
 								onClick={() => setShowApiKeySettings(true)}
-								className="cursor-pointer hover:opacity-50 text-primary px-4 py-2 font-medium transition-colors flex items-center gap-2 border border-neutral bg-neutral-light"
+								className="cursor-pointer hover:opacity-50 text-primary px-3 py-1.5 font-medium transition-colors flex items-center gap-2 border border-neutral"
 								title="Configure API Keys"
 							>
 								<KeyIcon className="w-5 h-5" />

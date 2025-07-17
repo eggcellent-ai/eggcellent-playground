@@ -1,3 +1,11 @@
+<p align="center">
+  <a href="https://eggcellent.space">
+    <picture>
+      <source srcset="public/image.png">
+      <img src="public/image.png" alt="Eggcellent Logo">
+    </picture>
+  </a>
+</p>
 # 🥚 Eggcellent
 
 A powerful, local-first playground to test and optimize AI prompts — with version control, multi-model testing, batch input, and schema validation.
@@ -16,8 +24,6 @@ A powerful, local-first playground to test and optimize AI prompts — with vers
 
 - Local-First Security: Your API keys and prompts stay secure in your browser
 
-
-
 ## 🔑 API Key Management
 
 - API keys are stored securely in your browser's local storage
@@ -31,7 +37,6 @@ A powerful, local-first playground to test and optimize AI prompts — with vers
 
 - Node.js 18+
 - npm or yarn
-
 
 ## 🚀 Quick Start
 
