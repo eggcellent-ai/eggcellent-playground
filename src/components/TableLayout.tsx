@@ -734,7 +734,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 									{/* Expand/Collapse Icon - Top Right */}
 									<button
 										onClick={() => setIsEditorExpanded(!isEditorExpanded)}
-										className="absolute top-2 right-2 p-1 text-secondary hover:text-primary hover:bg-neutral-hover transition-colors z-10"
+										className="absolute top-2 right-2 p-1 text-secondary hover:text-primary hover:bg-neutral-hover transition-colors z-1"
 										title={
 											isEditorExpanded ? 'Collapse editor' : 'Expand editor'
 										}
