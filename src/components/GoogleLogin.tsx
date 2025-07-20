@@ -13,18 +13,6 @@ export default function GoogleLogin() {
 	const handleSignIn = async () => {
 		clearError()
 		await signInWithGoogle()
-		if (user) {
-			logToken()
-		}
-	}
-
-	const logToken = async () => {
-		if (user && user.getIdToken) {
-			const token = await user.getIdToken()
-			console.log('User ID Token:', token)
-		} else {
-			console.warn('No user or getIdToken not available')
-		}
 	}
 
 	const handleLogout = async () => {
@@ -93,12 +81,6 @@ export default function GoogleLogin() {
 							</div>
 							<div className="text-xs text-secondary">{user.email}</div>
 						</div>
-						<button
-							onClick={logToken}
-							className="w-full text-left px-4 py-2 text-sm text-blue-500 hover:text-primary hover:bg-neutral/10 border-t border-neutral"
-						>
-							Log Token
-						</button>
 						<button
 							onClick={handleLogout}
 							className="w-full text-left px-4 py-2 text-sm text-red-500 hover:text-primary hover:bg-neutral/10 border-t border-neutral"

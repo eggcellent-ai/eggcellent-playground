@@ -4,6 +4,12 @@ import {
 	getDoc,
 	deleteDoc,
 	onSnapshot,
+	collection,
+	updateDoc,
+	getDocs,
+	query,
+	orderBy,
+	writeBatch,
 	type Unsubscribe,
 } from 'firebase/firestore'
 import { getFirestore } from 'firebase/firestore'
@@ -12,12 +18,26 @@ import app from './firebase'
 // Initialize Firestore
 export const db = getFirestore(app)
 
-// User data structure for Firestore
+// User data structure for Firestore (without prompts array)
 interface UserData {
 	userId: string
-	prompts: Record<string, unknown>[]
+	displayName?: string | null
+	email?: string | null
+	photoURL?: string | null
+	credits?: number
+	createdAt?: number
 	lastSynced: number
 	version: number // For conflict resolution
+}
+
+// Prompt document structure for subcollection
+interface PromptDoc {
+	id: string
+	title?: string
+	content?: string
+	timestamp: number
+	version?: number
+	[key: string]: unknown
 }
 
 // Firestore service for data synchronization
@@ -52,39 +72,74 @@ export class FirestoreService {
 		return doc(db, 'users', this.userId)
 	}
 
-	// Sync prompts to Firestore
+	// Get prompts subcollection reference
+	private getPromptsCollection() {
+		if (!this.userId) throw new Error('User not authenticated')
+		return collection(db, 'users', this.userId, 'prompts')
+	}
+
+	// Sync prompts to Firestore subcollection
 	async syncPrompts(prompts: Record<string, unknown>[]): Promise<void> {
 		if (!this.isSyncEnabled()) return
 
 		try {
-			const userData: Partial<UserData> = {
-				userId: this.userId!,
-				prompts,
-				lastSynced: Date.now(),
-				version: Date.now(), // Use timestamp as version
-			}
+			const batch = writeBatch(db)
+			const promptsCollection = this.getPromptsCollection()
 
-			await setDoc(this.getUserDoc(), userData, { merge: true })
-			console.log('Prompts synced to Firestore')
+			// Clear existing prompts and add new ones
+			const existingPrompts = await getDocs(promptsCollection)
+			existingPrompts.docs.forEach((doc) => {
+				batch.delete(doc.ref)
+			})
+
+			// Add new prompts
+			prompts.forEach((prompt) => {
+				const promptDoc: PromptDoc = {
+					...prompt,
+					id: (prompt as { id: string }).id || Date.now().toString(),
+					timestamp: (prompt as { timestamp?: number }).timestamp || Date.now(),
+					version: Date.now(),
+				} as PromptDoc
+
+				const docRef = doc(promptsCollection, promptDoc.id)
+				batch.set(docRef, promptDoc)
+			})
+
+			await batch.commit()
+
+			// Update user's lastSynced timestamp
+			await setDoc(
+				this.getUserDoc(),
+				{
+					lastSynced: Date.now(),
+					version: Date.now(),
+				},
+				{ merge: true }
+			)
+
+			console.log('Prompts synced to Firestore subcollection')
 		} catch (error) {
 			console.error('Error syncing prompts:', error)
 			throw error
 		}
 	}
 
-	// Sync all user data (now only prompts)
+	// Sync all user data (prompts via subcollection)
 	async syncAllData(prompts: Record<string, unknown>[]): Promise<void> {
 		if (!this.isSyncEnabled()) return
 
 		try {
-			const userData: UserData = {
+			// Sync prompts to subcollection
+			await this.syncPrompts(prompts)
+
+			// Update user document metadata
+			const userData: Partial<UserData> = {
 				userId: this.userId!,
-				prompts,
 				lastSynced: Date.now(),
 				version: Date.now(),
 			}
 
-			await setDoc(this.getUserDoc(), userData)
+			await setDoc(this.getUserDoc(), userData, { merge: true })
 			console.log('All data synced to Firestore')
 		} catch (error) {
 			console.error('Error syncing all data:', error)
@@ -92,46 +147,160 @@ export class FirestoreService {
 		}
 	}
 
-	// Load user data from Firestore
+	// Load user data from Firestore (including prompts from subcollection)
 	async loadUserData(): Promise<{ prompts: Record<string, unknown>[] } | null> {
 		if (!this.isSyncEnabled()) return null
 
 		try {
-			const docSnap = await getDoc(this.getUserDoc())
+			// Load prompts from subcollection
+			const promptsCollection = this.getPromptsCollection()
+			const promptsQuery = query(
+				promptsCollection,
+				orderBy('timestamp', 'desc')
+			)
+			const promptsSnapshot = await getDocs(promptsQuery)
 
-			if (docSnap.exists()) {
-				const data = docSnap.data() as UserData
-				console.log('Data loaded from Firestore')
-				return {
-					prompts: data.prompts || [],
+			const prompts: Record<string, unknown>[] = promptsSnapshot.docs.map(
+				(doc) => {
+					const data = doc.data() as PromptDoc
+					return {
+						...data,
+						id: doc.id,
+					}
 				}
-			}
+			)
 
-			return null
+			console.log(
+				`Loaded ${prompts.length} prompts from Firestore subcollection`
+			)
+			return { prompts }
 		} catch (error) {
 			console.error('Error loading user data:', error)
 			throw error
 		}
 	}
 
-	// Set up real-time listener for data changes
+	// Add a single prompt to subcollection
+	async addPrompt(prompt: Record<string, unknown>): Promise<string> {
+		if (!this.isSyncEnabled()) throw new Error('Sync not enabled')
+
+		try {
+			const promptsCollection = this.getPromptsCollection()
+			const promptDoc: PromptDoc = {
+				...prompt,
+				id: (prompt as { id: string }).id || Date.now().toString(),
+				timestamp: Date.now(),
+				version: Date.now(),
+			} as PromptDoc
+
+			const docRef = doc(promptsCollection, promptDoc.id)
+			await setDoc(docRef, promptDoc)
+
+			// Update user's lastSynced
+			await setDoc(
+				this.getUserDoc(),
+				{
+					lastSynced: Date.now(),
+					version: Date.now(),
+				},
+				{ merge: true }
+			)
+
+			console.log('Prompt added to Firestore subcollection')
+			return promptDoc.id
+		} catch (error) {
+			console.error('Error adding prompt:', error)
+			throw error
+		}
+	}
+
+	// Update a single prompt in subcollection
+	async updatePrompt(
+		promptId: string,
+		updates: Partial<Record<string, unknown>>
+	): Promise<void> {
+		if (!this.isSyncEnabled()) throw new Error('Sync not enabled')
+
+		try {
+			const promptsCollection = this.getPromptsCollection()
+			const promptDoc = doc(promptsCollection, promptId)
+
+			await updateDoc(promptDoc, {
+				...updates,
+				timestamp: Date.now(),
+				version: Date.now(),
+			})
+
+			// Update user's lastSynced
+			await setDoc(
+				this.getUserDoc(),
+				{
+					lastSynced: Date.now(),
+					version: Date.now(),
+				},
+				{ merge: true }
+			)
+
+			console.log('Prompt updated in Firestore subcollection')
+		} catch (error) {
+			console.error('Error updating prompt:', error)
+			throw error
+		}
+	}
+
+	// Delete a single prompt from subcollection
+	async deletePrompt(promptId: string): Promise<void> {
+		if (!this.isSyncEnabled()) throw new Error('Sync not enabled')
+
+		try {
+			const promptsCollection = this.getPromptsCollection()
+			const promptDoc = doc(promptsCollection, promptId)
+
+			await deleteDoc(promptDoc)
+
+			// Update user's lastSynced
+			await setDoc(
+				this.getUserDoc(),
+				{
+					lastSynced: Date.now(),
+					version: Date.now(),
+				},
+				{ merge: true }
+			)
+
+			console.log('Prompt deleted from Firestore subcollection')
+		} catch (error) {
+			console.error('Error deleting prompt:', error)
+			throw error
+		}
+	}
+
+	// Set up real-time listener for prompts changes
 	setupRealtimeSync(
 		onDataChange: (data: { prompts: Record<string, unknown>[] }) => void
 	): void {
 		if (!this.isSyncEnabled()) return
 
+		// Listen to prompts subcollection changes
+		const promptsCollection = this.getPromptsCollection()
+		const promptsQuery = query(promptsCollection, orderBy('timestamp', 'desc'))
+
 		const unsubscribe = onSnapshot(
-			this.getUserDoc(),
-			(doc) => {
-				if (doc.exists()) {
-					const data = doc.data() as UserData
-					onDataChange({
-						prompts: data.prompts || [],
-					})
-				}
+			promptsQuery,
+			(snapshot) => {
+				const prompts: Record<string, unknown>[] = snapshot.docs.map((doc) => {
+					const data = doc.data() as PromptDoc
+					return {
+						...data,
+						id: doc.id,
+					}
+				})
+
+				onDataChange({ prompts })
+				console.log(`Real-time update: ${prompts.length} prompts`)
 			},
 			(error) => {
-				console.error('Firestore listener error:', error)
+				console.error('Firestore prompts listener error:', error)
 			}
 		)
 
@@ -144,13 +313,25 @@ export class FirestoreService {
 		this.listeners = []
 	}
 
-	// Delete user data from Firestore
+	// Delete user data from Firestore (including prompts subcollection)
 	async deleteUserData(): Promise<void> {
 		if (!this.isSyncEnabled()) return
 
 		try {
-			await deleteDoc(this.getUserDoc())
-			console.log('User data deleted from Firestore')
+			const batch = writeBatch(db)
+
+			// Delete all prompts in subcollection
+			const promptsCollection = this.getPromptsCollection()
+			const promptsSnapshot = await getDocs(promptsCollection)
+			promptsSnapshot.docs.forEach((doc) => {
+				batch.delete(doc.ref)
+			})
+
+			// Delete user document
+			batch.delete(this.getUserDoc())
+
+			await batch.commit()
+			console.log('User data and prompts deleted from Firestore')
 		} catch (error) {
 			console.error('Error deleting user data:', error)
 			throw error
@@ -167,6 +348,49 @@ export class FirestoreService {
 		} catch (error) {
 			console.error('Error checking user data:', error)
 			return false
+		}
+	}
+
+	// Sync user profile to Firestore
+	async syncUserProfile(user: {
+		uid: string
+		displayName: string | null
+		email: string | null
+		photoURL: string | null
+	}): Promise<void> {
+		if (!this.isSyncEnabled()) return
+
+		try {
+			// Check if user document already exists
+			const docSnap = await getDoc(this.getUserDoc())
+
+			const profileData: Partial<UserData> = {
+				userId: user.uid,
+				displayName: user.displayName,
+				email: user.email,
+				photoURL: user.photoURL,
+				lastSynced: Date.now(),
+				version: Date.now(),
+			}
+
+			if (!docSnap.exists()) {
+				// Create new user document with default values
+				const newUserData: UserData = {
+					...profileData,
+					credits: 100, // Default credits for new users
+					createdAt: Date.now(),
+				} as UserData
+
+				await setDoc(this.getUserDoc(), newUserData)
+				console.log('New user profile created in Firestore')
+			} else {
+				// Update existing user document with profile info
+				await setDoc(this.getUserDoc(), profileData, { merge: true })
+				console.log('User profile updated in Firestore')
+			}
+		} catch (error) {
+			console.error('Error syncing user profile:', error)
+			throw error
 		}
 	}
 
