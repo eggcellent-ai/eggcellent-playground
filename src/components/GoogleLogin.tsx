@@ -4,8 +4,15 @@ import { UserIcon } from '@heroicons/react/24/outline'
 import SyncStatus from './SyncStatus'
 
 export default function GoogleLogin() {
-	const { user, loading, error, signInWithGoogle, logout, clearError } =
-		useAuthStore()
+	const {
+		user,
+		userData,
+		loading,
+		error,
+		signInWithGoogle,
+		logout,
+		clearError,
+	} = useAuthStore()
 
 	const [dropdownOpen, setDropdownOpen] = useState(false)
 	const avatarRef = useRef<HTMLDivElement>(null)
@@ -73,6 +80,19 @@ export default function GoogleLogin() {
 					<div className="absolute right-0 mt-2 w-56 bg-surface-card border border-neutral rounded-md shadow-lg z-50">
 						<div className="px-4 py-2">
 							<SyncStatus />
+						</div>
+
+						{/* Credits Display */}
+						<div className="px-4 py-2 border-t border-neutral">
+							<div className="text-xs text-secondary uppercase tracking-wider mb-1">
+								Credits
+							</div>
+							<div className="text-sm font-medium text-primary">
+								$
+								{userData?.credits !== undefined
+									? userData.credits.toFixed(4)
+									: '0.0000'}
+							</div>
 						</div>
 
 						<div className="p-4">
