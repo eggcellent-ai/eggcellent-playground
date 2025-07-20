@@ -1,11 +1,12 @@
-import { useAuthStore } from './authStore'
 import { auth } from './firebase'
 
 export interface BackendApiResponse {
 	output: string
-	promptTokens: number
-	completionTokens: number
-	totalTokens: number
+	usage: {
+		promptTokens: number
+		completionTokens: number
+		totalTokens: number
+	}
 	cost: number
 	credits: number
 }

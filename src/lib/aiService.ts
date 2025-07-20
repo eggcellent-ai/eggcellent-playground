@@ -157,11 +157,18 @@ export function useAIService() {
 					console.log(`Using backend API for model: ${modelId}`)
 
 					// Convert messages to a single prompt string for backend API
-					const extractTextContent = (content: any): string => {
+					const extractTextContent = (content: unknown): string => {
 						if (typeof content === 'string') return content
 						if (Array.isArray(content)) {
 							return content
-								.filter((part) => part.type === 'text')
+								.filter((part): part is {type: string; text: string} => 
+									typeof part === 'object' && 
+									part !== null && 
+									'type' in part && 
+									part.type === 'text' &&
+									'text' in part &&
+									typeof part.text === 'string'
+								)
 								.map((part) => part.text)
 								.join(' ')
 						}
@@ -182,11 +189,7 @@ export function useAIService() {
 
 					return {
 						text: result.output,
-						usage: {
-							promptTokens: result.promptTokens,
-							completionTokens: result.completionTokens,
-							totalTokens: result.totalTokens,
-						},
+						usage: result.usage,
 					}
 				} catch (error) {
 					console.error(`Backend API error for model ${modelId}:`, error)

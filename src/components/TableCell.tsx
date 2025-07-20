@@ -179,12 +179,16 @@ export default function TableCell({
 
 			// Save response to store with timing data
 			if (activePromptId && activeVersionId) {
+				let usageStr = ''
+				if (result.usage) {
+					usageStr = `__USAGE__${result.usage.promptTokens},${result.usage.completionTokens},${result.usage.totalTokens}`
+				}
 				updateTableCellResponse(
 					activePromptId,
 					activeVersionId,
 					rowId,
 					modelId,
-					`${result.text}__TIMING__${responseDuration}`
+					`${result.text}__TIMING__${responseDuration}${usageStr}`
 				)
 
 				// Validate response against schema if one exists
