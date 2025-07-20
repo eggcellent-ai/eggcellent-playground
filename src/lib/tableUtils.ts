@@ -61,7 +61,7 @@ export const getTableValidation = (
 		validationMessages.push('No models selected')
 	}
 
-	// Check if selected models can be used (logged in OR have valid API keys)
+	// Check if selected models can be used (logged in with credits OR have valid API keys)
 	const modelsCannotUse = selectedModels.filter(
 		(modelId) => !canUseModel(modelId)
 	)
@@ -72,7 +72,9 @@ export const getTableValidation = (
 				return model?.name || modelId
 			})
 			.join(', ')
-		validationMessages.push(`API key required for: ${modelNames}`)
+		validationMessages.push(
+			`API key required or insufficient credits for: ${modelNames}`
+		)
 	}
 
 	return {

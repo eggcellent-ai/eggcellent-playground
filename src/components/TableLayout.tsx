@@ -42,11 +42,11 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	} = useSystemPromptStore()
 
 	const { generateText, hasValidKeyForModel } = useAIService()
-	const { user } = useAuthStore()
+	const { user, hasCredits } = useAuthStore()
 
-	// Helper function to check if user can use a model (logged in OR has API key)
+	// Helper function to check if user can use a model (logged in with credits OR has API key)
 	const canUseModel = (modelId: string): boolean => {
-		return Boolean(user || hasValidKeyForModel(modelId))
+		return Boolean((user && hasCredits()) || hasValidKeyForModel(modelId))
 	}
 
 	// Get selected models from store
@@ -168,9 +168,12 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 				try {
 					console.log(`Starting request for ${modelId} with input: ${input}`)
 
-					// Check if we can use this model (logged in OR has API key)
+					// Check if we can use this model (logged in with credits OR has API key)
 					if (!canUseModel(modelId)) {
-						const errorMessage = `Error: API key required for ${modelId}`
+						const errorMessage =
+							user && !hasCredits()
+								? `Error: Insufficient credits for ${modelId}`
+								: `Error: API key required for ${modelId}`
 						updateTableCellResponse(
 							activePromptId || '',
 							activeVersionId,
@@ -295,9 +298,12 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						`Starting request for ${modelId} with input: ${row.input}`
 					)
 
-					// Check if we can use this model (logged in OR has API key)
+					// Check if we can use this model (logged in with credits OR has API key)
 					if (!canUseModel(modelId)) {
-						const errorMessage = `Error: API key required for ${modelId}`
+						const errorMessage =
+							user && !hasCredits()
+								? `Error: Insufficient credits for ${modelId}`
+								: `Error: API key required for ${modelId}`
 						updateTableCellResponse(
 							activePromptId || '',
 							activeVersionId,
@@ -433,9 +439,12 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 								`Starting table request for ${modelId} with input: ${row.input}`
 							)
 
-							// Check if we can use this model (logged in OR has API key)
+							// Check if we can use this model (logged in with credits OR has API key)
 							if (!canUseModel(modelId)) {
-								const errorMessage = `Error: API key required for ${modelId}`
+								const errorMessage =
+									user && !hasCredits()
+										? `Error: Insufficient credits for ${modelId}`
+										: `Error: API key required for ${modelId}`
 								updateTableCellResponse(
 									activePromptId || '',
 									activeVersionId,

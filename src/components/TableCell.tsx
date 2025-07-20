@@ -58,7 +58,7 @@ export default function TableCell({
 	} = useSystemPromptStore()
 
 	const { generateText, hasValidKeyForModel } = useAIService()
-	const { user } = useAuthStore()
+	const { user, hasCredits } = useAuthStore()
 
 	// Load existing response and validation result
 	useEffect(() => {
@@ -133,10 +133,16 @@ export default function TableCell({
 		const hasContent = input.trim()
 		if (!hasContent || isLoading) return
 
-		// Check if we can use the model (logged in user OR valid API key)
-		const canUseModel = Boolean(user || hasValidKeyForModel(modelId))
+		// Check if we can use the model (logged in user with credits OR valid API key)
+		const canUseModel = Boolean(
+			(user && hasCredits()) || hasValidKeyForModel(modelId)
+		)
 		if (!canUseModel) {
-			setResponse('Error: API key required for this model')
+			const errorMsg =
+				user && !hasCredits()
+					? 'Error: Insufficient credits'
+					: 'Error: API key required for this model'
+			setResponse(errorMsg)
 			setHasRun(true)
 			return
 		}

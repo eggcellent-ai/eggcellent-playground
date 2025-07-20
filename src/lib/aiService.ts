@@ -105,14 +105,14 @@ export function useAIService() {
 		[openaiKey, anthropicKey, googleKey, xaiKey]
 	)
 
-	const hasValidKeyForModel = useCallback(
+		const hasValidKeyForModel = useCallback(
 		(modelId: string): boolean => {
-			// Check if user is logged in - if so, they can use backend API
-			const { user } = useAuthStore.getState()
-			if (user) {
-				return true // Backend API is available for authenticated users
+			// Check if user is logged in AND has credits - if so, they can use backend API
+			const { user, hasCredits } = useAuthStore.getState()
+			if (user && hasCredits()) {
+				return true // Backend API is available for authenticated users with credits
 			}
-
+			
 			// Fall back to local API key check
 			const provider = getModelProvider(modelId)
 			const key = getKeyForProvider(provider)
@@ -150,9 +150,9 @@ export function useAIService() {
 				totalTokens: number
 			}
 		}> => {
-			// Check if user is logged in - if so, use backend API
-			const { user } = useAuthStore.getState()
-			if (user) {
+			// Check if user is logged in AND has credits - if so, use backend API
+			const { user, hasCredits } = useAuthStore.getState()
+			if (user && hasCredits()) {
 				try {
 					console.log(`Using backend API for model: ${modelId}`)
 

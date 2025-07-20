@@ -59,14 +59,24 @@ export default function ModelItem({
 	isLoading = false,
 	disabled = false,
 }: ModelItemProps) {
-	const { user } = useAuthStore()
+	const { user, hasCredits } = useAuthStore()
 
-	// User can use the model if they're logged in OR have valid API keys
-	const canUseModel = Boolean(user || hasValidKey)
+	// User can use the model if they're logged in AND have credits OR have valid API keys
+	const canUseModel = Boolean((user && hasCredits()) || hasValidKey)
+
+	// Determine the status message based on the user's state
+	let statusText = 'Ready'
+	if (!canUseModel) {
+		if (user && !hasCredits()) {
+			statusText = 'Insufficient Credits'
+		} else {
+			statusText = 'API Key Required'
+		}
+	}
 
 	const status = {
 		hasValidKey: canUseModel,
-		statusText: canUseModel ? 'Ready' : 'API Key Required',
+		statusText,
 		statusColor: canUseModel
 			? 'bg-success-light text-success-dark'
 			: 'bg-warning-light text-warning-dark',

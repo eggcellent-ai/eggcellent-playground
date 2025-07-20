@@ -46,10 +46,28 @@ export class ApiService {
 
 		if (!response.ok) {
 			const errorText = await response.text()
+			if (response.status === 402) {
+				throw new Error('Insufficient credits')
+			}
 			throw new Error(`Backend API error (${response.status}): ${errorText}`)
 		}
 
-		return response.json()
+		const result = await response.json()
+
+		// Update user's credit balance after successful API call
+		// The backend returns the updated credit balance
+		if (result.credits !== undefined) {
+			const { useAuthStore } = await import('./authStore')
+			const authStore = useAuthStore.getState()
+			if (authStore.userData) {
+				authStore.setUserData({
+					...authStore.userData,
+					credits: result.credits,
+				})
+			}
+		}
+
+		return result
 	}
 
 	// Check if user can use backend API (logged in and has credits)
