@@ -351,7 +351,7 @@ export class FirestoreService {
 				// Create new user document with default values
 				const newUserData: UserData = {
 					...profileData,
-					credits: 100, // Default credits for new users
+					credits: 1, // Default credits for new users
 					createdAt: Date.now(),
 				} as UserData
 
