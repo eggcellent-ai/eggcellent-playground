@@ -6,6 +6,8 @@ import { createXai } from '@ai-sdk/xai'
 import { streamText, generateText } from 'ai'
 import type { CoreMessage } from 'ai'
 import { useApiKeyStore } from './stores'
+import { useAuthStore } from './authStore'
+import { ApiService } from './apiService'
 
 export type ChatMessage = CoreMessage
 
@@ -105,6 +107,13 @@ export function useAIService() {
 
 	const hasValidKeyForModel = useCallback(
 		(modelId: string): boolean => {
+			// Check if user is logged in - if so, they can use backend API
+			const { user } = useAuthStore.getState()
+			if (user) {
+				return true // Backend API is available for authenticated users
+			}
+
+			// Fall back to local API key check
 			const provider = getModelProvider(modelId)
 			const key = getKeyForProvider(provider)
 			return Boolean(key && key.trim())
@@ -141,6 +150,55 @@ export function useAIService() {
 				totalTokens: number
 			}
 		}> => {
+			// Check if user is logged in - if so, use backend API
+			const { user } = useAuthStore.getState()
+			if (user) {
+				try {
+					console.log(`Using backend API for model: ${modelId}`)
+
+					// Convert messages to a single prompt string for backend API
+					const extractTextContent = (content: any): string => {
+						if (typeof content === 'string') return content
+						if (Array.isArray(content)) {
+							return content
+								.filter((part) => part.type === 'text')
+								.map((part) => part.text)
+								.join(' ')
+						}
+						return ''
+					}
+
+					const systemMessage = extractTextContent(
+						messages.find((m) => m.role === 'system')?.content || ''
+					)
+					const userMessage = extractTextContent(
+						messages.find((m) => m.role === 'user')?.content || ''
+					)
+					const prompt = systemMessage
+						? `${systemMessage}\n\n${userMessage}`
+						: userMessage
+
+					const result = await ApiService.callModel(modelId, prompt)
+
+					return {
+						text: result.output,
+						usage: {
+							promptTokens: result.promptTokens,
+							completionTokens: result.completionTokens,
+							totalTokens: result.totalTokens,
+						},
+					}
+				} catch (error) {
+					console.error(`Backend API error for model ${modelId}:`, error)
+					throw new Error(
+						`Backend API failed: ${
+							error instanceof Error ? error.message : 'Unknown error'
+						}`
+					)
+				}
+			}
+
+			// Fall back to local API with user's keys
 			const { model, providerName } = getProviderAndModel(modelId)
 
 			try {

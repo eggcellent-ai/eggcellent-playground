@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSystemPromptStore, AVAILABLE_MODELS } from '../lib/stores'
 import { useAIService, type ChatMessage } from '../lib/aiService'
 import { validateResponseAgainstSchema } from '../lib/schemaValidation'
+import { useAuthStore } from '../lib/authStore'
 import ModelItem from './ModelItem'
 import {
 	PlayIcon,
@@ -57,6 +58,7 @@ export default function TableCell({
 	} = useSystemPromptStore()
 
 	const { generateText, hasValidKeyForModel } = useAIService()
+	const { user } = useAuthStore()
 
 	// Load existing response and validation result
 	useEffect(() => {
@@ -131,8 +133,9 @@ export default function TableCell({
 		const hasContent = input.trim()
 		if (!hasContent || isLoading) return
 
-		// Check if we have a valid API key for this model
-		if (!hasValidKeyForModel(modelId)) {
+		// Check if we can use the model (logged in user OR valid API key)
+		const canUseModel = Boolean(user || hasValidKeyForModel(modelId))
+		if (!canUseModel) {
 			setResponse('Error: API key required for this model')
 			setHasRun(true)
 			return

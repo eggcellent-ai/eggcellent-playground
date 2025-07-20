@@ -37,7 +37,7 @@ export interface Prompt {
 export const getTableValidation = (
 	tableData: TableRow[],
 	selectedModels: string[],
-	hasValidKeyForModel: (modelId: string) => boolean,
+	canUseModel: (modelId: string) => boolean,
 	AVAILABLE_MODELS: readonly Model[]
 ) => {
 	const validationMessages: string[] = []
@@ -61,18 +61,18 @@ export const getTableValidation = (
 		validationMessages.push('No models selected')
 	}
 
-	// Check if selected models have valid API keys
-	const modelsWithoutKeys = selectedModels.filter(
-		(modelId) => !hasValidKeyForModel(modelId)
+	// Check if selected models can be used (logged in OR have valid API keys)
+	const modelsCannotUse = selectedModels.filter(
+		(modelId) => !canUseModel(modelId)
 	)
-	if (modelsWithoutKeys.length > 0) {
-		const modelNames = modelsWithoutKeys
+	if (modelsCannotUse.length > 0) {
+		const modelNames = modelsCannotUse
 			.map((modelId) => {
 				const model = AVAILABLE_MODELS.find((m) => m.id === modelId)
 				return model?.name || modelId
 			})
 			.join(', ')
-		validationMessages.push(`Missing API keys for: ${modelNames}`)
+		validationMessages.push(`API key required for: ${modelNames}`)
 	}
 
 	return {

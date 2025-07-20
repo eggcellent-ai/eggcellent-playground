@@ -1,6 +1,7 @@
 import { TrashIcon, CheckIcon } from '@heroicons/react/24/outline'
 import { PlayIcon } from '@heroicons/react/24/solid'
 import type { Model } from '../lib/models'
+import { useAuthStore } from '../lib/authStore'
 
 // Import logos
 import googleLogo from '../assets/logos/google.svg'
@@ -58,10 +59,15 @@ export default function ModelItem({
 	isLoading = false,
 	disabled = false,
 }: ModelItemProps) {
+	const { user } = useAuthStore()
+
+	// User can use the model if they're logged in OR have valid API keys
+	const canUseModel = Boolean(user || hasValidKey)
+
 	const status = {
-		hasValidKey,
-		statusText: hasValidKey ? 'Ready' : 'API Key Required',
-		statusColor: hasValidKey
+		hasValidKey: canUseModel,
+		statusText: canUseModel ? 'Ready' : 'API Key Required',
+		statusColor: canUseModel
 			? 'bg-success-light text-success-dark'
 			: 'bg-warning-light text-warning-dark',
 	}

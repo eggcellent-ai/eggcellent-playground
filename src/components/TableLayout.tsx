@@ -1,5 +1,6 @@
 import { useSystemPromptStore, AVAILABLE_MODELS } from '../lib/stores'
 import { detectVariables } from '../lib/stores'
+import { useAuthStore } from '../lib/authStore'
 import {
 	ArrowsPointingOutIcon,
 	ArrowsPointingInIcon,
@@ -41,6 +42,12 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	} = useSystemPromptStore()
 
 	const { generateText, hasValidKeyForModel } = useAIService()
+	const { user } = useAuthStore()
+
+	// Helper function to check if user can use a model (logged in OR has API key)
+	const canUseModel = (modelId: string): boolean => {
+		return Boolean(user || hasValidKeyForModel(modelId))
+	}
 
 	// Get selected models from store
 	const selectedModels = getSelectedModels(
@@ -78,7 +85,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	const validation = getTableValidation(
 		getTableData(activePromptId || '', activeVersionId || ''),
 		selectedModels,
-		hasValidKeyForModel,
+		canUseModel,
 		AVAILABLE_MODELS
 	)
 
@@ -161,8 +168,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 				try {
 					console.log(`Starting request for ${modelId} with input: ${input}`)
 
-					// Check if we have a valid API key for this model
-					if (!hasValidKeyForModel(modelId)) {
+					// Check if we can use this model (logged in OR has API key)
+					if (!canUseModel(modelId)) {
 						const errorMessage = `Error: API key required for ${modelId}`
 						updateTableCellResponse(
 							activePromptId || '',
@@ -288,8 +295,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 						`Starting request for ${modelId} with input: ${row.input}`
 					)
 
-					// Check if we have a valid API key for this model
-					if (!hasValidKeyForModel(modelId)) {
+					// Check if we can use this model (logged in OR has API key)
+					if (!canUseModel(modelId)) {
 						const errorMessage = `Error: API key required for ${modelId}`
 						updateTableCellResponse(
 							activePromptId || '',
@@ -426,8 +433,8 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 								`Starting table request for ${modelId} with input: ${row.input}`
 							)
 
-							// Check if we have a valid API key for this model
-							if (!hasValidKeyForModel(modelId)) {
+							// Check if we can use this model (logged in OR has API key)
+							if (!canUseModel(modelId)) {
 								const errorMessage = `Error: API key required for ${modelId}`
 								updateTableCellResponse(
 									activePromptId || '',
@@ -596,20 +603,14 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 					!runningAllTable &&
 					tableData.some((row) => row.input.trim()) &&
 					selectedModels.length > 0 &&
-					!selectedModels.some((modelId) => !hasValidKeyForModel(modelId))
+					!selectedModels.some((modelId) => !canUseModel(modelId))
 
 				if (canRunTable) {
 					handleRunAllTable()
 				}
 			}
 		},
-		[
-			runningAllTable,
-			tableData,
-			selectedModels,
-			hasValidKeyForModel,
-			handleRunAllTable,
-		]
+		[runningAllTable, tableData, selectedModels, canUseModel, handleRunAllTable]
 	)
 
 	// Add event listener for keyboard shortcut
@@ -691,9 +692,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 											runningAllTable ||
 											!tableData.some((row) => row.input.trim()) ||
 											selectedModels.length === 0 ||
-											selectedModels.some(
-												(modelId) => !hasValidKeyForModel(modelId)
-											)
+											selectedModels.some((modelId) => !canUseModel(modelId))
 										}
 										className="px-5 py-2 bg-primary hover:bg-primary-dark text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 focus:outline-none focus:ring-0 focus:bg-primary-dark"
 									>
@@ -953,7 +952,7 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							activePromptId={activePromptId || ''}
 							activeVersionId={activeVersionId}
 							inputPromptContent={inputPromptContent}
-							hasValidKeyForModel={hasValidKeyForModel}
+							hasValidKeyForModel={canUseModel}
 							onRunAllModels={handleRunAllModels}
 							onRunModelForAllRows={handleRunModelForAllRows}
 							onRemoveRow={handleRemoveRow}
