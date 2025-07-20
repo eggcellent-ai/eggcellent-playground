@@ -14,31 +14,10 @@ import {
 } from 'firebase/firestore'
 import { getFirestore } from 'firebase/firestore'
 import app from './firebase'
+import type { UserData, PromptDoc } from './types'
 
 // Initialize Firestore
 export const db = getFirestore(app)
-
-// User data structure for Firestore (without prompts array)
-interface UserData {
-	userId: string
-	displayName?: string | null
-	email?: string | null
-	photoURL?: string | null
-	credits?: number
-	createdAt?: number
-	lastSynced: number
-	version: number // For conflict resolution
-}
-
-// Prompt document structure for subcollection
-interface PromptDoc {
-	id: string
-	title?: string
-	content?: string
-	timestamp: number
-	version?: number
-	[key: string]: unknown
-}
 
 // Firestore service for data synchronization
 export class FirestoreService {
@@ -352,12 +331,7 @@ export class FirestoreService {
 	}
 
 	// Sync user profile to Firestore
-	async syncUserProfile(user: {
-		uid: string
-		displayName: string | null
-		email: string | null
-		photoURL: string | null
-	}): Promise<void> {
+	async syncUserProfile(user: UserData): Promise<void> {
 		if (!this.isSyncEnabled()) return
 
 		try {
@@ -365,7 +339,7 @@ export class FirestoreService {
 			const docSnap = await getDoc(this.getUserDoc())
 
 			const profileData: Partial<UserData> = {
-				userId: user.uid,
+				userId: user.userId,
 				displayName: user.displayName,
 				email: user.email,
 				photoURL: user.photoURL,

@@ -9,6 +9,15 @@ import {
 import { auth, googleProvider } from './firebase'
 import { useSyncStore } from './syncStore'
 import { firestoreService } from './firestore'
+import type { UserData } from './types'
+
+// Helper function to convert Firebase User to UserData for Firestore
+const userToUserData = (user: User): UserData => ({
+	userId: user.uid,
+	displayName: user.displayName,
+	email: user.email,
+	photoURL: user.photoURL,
+})
 
 interface AuthState {
 	user: User | null
@@ -34,16 +43,11 @@ export const useAuthStore = create<AuthState>()(
 					set({ loading: true, error: null })
 					const result = await signInWithPopup(auth, googleProvider)
 					set({ user: result.user, loading: false })
-					
-							// Enable sync and sync user profile to Firebase
+
+								// Enable sync and sync user profile to Firebase
 			useSyncStore.getState().enableSync(result.user.uid)
-			await firestoreService.syncUserProfile({
-				uid: result.user.uid,
-				displayName: result.user.displayName,
-				email: result.user.email,
-				photoURL: result.user.photoURL,
-			})
-			await useSyncStore.getState().loadFromCloud()
+			await firestoreService.syncUserProfile(userToUserData(result.user))
+					await useSyncStore.getState().loadFromCloud()
 				} catch (error) {
 					console.error('Google sign-in error:', error)
 					const errorMessage =
@@ -87,12 +91,7 @@ export const initializeAuth = () => {
 			useSyncStore.getState().enableSync(user.uid)
 			// Sync user profile on auth state change (e.g., page refresh)
 			try {
-				await firestoreService.syncUserProfile({
-					uid: user.uid,
-					displayName: user.displayName,
-					email: user.email,
-					photoURL: user.photoURL,
-				})
+				await firestoreService.syncUserProfile(userToUserData(user))
 			} catch (error) {
 				console.error('Error syncing user profile on auth change:', error)
 			}
