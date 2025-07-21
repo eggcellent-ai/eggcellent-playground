@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import { useAuthStore } from '../lib/authStore'
-import { UserIcon } from '@heroicons/react/24/outline'
+import { UserIcon, ClipboardIcon, CheckIcon } from '@heroicons/react/24/outline'
 import SyncStatus from './SyncStatus'
 
 export default function GoogleLogin() {
@@ -15,6 +15,7 @@ export default function GoogleLogin() {
 	} = useAuthStore()
 
 	const [dropdownOpen, setDropdownOpen] = useState(false)
+	const [tokenCopied, setTokenCopied] = useState(false)
 	const avatarRef = useRef<HTMLDivElement>(null)
 
 	const handleSignIn = async () => {
@@ -26,6 +27,23 @@ export default function GoogleLogin() {
 		clearError()
 		await logout()
 		setDropdownOpen(false)
+	}
+
+	const handleCopyToken = async () => {
+		if (!user) return
+
+		try {
+			const token = await user.getIdToken()
+			await navigator.clipboard.writeText(token)
+			setTokenCopied(true)
+
+			// Reset the copied state after 2 seconds
+			setTimeout(() => {
+				setTokenCopied(false)
+			}, 2000)
+		} catch (error) {
+			console.error('Failed to copy token:', error)
+		}
 	}
 
 	// Close dropdown when clicking outside
@@ -93,6 +111,21 @@ export default function GoogleLogin() {
 									? userData.credits.toFixed(4)
 									: '0.0000'}
 							</div>
+						</div>
+
+						{/* Copy Token Button */}
+						<div className="px-4 py-2 border-t border-neutral">
+							<button
+								onClick={handleCopyToken}
+								className="flex items-center gap-2 w-full text-left text-sm text-primary hover:text-secondary transition-colors"
+							>
+								{tokenCopied ? (
+									<CheckIcon className="w-4 h-4 text-green-500" />
+								) : (
+									<ClipboardIcon className="w-4 h-4" />
+								)}
+								<span>{tokenCopied ? 'Token Copied!' : 'Copy Token'}</span>
+							</button>
 						</div>
 
 						<div className="p-4">

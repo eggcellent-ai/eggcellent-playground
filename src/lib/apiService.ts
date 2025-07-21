@@ -18,7 +18,7 @@ export interface BackendApiError {
 
 export class ApiService {
 	private static readonly API_BASE_URL =
-		'http://127.0.0.1:5001/eggcellent-playground/us-central1'
+		'https://us-central1-eggcellent-playground.cloudfunctions.net'
 
 	static async callModel(
 		modelName: string,
