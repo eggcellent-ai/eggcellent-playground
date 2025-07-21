@@ -45,9 +45,12 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	const { user, hasCredits } = useAuthStore()
 
 	// Helper function to check if user can use a model (logged in with credits OR has API key)
-	const canUseModel = (modelId: string): boolean => {
-		return Boolean((user && hasCredits()) || hasValidKeyForModel(modelId))
-	}
+	const canUseModel = useCallback(
+		(modelId: string): boolean => {
+			return Boolean((user && hasCredits()) || hasValidKeyForModel(modelId))
+		},
+		[user, hasCredits, hasValidKeyForModel]
+	)
 
 	// Get selected models from store
 	const selectedModels = getSelectedModels(
@@ -560,13 +563,15 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		runningAllTable,
 		tableData,
 		selectedModels,
-		hasValidKeyForModel,
 		generateText,
 		updateTableCellResponse,
 		substituteVariables,
 		inputPromptContent,
 		getOutputSchema,
 		updateSchemaValidationResult,
+		canUseModel,
+		hasCredits,
+		user,
 	])
 
 	const handleSavePrompt = () => {
