@@ -85,10 +85,10 @@ export default function GoogleLogin() {
 						<img
 							src={user.photoURL}
 							alt={user.displayName || 'User'}
-							className="w-10 h-10 rounded-full border-2 border-neutral"
+							className="w-9 h-9 rounded-full"
 						/>
 					) : (
-						<div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+						<div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
 							<UserIcon className="w-5 h-5 text-white" />
 						</div>
 					)}
