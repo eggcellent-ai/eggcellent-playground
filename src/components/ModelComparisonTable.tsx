@@ -65,11 +65,25 @@ export default function ModelComparisonTable() {
 		return ['cheap', 'medium', 'expensive']
 	}, [])
 
-	// Helper function to get price range for a model
-	const getPriceRange = (price?: number): string => {
-		if (!price) return 'unknown'
-		if (price < 0.001) return 'cheap'
-		if (price <= 0.01) return 'medium'
+	// Helper function to get average price for sorting/filtering
+	const getAveragePrice = (model: {
+		inputPricePer1KToken?: number
+		outputPricePer1KToken?: number
+	}): number => {
+		const inputPrice = model.inputPricePer1KToken || 0
+		const outputPrice = model.outputPricePer1KToken || 0
+		return (inputPrice + outputPrice) / 2
+	}
+
+	// Helper function to get price range for a model based on average price
+	const getPriceRange = (model: {
+		inputPricePer1KToken?: number
+		outputPricePer1KToken?: number
+	}): string => {
+		const avgPrice = getAveragePrice(model)
+		if (avgPrice === 0) return 'unknown'
+		if (avgPrice < 0.002) return 'cheap'
+		if (avgPrice <= 0.02) return 'medium'
 		return 'expensive'
 	}
 
@@ -117,7 +131,7 @@ export default function ModelComparisonTable() {
 			// Price filter
 			const matchesPriceRange =
 				selectedPriceRanges.length === 0 ||
-				selectedPriceRanges.includes(getPriceRange(model.pricePer1KToken))
+				selectedPriceRanges.includes(getPriceRange(model))
 
 			return (
 				matchesSearch &&
@@ -145,12 +159,20 @@ export default function ModelComparisonTable() {
 					bValue = b.contextWindow || 0
 					break
 				case 'pricePer1KToken':
-					aValue = a.pricePer1KToken || 0
-					bValue = b.pricePer1KToken || 0
+					aValue = getAveragePrice(a)
+					bValue = getAveragePrice(b)
+					break
+				case 'inputPrice':
+					aValue = a.inputPricePer1KToken || 0
+					bValue = b.inputPricePer1KToken || 0
+					break
+				case 'outputPrice':
+					aValue = a.outputPricePer1KToken || 0
+					bValue = b.outputPricePer1KToken || 0
 					break
 				case 'priceRange':
-					aValue = getPriceRange(a.pricePer1KToken)
-					bValue = getPriceRange(b.pricePer1KToken)
+					aValue = getPriceRange(a)
+					bValue = getPriceRange(b)
 					break
 				case 'latency':
 					aValue = a.latency || ''
@@ -204,10 +226,31 @@ export default function ModelComparisonTable() {
 		sortDirection,
 	])
 
-	// Format price for display
-	const formatPrice = (price?: number) => {
-		if (!price) return 'N/A'
-		return `$${(price * 1000).toFixed(2)}/1M tokens`
+	// Format price for display (both input and output)
+	const formatPrice = (model: {
+		inputPricePer1KToken?: number
+		outputPricePer1KToken?: number
+	}) => {
+		const inputPrice = model.inputPricePer1KToken
+		const outputPrice = model.outputPricePer1KToken
+
+		if (!inputPrice && !outputPrice) return 'N/A'
+
+		const formatSinglePrice = (price: number) => `$${(price * 1000).toFixed(2)}`
+
+		if (inputPrice && outputPrice) {
+			return (
+				<div className="text-xs">
+					<div>In: {formatSinglePrice(inputPrice)}/1M</div>
+					<div>Out: {formatSinglePrice(outputPrice)}/1M</div>
+				</div>
+			)
+		}
+
+		if (inputPrice) return `In: ${formatSinglePrice(inputPrice)}/1M tokens`
+		if (outputPrice) return `Out: ${formatSinglePrice(outputPrice)}/1M tokens`
+
+		return 'N/A'
 	}
 
 	// Format context window for display
@@ -472,7 +515,7 @@ export default function ModelComparisonTable() {
 										onClick={() => handleSort('pricePer1KToken')}
 									>
 										<div className="flex items-center gap-2">
-											Price (1M tokens)
+											Price (Input/Output per 1M tokens)
 											{sortField === 'pricePer1KToken' &&
 												(sortDirection === 'asc' ? (
 													<ChevronUpIcon className="w-4 h-4" />
@@ -641,22 +684,21 @@ export default function ModelComparisonTable() {
 											{formatContextWindow(model.contextWindow)}
 										</td>
 										<td className="p-3 border-r border-neutral text-sm text-secondary">
-											{formatPrice(model.pricePer1KToken)}
+											{formatPrice(model)}
 										</td>
 										<td className="p-3 border-r border-neutral text-sm">
 											<span
 												className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-													getPriceRange(model.pricePer1KToken) === 'cheap'
+													getPriceRange(model) === 'cheap'
 														? 'bg-green-100 text-green-800'
-														: getPriceRange(model.pricePer1KToken) === 'medium'
+														: getPriceRange(model) === 'medium'
 														? 'bg-yellow-100 text-yellow-800'
-														: getPriceRange(model.pricePer1KToken) ===
-														  'expensive'
+														: getPriceRange(model) === 'expensive'
 														? 'bg-red-100 text-red-800'
 														: 'bg-gray-100 text-gray-800'
 												}`}
 											>
-												{getPriceRange(model.pricePer1KToken)}
+												{getPriceRange(model)}
 											</span>
 										</td>
 										<td className="p-3 border-r border-neutral text-sm">
