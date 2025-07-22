@@ -5,6 +5,7 @@ import { validateResponseAgainstSchema } from '../lib/schemaValidation'
 import { useAuthStore } from '../lib/authStore'
 import { getModelPricing } from '../lib/models'
 import ModelItem from './ModelItem'
+import ReactMarkdown from 'react-markdown'
 import {
 	PlayIcon,
 	XMarkIcon,
@@ -12,7 +13,10 @@ import {
 	CheckIcon,
 } from '@heroicons/react/24/solid'
 
-import { DocumentDuplicateIcon } from '@heroicons/react/24/outline'
+import {
+	DocumentDuplicateIcon,
+	DocumentTextIcon,
+} from '@heroicons/react/24/outline'
 
 interface TableCellProps {
 	rowId: string
@@ -39,6 +43,7 @@ export default function TableCell({
 	const [showFullModal, setShowFullModal] = useState(false)
 	const [duration, setDuration] = useState<number | null>(null)
 	const [isCopied, setIsCopied] = useState(false)
+	const [showRaw, setShowRaw] = useState(false)
 	const [validationResult, setValidationResult] = useState<{
 		isValid: boolean
 		errors: string[]
@@ -265,6 +270,7 @@ export default function TableCell({
 		setTokenUsage(null)
 		setCost(null)
 		setValidationResult(null)
+		setShowRaw(false)
 		if (activePromptId && activeVersionId) {
 			updateTableCellResponse(
 				activePromptId,
@@ -394,8 +400,16 @@ export default function TableCell({
 								</div>
 							)}
 
-							<div className="pb-10 whitespace-pre-wrap text-primary break-words p-2">
-								{response}
+							<div className="pb-10 text-primary break-words p-2">
+								{showRaw ? (
+									<pre className="whitespace-pre-wrap font-mono text-sm">
+										{response}
+									</pre>
+								) : (
+									<div className="prose prose-sm max-w-none">
+										<ReactMarkdown>{response}</ReactMarkdown>
+									</div>
+								)}
 							</div>
 						</div>
 					) : (
@@ -428,6 +442,15 @@ export default function TableCell({
 							</button>
 							{response && !isLoading && (
 								<>
+									<button
+										onClick={() => setShowRaw(!showRaw)}
+										className={`p-2 text-neutral-700 hover:bg-neutral-100 transition-all ${
+											isFullScreen ? 'text-sm' : 'text-xs'
+										}`}
+										title={showRaw ? 'Show Markdown' : 'Show Raw'}
+									>
+										<DocumentTextIcon className="w-4 h-4" />
+									</button>
 									<button
 										onClick={handleCopy}
 										className={`p-2 text-neutral-700 hover:bg-neutral-100 transition-all ${
@@ -488,9 +511,15 @@ export default function TableCell({
 
 						{/* Modal Content */}
 						<div className="flex-1 overflow-y-auto p-4">
-							<div className="whitespace-pre-wrap text-primary text-lg leading-relaxed">
-								{response}
-							</div>
+							{showRaw ? (
+								<pre className="whitespace-pre-wrap text-primary text-lg leading-relaxed font-mono">
+									{response}
+								</pre>
+							) : (
+								<div className="prose prose-lg max-w-none text-primary leading-relaxed">
+									<ReactMarkdown>{response}</ReactMarkdown>
+								</div>
+							)}
 						</div>
 					</div>
 				</div>
