@@ -3,6 +3,7 @@ import { useSystemPromptStore, AVAILABLE_MODELS } from '../lib/stores'
 import { useAIService, type ChatMessage } from '../lib/aiService'
 import { validateResponseAgainstSchema } from '../lib/schemaValidation'
 import { useAuthStore } from '../lib/authStore'
+import { getModelPricing } from '../lib/models'
 import ModelItem from './ModelItem'
 import {
 	PlayIcon,
@@ -48,6 +49,7 @@ export default function TableCell({
 		completionTokens: number
 		totalTokens: number
 	} | null>(null)
+	const [cost, setCost] = useState<number | null>(null)
 
 	const {
 		getTableCellResponse,
@@ -84,6 +86,7 @@ export default function TableCell({
 					setDuration(null)
 					setValidationResult(null)
 					setTokenUsage(null)
+					setCost(null)
 				} else {
 					// Parse response, timing, and usage
 					const timingSplit = existingResponse.split('__TIMING__')
@@ -106,6 +109,23 @@ export default function TableCell({
 					setResponse(resp)
 					setDuration(duration)
 					setTokenUsage(usage)
+
+					// Calculate cost if usage is available
+					if (usage) {
+						try {
+							const pricing = getModelPricing(modelId)
+							const calculatedCost =
+								(usage.promptTokens / 1000) * pricing.input +
+								(usage.completionTokens / 1000) * pricing.output
+							setCost(calculatedCost)
+						} catch (error) {
+							console.error('Error calculating cost:', error)
+							setCost(null)
+						}
+					} else {
+						setCost(null)
+					}
+
 					setIsLoading(false)
 					setHasRun(true)
 					setValidationResult(existingValidation || null)
@@ -117,6 +137,7 @@ export default function TableCell({
 				setDuration(null)
 				setValidationResult(null)
 				setTokenUsage(null)
+				setCost(null)
 			}
 		}
 	}, [
@@ -152,6 +173,7 @@ export default function TableCell({
 		setHasRun(false)
 		setDuration(null)
 		setTokenUsage(null)
+		setCost(null)
 
 		try {
 			// Build messages array for AI service
@@ -176,6 +198,22 @@ export default function TableCell({
 			setResponse(result.text)
 			setDuration(responseDuration)
 			setTokenUsage(result.usage || null)
+
+			// Calculate cost if usage is available
+			if (result.usage) {
+				try {
+					const pricing = getModelPricing(modelId)
+					const calculatedCost =
+						(result.usage.promptTokens / 1000) * pricing.input +
+						(result.usage.completionTokens / 1000) * pricing.output
+					setCost(calculatedCost)
+				} catch (error) {
+					console.error('Error calculating cost:', error)
+					setCost(null)
+				}
+			} else {
+				setCost(null)
+			}
 
 			// Save response to store with timing data
 			if (activePromptId && activeVersionId) {
@@ -223,6 +261,10 @@ export default function TableCell({
 	const handleClear = () => {
 		setResponse('')
 		setHasRun(false)
+		setDuration(null)
+		setTokenUsage(null)
+		setCost(null)
+		setValidationResult(null)
 		if (activePromptId && activeVersionId) {
 			updateTableCellResponse(
 				activePromptId,
@@ -343,6 +385,9 @@ export default function TableCell({
 												{tokenUsage.totalTokens} */}
 												{tokenUsage.totalTokens} tokens,{' '}
 											</span>
+										)}
+										{cost !== null && (
+											<span className="ml-2">${cost.toFixed(10)}, </span>
 										)}
 										{(duration / 1000).toFixed(2)}s
 									</div>
