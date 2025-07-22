@@ -402,12 +402,32 @@ export default function TableCell({
 
 							<div className="pb-10 text-primary break-words p-2">
 								{showRaw ? (
-									<pre className="whitespace-pre-wrap font-mono text-sm">
+									<pre className="whitespace-pre-wrap font-mono text-sm break-words">
 										{response}
 									</pre>
 								) : (
-									<div className="prose prose-sm max-w-none">
-										<ReactMarkdown>{response}</ReactMarkdown>
+									<div className="prose prose-sm max-w-none break-words overflow-wrap-anywhere">
+										<ReactMarkdown
+											components={{
+												p: ({ children }) => (
+													<p className="break-words whitespace-pre-wrap">
+														{children}
+													</p>
+												),
+												code: ({ children }) => (
+													<code className="break-words whitespace-pre-wrap bg-gray-100 px-1 py-0.5 rounded text-sm">
+														{children}
+													</code>
+												),
+												pre: ({ children }) => (
+													<pre className="break-words whitespace-pre-wrap overflow-x-auto bg-gray-100 p-2 rounded text-sm">
+														{children}
+													</pre>
+												),
+											}}
+										>
+											{response}
+										</ReactMarkdown>
 									</div>
 								)}
 							</div>
@@ -512,12 +532,32 @@ export default function TableCell({
 						{/* Modal Content */}
 						<div className="flex-1 overflow-y-auto p-4">
 							{showRaw ? (
-								<pre className="whitespace-pre-wrap text-primary text-lg leading-relaxed font-mono">
+								<pre className="whitespace-pre-wrap text-primary text-lg leading-relaxed font-mono break-words">
 									{response}
 								</pre>
 							) : (
-								<div className="prose prose-lg max-w-none text-primary leading-relaxed">
-									<ReactMarkdown>{response}</ReactMarkdown>
+								<div className="prose prose-lg max-w-none text-primary leading-relaxed break-words overflow-wrap-anywhere">
+									<ReactMarkdown
+										components={{
+											p: ({ children }) => (
+												<p className="break-words whitespace-pre-wrap">
+													{children}
+												</p>
+											),
+											code: ({ children }) => (
+												<code className="break-words whitespace-pre-wrap bg-gray-100 px-1 py-0.5 rounded text-sm">
+													{children}
+												</code>
+											),
+											pre: ({ children }) => (
+												<pre className="break-words whitespace-pre-wrap overflow-x-auto bg-gray-100 p-3 rounded">
+													{children}
+												</pre>
+											),
+										}}
+									>
+										{response}
+									</ReactMarkdown>
 								</div>
 							)}
 						</div>
