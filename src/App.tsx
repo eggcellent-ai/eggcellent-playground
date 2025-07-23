@@ -1,18 +1,34 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import Header from './components/Header'
 import Home from './pages/Home'
 import PromptDetailPage from './pages/PromptDetail'
 import Models from './pages/Models'
+import LandingPage from './components/LandingPage'
 import { initializeAuth } from './lib/authStore'
 import { setupAutoSync } from './lib/syncStore'
 
 function App() {
+	const [showLandingPageOnFirst, setShowLandingPageOnFirst] = useState(false)
+
 	useEffect(() => {
 		initializeAuth()
 		setupAutoSync()
+
+		// Check if user has seen the landing page before
+		const hasSeenLandingPage = localStorage.getItem(
+			'eggcellent-has-seen-landing'
+		)
+		if (!hasSeenLandingPage) {
+			setShowLandingPageOnFirst(true)
+		}
 	}, [])
+
+	const handleCloseLandingPage = () => {
+		setShowLandingPageOnFirst(false)
+		localStorage.setItem('eggcellent-has-seen-landing', 'true')
+	}
 
 	return (
 		<Router>
@@ -26,6 +42,12 @@ function App() {
 					</Routes>
 				</div>
 			</div>
+
+			{/* Landing Page Modal for first-time visitors */}
+			<LandingPage
+				isOpen={showLandingPageOnFirst}
+				onClose={handleCloseLandingPage}
+			/>
 		</Router>
 	)
 }
