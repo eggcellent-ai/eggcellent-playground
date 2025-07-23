@@ -25,6 +25,45 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 		}
 	}, [isOpen])
 
+	// Disable body scroll when modal is open
+	useEffect(() => {
+		if (isOpen) {
+			// Save current scroll position
+			const scrollY = window.scrollY
+			// Disable scroll
+			document.body.style.overflow = 'hidden'
+			document.body.style.position = 'fixed'
+			document.body.style.top = `-${scrollY}px`
+			document.body.style.width = '100%'
+
+			return () => {
+				// Re-enable scroll and restore position
+				document.body.style.overflow = ''
+				document.body.style.position = ''
+				document.body.style.top = ''
+				document.body.style.width = ''
+				window.scrollTo(0, scrollY)
+			}
+		}
+	}, [isOpen])
+
+	// Handle Esc key to close modal
+	useEffect(() => {
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === 'Escape' && isOpen) {
+				onClose()
+			}
+		}
+
+		if (isOpen) {
+			document.addEventListener('keydown', handleKeyDown)
+		}
+
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown)
+		}
+	}, [isOpen, onClose])
+
 	if (!isOpen) return null
 
 	const features = [
@@ -107,34 +146,39 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 	]
 
 	return (
-		<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+		<div
+			className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-2 sm:p-4"
+			onClick={onClose}
+		>
 			<div
-				className={`bg-surface-card rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto transition-all duration-300 ${
+				className={`relative bg-surface-card shadow-2xl max-w-7xl w-full max-h-[95vh] overflow-y-auto transition-all duration-300 ${
 					animateIn ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
 				}`}
+				onClick={(e) => e.stopPropagation()}
 			>
 				{/* Close Button */}
 				<button
 					onClick={onClose}
-					className="absolute top-6 right-6 p-2 hover:bg-neutral-light rounded-full transition-colors z-10"
+					className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 hover:bg-neutral-light rounded-full transition-colors z-20 bg-surface-card shadow-md"
+					title="Close (Esc)"
 				>
-					<XMarkIcon className="w-6 h-6 text-text-secondary" />
+					<XMarkIcon className="w-6 h-6 text-secondary" />
 				</button>
 
 				{/* Hero Section */}
-				<div className="px-8 pt-12 pb-16 text-center bg-gradient-to-br from-primary/10 to-blue-50">
+				<div className="px-8 pt-16 pb-16 text-center bg-gradient-to-br from-primary/10 to-blue-50 gap-6 flex flex-col items-center">
 					<div className="mb-8">
 						<img
 							src="/image.png"
 							alt="Eggcellent AI Logo"
 							className="mx-auto mb-6"
-							style={{ maxWidth: '200px', height: 'auto' }}
+							style={{ maxWidth: '300px', height: 'auto' }}
 						/>
 					</div>
-					<h1 className="text-4xl md:text-6xl font-bold text-text-primary mb-6">
-						The AI Prompt <span className="text-primary">Playground</span>
+					<h1 className="text-4xl md:text-6xl font-bold text-primary mb-6">
+						Find your best model
 					</h1>
-					<p className="text-xl md:text-2xl text-text-secondary mb-8 max-w-3xl mx-auto">
+					<p className="text-xl md:text-2xl text-secondary mb-8 max-w-3xl mx-auto">
 						Test, compare, and debug AI prompts with a powerful local-first tool
 						designed for developers, AI builders, and startup founders.
 					</p>
@@ -148,7 +192,7 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 
 				{/* Features Section */}
 				<div className="px-8 py-16">
-					<h2 className="text-3xl md:text-4xl font-bold text-center text-text-primary mb-12">
+					<h2 className="text-3xl md:text-4xl font-bold text-center text-primary mb-12">
 						Everything you need to perfect your prompts
 					</h2>
 					<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -157,10 +201,10 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 								<div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-2xl flex items-center justify-center">
 									<feature.icon className="w-8 h-8 text-primary" />
 								</div>
-								<h3 className="text-xl font-semibold text-text-primary mb-3">
+								<h3 className="text-xl font-semibold text-primary mb-3">
 									{feature.title}
 								</h3>
-								<p className="text-text-secondary leading-relaxed">
+								<p className="text-secondary leading-relaxed">
 									{feature.description}
 								</p>
 							</div>
@@ -171,10 +215,10 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 				{/* Model Comparison Demo */}
 				<div className="px-8 py-16 bg-neutral-light">
 					<div className="text-center mb-12">
-						<h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">
+						<h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
 							Compare models side-by-side
 						</h2>
-						<p className="text-xl text-text-secondary max-w-2xl mx-auto">
+						<p className="text-xl text-secondary max-w-2xl mx-auto">
 							See how different AI models respond to your prompts and choose the
 							best one for your use case.
 						</p>
@@ -187,7 +231,7 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 										<div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
 										<span className="font-semibold">GPT-4</span>
 									</div>
-									<p className="text-sm text-text-secondary">
+									<p className="text-sm text-secondary">
 										"Here's a comprehensive solution that considers multiple
 										perspectives..."
 									</p>
@@ -197,7 +241,7 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 										<div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
 										<span className="font-semibold">Claude</span>
 									</div>
-									<p className="text-sm text-text-secondary">
+									<p className="text-sm text-secondary">
 										"I'll approach this thoughtfully by breaking down the key
 										components..."
 									</p>
@@ -207,7 +251,7 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 										<div className="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
 										<span className="font-semibold">Gemini</span>
 									</div>
-									<p className="text-sm text-text-secondary">
+									<p className="text-sm text-secondary">
 										"Let me analyze this step by step to provide an optimal
 										response..."
 									</p>
@@ -219,7 +263,7 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 
 				{/* How it Works */}
 				<div className="px-8 py-16">
-					<h2 className="text-3xl md:text-4xl font-bold text-center text-text-primary mb-12">
+					<h2 className="text-3xl md:text-4xl font-bold text-center text-primary mb-12">
 						How it works
 					</h2>
 					<div className="max-w-4xl mx-auto">
@@ -229,10 +273,10 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 									<div className="w-16 h-16 mx-auto mb-6 bg-primary text-white rounded-2xl flex items-center justify-center font-bold text-xl">
 										{step.number}
 									</div>
-									<h3 className="text-xl font-semibold text-text-primary mb-3">
+									<h3 className="text-xl font-semibold text-primary mb-3">
 										{step.title}
 									</h3>
-									<p className="text-text-secondary leading-relaxed">
+									<p className="text-secondary leading-relaxed">
 										{step.description}
 									</p>
 								</div>
@@ -243,7 +287,7 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 
 				{/* Use Cases */}
 				<div className="px-8 py-16 bg-neutral-light">
-					<h2 className="text-3xl md:text-4xl font-bold text-center text-text-primary mb-12">
+					<h2 className="text-3xl md:text-4xl font-bold text-center text-primary mb-12">
 						Perfect for
 					</h2>
 					<div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8">
@@ -255,10 +299,10 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 								<div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-2xl flex items-center justify-center">
 									<useCase.icon className="w-8 h-8 text-primary" />
 								</div>
-								<h3 className="text-xl font-semibold text-text-primary mb-3">
+								<h3 className="text-xl font-semibold text-primary mb-3">
 									{useCase.title}
 								</h3>
-								<p className="text-text-secondary leading-relaxed">
+								<p className="text-secondary leading-relaxed">
 									{useCase.description}
 								</p>
 							</div>
@@ -268,10 +312,10 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 
 				{/* Call to Action */}
 				<div className="px-8 py-16 text-center">
-					<h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-6">
+					<h2 className="text-3xl md:text-4xl font-bold text-primary mb-6">
 						Ready to improve your AI prompts?
 					</h2>
-					<p className="text-xl text-text-secondary mb-8 max-w-2xl mx-auto">
+					<p className="text-xl text-secondary mb-8 max-w-2xl mx-auto">
 						Start testing and optimizing your prompts today with our powerful,
 						local-first tool.
 					</p>
@@ -286,7 +330,7 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 							href="https://github.com/eggcellent-ai/eggcellent-playground"
 							target="_blank"
 							rel="noopener noreferrer"
-							className="border border-neutral hover:bg-neutral-light px-8 py-4 rounded-xl font-semibold text-lg transition-colors text-text-primary"
+							className="border border-neutral hover:bg-neutral-light px-8 py-4 rounded-xl font-semibold text-lg transition-colors text-primary"
 						>
 							View on GitHub
 						</a>
