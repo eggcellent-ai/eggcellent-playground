@@ -19,6 +19,28 @@ const PROVIDER_LOGOS: Record<string, string> = {
 	xAI: xaiLogo,
 }
 
+// Helper function to get average price for sorting/filtering
+const getAveragePrice = (model: {
+	inputPricePer1KToken?: number
+	outputPricePer1KToken?: number
+}): number => {
+	const inputPrice = model.inputPricePer1KToken || 0
+	const outputPrice = model.outputPricePer1KToken || 0
+	return (inputPrice + outputPrice) / 2
+}
+
+// Helper function to get price range for a model based on average price
+const getPriceRange = (model: {
+	inputPricePer1KToken?: number
+	outputPricePer1KToken?: number
+}): string => {
+	const avgPrice = getAveragePrice(model)
+	if (avgPrice === 0) return 'unknown'
+	if (avgPrice < 0.002) return '$'
+	if (avgPrice <= 0.02) return '$$'
+	return '$$$'
+}
+
 export default function ModelComparisonTable() {
 	const [searchQuery, setSearchQuery] = useState('')
 	const [selectedProviders, setSelectedProviders] = useState<string[]>([])
@@ -62,30 +84,8 @@ export default function ModelComparisonTable() {
 	}, [])
 
 	const allPriceRanges = useMemo(() => {
-		return ['cheap', 'medium', 'expensive']
+		return ['$', '$$', '$$$']
 	}, [])
-
-	// Helper function to get average price for sorting/filtering
-	const getAveragePrice = (model: {
-		inputPricePer1KToken?: number
-		outputPricePer1KToken?: number
-	}): number => {
-		const inputPrice = model.inputPricePer1KToken || 0
-		const outputPrice = model.outputPricePer1KToken || 0
-		return (inputPrice + outputPrice) / 2
-	}
-
-	// Helper function to get price range for a model based on average price
-	const getPriceRange = (model: {
-		inputPricePer1KToken?: number
-		outputPricePer1KToken?: number
-	}): string => {
-		const avgPrice = getAveragePrice(model)
-		if (avgPrice === 0) return 'unknown'
-		if (avgPrice < 0.002) return 'cheap'
-		if (avgPrice <= 0.02) return 'medium'
-		return 'expensive'
-	}
 
 	// Handle sort column click
 	const handleSort = (field: string) => {
@@ -689,11 +689,11 @@ export default function ModelComparisonTable() {
 										<td className="p-3 border-r border-neutral text-sm">
 											<span
 												className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-													getPriceRange(model) === 'cheap'
+													getPriceRange(model) === '$'
 														? 'bg-green-100 text-green-800'
-														: getPriceRange(model) === 'medium'
+														: getPriceRange(model) === '$$'
 														? 'bg-yellow-100 text-yellow-800'
-														: getPriceRange(model) === 'expensive'
+														: getPriceRange(model) === '$$$'
 														? 'bg-red-100 text-red-800'
 														: 'bg-gray-100 text-gray-800'
 												}`}
