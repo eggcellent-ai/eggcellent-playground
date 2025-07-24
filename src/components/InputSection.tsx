@@ -239,7 +239,7 @@ export default function InputSection({
 				<button
 					onClick={handleGenerateExamples}
 					disabled={isGeneratingExamples || !user || !hasCredits()}
-					className="px-3 py-1 text-xs bg-primary text-white hover:bg-primary-dark disabled:bg-neutral disabled:text-text-muted transition-colors flex items-center gap-1.5 rounded"
+					className="px-3 py-1 text-xs text-primary hover:bg-amber-200 disabled:bg-neutral disabled:text-text-muted transition-colors flex items-center gap-1.5 rounded"
 					title={
 						!user || !hasCredits()
 							? 'Login and ensure you have credits to generate examples'
