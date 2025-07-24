@@ -14,7 +14,8 @@ import { useAIService, type ChatMessage } from '../lib/aiService'
 import ResponseTable from './ResponseTable'
 import InputSection from './InputSection'
 import SchemaInput from './SchemaInput'
-import { getTableValidation, getVariableFormats } from '../lib/tableUtils'
+import VariablesSection from './VariablesSection'
+import { getTableValidation } from '../lib/tableUtils'
 import { validateResponseAgainstSchema } from '../lib/schemaValidation'
 
 interface TableLayoutProps {
@@ -65,7 +66,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	const [updateSuccess, setUpdateSuccess] = useState(false)
 	const [titleContent, setTitleContent] = useState('')
 	const [detectedVariables, setDetectedVariables] = useState<string[]>([])
-	const [showFullPreview, setShowFullPreview] = useState(false)
 	const [showFullScreenResponses, setShowFullScreenResponses] = useState(false)
 	const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
@@ -594,19 +594,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		setHasUnsavedChanges(false)
 	}, [inputPromptContent])
 
-	// No longer needed - modal handles its own backdrop clicks
-
-	// Variable helper functions
-	const getCurrentVariables = () => {
-		if (!activePromptId) return {}
-		return getPromptVariables(activePromptId || '')
-	}
-
-	const handleUpdateVariable = (key: string, value: string) => {
-		if (!activePromptId) return
-		updatePromptVariable(activePromptId || '', key, value)
-	}
-
 	// Add keyboard shortcut handler
 	const handleKeyboardShortcut = useCallback(
 		(event: KeyboardEvent) => {
@@ -826,116 +813,14 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							</div>
 						)}
 					</div>
+
 					{/* ===== VARIABLES SECTION ===== */}
-					{detectedVariables.length > 0 && (
-						<div>
-							{/* Section Header */}
-							<div className="px-2 pb-2 pt-8">
-								<h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
-									Variables
-								</h2>
-							</div>
-
-							{/* Variables Display */}
-							<div>
-								<div className="overflow-x-auto bg-surface-card">
-									<table className="w-full text-sm border-collapse">
-										<tbody>
-											{detectedVariables.map((variable) => {
-												const currentVariables = getCurrentVariables()
-												const value = currentVariables[variable] || ''
-												const hasValue = value.trim() !== ''
-												const formats = getVariableFormats(
-													variable,
-													promptContent
-												)
-
-												return (
-													<tr key={variable}>
-														<td className="border border-neutral px-3 py-2 font-mono text-sm">
-															<div className="flex flex-wrap gap-1">
-																{formats.map((format, index) => (
-																	<code
-																		key={index}
-																		className={`px-1 py-0.5 rounded text-xs ${
-																			hasValue
-																				? 'bg-success-light text-success-dark'
-																				: 'bg-warning-light text-warning-dark'
-																		}`}
-																	>
-																		{format}
-																	</code>
-																))}
-																{formats.length === 0 && (
-																	<code className="px-1 py-0.5 rounded text-xs bg-warning-light text-warning-dark">
-																		{`{{${variable}}}`}
-																	</code>
-																)}
-															</div>
-														</td>
-														<td className="border border-neutral px-3 py-2">
-															<input
-																type="text"
-																value={value}
-																onChange={(e) =>
-																	handleUpdateVariable(variable, e.target.value)
-																}
-																id={`var-${variable}`}
-																name={`var-${variable}`}
-																placeholder="Enter value..."
-																className="w-full px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-secondary text-primary"
-															/>
-														</td>
-														<td className="border border-neutral px-3 py-2">
-															<span
-																className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-																	hasValue
-																		? 'bg-success-light text-success-dark'
-																		: 'bg-warning-light text-warning-dark'
-																}`}
-															>
-																{hasValue ? '✓ Set' : '⚠ Empty'}
-															</span>
-														</td>
-													</tr>
-												)
-											})}
-										</tbody>
-									</table>
-								</div>
-								{/* Final Prompt Preview */}
-								<div className="p-4">
-									<div className="flex gap-4 items-center mb-4">
-										<div className="text-xs font-medium text-gray-500">
-											{detectedVariables.length} variables will be substituted
-										</div>
-										<button
-											onClick={() => setShowFullPreview(!showFullPreview)}
-											className="text-xs text-blue-500 font-medium"
-										>
-											{showFullPreview ? 'Hide Prompt' : 'Show final prompt'}
-										</button>
-									</div>
-									<div
-										className={`text-sm text-primary whitespace-pre-wrap break-words bg-amber-50 p-4 border border-amber-200 ${
-											!showFullPreview ? 'hidden' : ''
-										}`}
-										id="prompt-preview"
-										role="textbox"
-										aria-label="Final prompt preview"
-									>
-										{activePromptId && activeVersionId
-											? substituteVariables(
-													activePromptId || '',
-													activeVersionId,
-													promptContent
-											  )
-											: promptContent}
-									</div>
-								</div>
-							</div>
-						</div>
-					)}
+					<VariablesSection
+						activePromptId={activePromptId}
+						activeVersionId={activeVersionId}
+						detectedVariables={detectedVariables}
+						promptContent={promptContent}
+					/>
 
 					{/* ===== INPUT SECTION ===== */}
 					<InputSection

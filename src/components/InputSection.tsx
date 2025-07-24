@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useSystemPromptStore } from '../lib/stores'
 import { validateJsonInput } from '../lib/tableUtils'
+import { ApiService } from '../lib/apiService'
+import { useAuthStore } from '../lib/authStore'
 import TableInputForm from './TableInputForm'
 import TabGroup from './TabGroup'
+import { SparklesIcon } from '@heroicons/react/24/outline'
 
 // Debounce helper function
 function debounce(func: (value: string) => void, wait: number) {
@@ -26,6 +29,7 @@ export default function InputSection({
 	activeVersionId,
 }: InputSectionProps) {
 	const { addTableRow, removeTableRow, prompts } = useSystemPromptStore()
+	const { user, hasCredits } = useAuthStore()
 	const [jsonInputValue, setJsonInputValue] = useState('')
 	const [jsonValidationStatus, setJsonValidationStatus] = useState<{
 		isValid: boolean
@@ -33,6 +37,17 @@ export default function InputSection({
 		isEmpty: boolean
 	}>({ isValid: true, message: '', isEmpty: true })
 	const [inputMode, setInputMode] = useState<InputMode>('table')
+	const [isGeneratingExamples, setIsGeneratingExamples] = useState(false)
+	const [generateError, setGenerateError] = useState<string | null>(null)
+
+	// Get current prompt content
+	const getCurrentPromptContent = () => {
+		const currentPrompt = prompts.find((p) => p.id === activePromptId)
+		const currentVersion = currentPrompt?.versions.find(
+			(v) => v.versionId === activeVersionId
+		)
+		return currentVersion?.content || ''
+	}
 
 	// Function to handle JSON input changes with validation
 	const handleJsonInputChange = (inputValue: string) => {
@@ -142,6 +157,55 @@ export default function InputSection({
 		debouncedHandleJsonSave(newValue)
 	}
 
+	// Function to generate input examples
+	const handleGenerateExamples = async () => {
+		const promptContent = getCurrentPromptContent()
+		if (!promptContent.trim()) {
+			setGenerateError('No prompt content available to analyze')
+			return
+		}
+
+		if (!user || !hasCredits()) {
+			setGenerateError(
+				'Please login and ensure you have credits to generate examples'
+			)
+			return
+		}
+
+		setIsGeneratingExamples(true)
+		setGenerateError(null)
+
+		try {
+			const result = await ApiService.generateInputExamples(promptContent)
+
+			if (
+				result.examples &&
+				Array.isArray(result.examples) &&
+				result.examples.length > 0
+			) {
+				// Convert the generated examples to JSON format and set it
+				const jsonData = JSON.stringify(result.examples, null, 2)
+				setJsonInputValue(jsonData)
+				handleJsonInputChange(jsonData)
+				debouncedHandleJsonSave(jsonData)
+
+				// Switch to JSON mode to show the generated examples
+				setInputMode('json')
+			} else {
+				setGenerateError(
+					'No examples were generated. The prompt may not contain detectable variables.'
+				)
+			}
+		} catch (error) {
+			console.error('Error generating examples:', error)
+			setGenerateError(
+				error instanceof Error ? error.message : 'Failed to generate examples'
+			)
+		} finally {
+			setIsGeneratingExamples(false)
+		}
+	}
+
 	// Auto-load current data to JSON input when version changes
 	useEffect(() => {
 		if (activePromptId && activeVersionId) {
@@ -159,6 +223,11 @@ export default function InputSection({
 		}
 	}, [activePromptId, activeVersionId, prompts])
 
+	// Clear generate error when switching modes or prompt changes
+	useEffect(() => {
+		setGenerateError(null)
+	}, [inputMode, activePromptId, activeVersionId])
+
 	return (
 		<div>
 			{/* Section Header */}
@@ -166,7 +235,28 @@ export default function InputSection({
 				<h2 className="text-sm font-semibold text-primary uppercase tracking-wide">
 					Input
 				</h2>
+				{/* Generate Examples Button */}
+				<button
+					onClick={handleGenerateExamples}
+					disabled={isGeneratingExamples || !user || !hasCredits()}
+					className="px-3 py-1 text-xs bg-primary text-white hover:bg-primary-dark disabled:bg-neutral disabled:text-text-muted transition-colors flex items-center gap-1.5 rounded"
+					title={
+						!user || !hasCredits()
+							? 'Login and ensure you have credits to generate examples'
+							: 'Generate example inputs using AI (Gemini 2.5 Pro)'
+					}
+				>
+					<SparklesIcon className="w-3 h-3" />
+					{isGeneratingExamples ? 'Generating...' : 'Generate Examples'}
+				</button>
 			</div>
+
+			{/* Generate Error Display */}
+			{generateError && (
+				<div className="mx-2 mb-2 p-2 bg-error-light border border-error text-error-dark text-xs rounded">
+					{generateError}
+				</div>
+			)}
 
 			{/* Input Content */}
 			<div className="border border-neutral bg-surface-card">
@@ -194,7 +284,9 @@ export default function InputSection({
 Examples of valid formats:
 ["Input 1", "Input 2", "Input 3"]
 [{"input": "Test 1"}, {"text": "Test 2"}]
-{"items": ["Item 1", "Item 2"]}`}
+{"items": ["Item 1", "Item 2"]}
+
+Use the "Generate Examples" button to auto-generate inputs from your prompt variables.`}
 							className="w-full resize-y bg-surface-card text-primary placeholder-text-muted transition-colors text-sm focus:outline-none h-54"
 						/>
 					)}
