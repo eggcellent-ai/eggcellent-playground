@@ -5,6 +5,7 @@ import TableCell from './TableCell'
 import ModelItem from './ModelItem'
 import { AVAILABLE_MODELS } from '../lib/stores'
 import { useEffect } from 'react'
+import { usePromptRunner } from '../lib/usePromptRunner'
 
 interface ResponseTableProps {
 	tableData: Array<{
@@ -18,7 +19,6 @@ interface ResponseTableProps {
 	activeVersionId: string
 	inputPromptContent: string
 	hasValidKeyForModel: (modelId: string) => boolean
-	onRunAllModels: (rowId: string, input: string) => void
 	onRunModelForAllRows: (modelId: string) => void
 	onRemoveRow: (rowId: string) => void
 	onUpdateRowInput: (rowId: string, input: string) => void
@@ -34,7 +34,6 @@ export default function ResponseTable({
 	activeVersionId,
 	inputPromptContent,
 	hasValidKeyForModel,
-	onRunAllModels,
 	onRunModelForAllRows,
 	onRemoveRow,
 	onUpdateRowInput,
@@ -42,6 +41,7 @@ export default function ResponseTable({
 	isFullScreen = false,
 	onClose,
 }: ResponseTableProps) {
+	const { runAllModelsForRow } = usePromptRunner()
 	// Handle Escape key to close modal when in full-screen mode
 	useEffect(() => {
 		if (!isFullScreen) return
@@ -183,7 +183,20 @@ export default function ResponseTable({
 											<div className="flex gap-2">
 												{/* Run All Models Button */}
 												<button
-													onClick={() => onRunAllModels(row.id, row.input)}
+													onClick={() => {
+														if (row.input.trim()) {
+															runAllModelsForRow(
+																selectedModels,
+																row.input,
+																row.id,
+																{
+																	activePromptId,
+																	activeVersionId,
+																	inputPromptContent,
+																}
+															)
+														}
+													}}
 													disabled={!row.input.trim() || isRowLoading}
 													className={`px-3 py-1 bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1 ${
 														isFullScreen ? 'text-sm' : 'text-xs'

@@ -1,18 +1,16 @@
 import { useSystemPromptStore, AVAILABLE_MODELS } from '../lib/stores'
 import { detectVariables } from '../lib/stores'
-import { useAuthStore } from '../lib/authStore'
 import { ArrowsPointingOutIcon } from '@heroicons/react/24/outline'
 import { PlayIcon } from '@heroicons/react/24/solid'
 import { useState, useEffect, useCallback } from 'react'
 import ModelSelectionSection from './ModelSelectionSection'
 import PromptEditor from './PromptEditor'
-import { useAIService, type ChatMessage } from '../lib/aiService'
 import ResponseTable from './ResponseTable'
 import InputSection from './InputSection'
 import SchemaInput from './SchemaInput'
 import VariablesSection from './VariablesSection'
 import { getTableValidation } from '../lib/tableUtils'
-import { validateResponseAgainstSchema } from '../lib/schemaValidation'
+import { usePromptRunner } from '../lib/usePromptRunner'
 
 interface TableLayoutProps {
 	inputPromptContent: string
@@ -25,28 +23,15 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		getTableData,
 		removeTableRow,
 		updateTableRowInput,
-		updateTableCellResponse,
 		updatePromptTitle,
 		prompts,
 		getPromptVariables,
 		updatePromptVariable,
-		substituteVariables,
 		getSelectedModels,
 		updateSelectedModels,
-		getOutputSchema,
-		updateSchemaValidationResult,
 	} = useSystemPromptStore()
 
-	const { generateText, hasValidKeyForModel } = useAIService()
-	const { user, hasCredits } = useAuthStore()
-
-	// Helper function to check if user can use a model (logged in with credits OR has API key)
-	const canUseModel = useCallback(
-		(modelId: string): boolean => {
-			return Boolean((user && hasCredits()) || hasValidKeyForModel(modelId))
-		},
-		[user, hasCredits, hasValidKeyForModel]
-	)
+	const { runModelForAllRows, runEntireTable, canUseModel } = usePromptRunner()
 
 	// Get selected models from store
 	const selectedModels = getSelectedModels(
@@ -140,260 +125,16 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		}
 	}
 
-	const handleRunAllModels = async (rowId: string, input: string) => {
-		// Allow if there's text input
-		const hasContent = input.trim()
-		if (!hasContent || !activePromptId || !activeVersionId) return
-
-		try {
-			// Clear all existing responses and set loading state for each cell
-			selectedModels.forEach((modelId) => {
-				updateTableCellResponse(
-					activePromptId || '',
-					activeVersionId,
-					rowId,
-					modelId,
-					'<loading>' // Special marker to indicate loading state
-				)
-			})
-
-			// Run all selected models in parallel
-			const promises = selectedModels.map(async (modelId) => {
-				try {
-					console.log(`Starting request for ${modelId} with input: ${input}`)
-
-					// Check if we can use this model (logged in with credits OR has API key)
-					if (!canUseModel(modelId)) {
-						const errorMessage =
-							user && !hasCredits()
-								? `Error: Insufficient credits for ${modelId}`
-								: `Error: API key required for ${modelId}`
-						updateTableCellResponse(
-							activePromptId || '',
-							activeVersionId,
-							rowId,
-							modelId,
-							errorMessage
-						)
-						return {
-							modelId,
-							response: errorMessage,
-							error: new Error('Missing API key'),
-							duration: 0,
-						}
-					}
-
-					// Build messages array for AI service
-					const messages: ChatMessage[] = [
-						{
-							role: 'system',
-							content: substituteVariables(
-								activePromptId,
-								activeVersionId,
-								inputPromptContent
-							),
-						},
-						{
-							role: 'user',
-							content: input.trim(),
-						},
-					]
-
-					// Use non-streaming AI service
-					const startTime = performance.now()
-					const result = await generateText(messages, modelId)
-					const endTime = performance.now()
-					const duration = endTime - startTime
-					const fullResponse = result.text
-					let usageStr = ''
-					if (result.usage) {
-						usageStr = `__USAGE__${result.usage.promptTokens},${result.usage.completionTokens},${result.usage.totalTokens}`
-					}
-					updateTableCellResponse(
-						activePromptId || '',
-						activeVersionId,
-						rowId,
-						modelId,
-						`${fullResponse}__TIMING__${duration}${usageStr}`
-					)
-
-					// Validate response against schema if one exists
-					const schema = getOutputSchema(activePromptId || '', activeVersionId)
-					if (schema) {
-						const validation = validateResponseAgainstSchema(fullResponse, {
-							schema,
-						})
-						updateSchemaValidationResult(
-							activePromptId || '',
-							activeVersionId,
-							rowId,
-							modelId,
-							validation
-						)
-					}
-
-					return { modelId, response: fullResponse, error: null, duration }
-				} catch (error) {
-					console.error(`Error with ${modelId}:`, error)
-					const errorMessage =
-						error instanceof Error
-							? error.message
-							: `Failed to get response from ${modelId}`
-					const fullErrorMessage = `Error: ${errorMessage}`
-					updateTableCellResponse(
-						activePromptId || '',
-						activeVersionId,
-						rowId,
-						modelId,
-						fullErrorMessage
-					)
-					return {
-						modelId,
-						response: fullErrorMessage,
-						error: error,
-						duration: 0,
-					}
-				}
-			})
-
-			// Wait for all models to complete
-			const results = await Promise.all(promises)
-			console.log('All models completed:', results)
-		} catch (error) {
-			console.error('Error in handleRunAllModels:', error)
-		}
-	}
-
 	// Function to run a specific model for all rows with content
 	const handleRunModelForAllRows = async (modelId: string) => {
 		if (!activePromptId || !activeVersionId) return
 
-		// Get all rows with content
-		const rowsWithContent = tableData.filter((row) => row.input.trim())
-
-		if (rowsWithContent.length === 0) return
-
 		try {
-			// Clear existing responses and set loading state for this model only
-			rowsWithContent.forEach((row) => {
-				updateTableCellResponse(
-					activePromptId || '',
-					activeVersionId,
-					row.id,
-					modelId,
-					'<loading>' // Special marker to indicate loading state
-				)
+			await runModelForAllRows(modelId, {
+				activePromptId,
+				activeVersionId,
+				inputPromptContent,
 			})
-
-			// Run the specific model for all rows in parallel
-			const promises = rowsWithContent.map(async (row) => {
-				try {
-					console.log(
-						`Starting request for ${modelId} with input: ${row.input}`
-					)
-
-					// Check if we can use this model (logged in with credits OR has API key)
-					if (!canUseModel(modelId)) {
-						const errorMessage =
-							user && !hasCredits()
-								? `Error: Insufficient credits for ${modelId}`
-								: `Error: API key required for ${modelId}`
-						updateTableCellResponse(
-							activePromptId || '',
-							activeVersionId,
-							row.id,
-							modelId,
-							errorMessage
-						)
-						return {
-							rowId: row.id,
-							response: errorMessage,
-							error: new Error('Missing API key'),
-							duration: 0,
-						}
-					}
-
-					// Build messages array for AI service
-					const messages: ChatMessage[] = [
-						{
-							role: 'system',
-							content: substituteVariables(
-								activePromptId,
-								activeVersionId,
-								inputPromptContent
-							),
-						},
-						{
-							role: 'user',
-							content: row.input.trim(),
-						},
-					]
-
-					// Use non-streaming AI service
-					const startTime = performance.now()
-					const result = await generateText(messages, modelId)
-					const endTime = performance.now()
-					const duration = endTime - startTime
-					const fullResponse = result.text
-					let usageStr = ''
-					if (result.usage) {
-						usageStr = `__USAGE__${result.usage.promptTokens},${result.usage.completionTokens},${result.usage.totalTokens}`
-					}
-					updateTableCellResponse(
-						activePromptId || '',
-						activeVersionId,
-						row.id,
-						modelId,
-						`${fullResponse}__TIMING__${duration}${usageStr}`
-					)
-
-					// Validate response against schema if one exists
-					const schema = getOutputSchema(activePromptId || '', activeVersionId)
-					if (schema) {
-						const validation = validateResponseAgainstSchema(fullResponse, {
-							schema,
-						})
-						updateSchemaValidationResult(
-							activePromptId || '',
-							activeVersionId,
-							row.id,
-							modelId,
-							validation
-						)
-					}
-
-					return {
-						rowId: row.id,
-						response: fullResponse,
-						error: null,
-						duration,
-					}
-				} catch (error) {
-					console.error(`Error with ${modelId} for row ${row.id}:`, error)
-					const errorMessage =
-						error instanceof Error
-							? error.message
-							: `Failed to get response from ${modelId}`
-					const fullErrorMessage = `Error: ${errorMessage}`
-					updateTableCellResponse(
-						activePromptId || '',
-						activeVersionId,
-						row.id,
-						modelId,
-						fullErrorMessage
-					)
-					return {
-						rowId: row.id,
-						response: fullErrorMessage,
-						error: error,
-						duration: 0,
-					}
-				}
-			})
-
-			// Wait for all rows to complete
-			const results = await Promise.all(promises)
-			console.log(`All rows completed for model ${modelId}:`, results)
 		} catch (error) {
 			console.error('Error in handleRunModelForAllRows:', error)
 		}
@@ -402,147 +143,14 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 	const handleRunAllTable = useCallback(async () => {
 		if (!activePromptId || !activeVersionId || runningAllTable) return
 
-		// Get all rows with content
-		const rowsWithContent = tableData.filter((row) => row.input.trim())
-
-		if (rowsWithContent.length === 0) return
-
-		// Clear all existing responses and set loading state for each cell
-		rowsWithContent.forEach((row) => {
-			selectedModels.forEach((modelId) => {
-				updateTableCellResponse(
-					activePromptId || '',
-					activeVersionId,
-					row.id,
-					modelId,
-					'<loading>' // Special marker to indicate loading state
-				)
-			})
-		})
-
 		setRunningAllTable(true)
 
 		try {
-			// Run all rows in parallel
-			const rowPromises = rowsWithContent.map(async (row) => {
-				try {
-					// Run all selected models for this row in parallel
-					const modelPromises = selectedModels.map(async (modelId) => {
-						try {
-							console.log(
-								`Starting table request for ${modelId} with input: ${row.input}`
-							)
-
-							// Check if we can use this model (logged in with credits OR has API key)
-							if (!canUseModel(modelId)) {
-								const errorMessage =
-									user && !hasCredits()
-										? `Error: Insufficient credits for ${modelId}`
-										: `Error: API key required for ${modelId}`
-								updateTableCellResponse(
-									activePromptId || '',
-									activeVersionId,
-									row.id,
-									modelId,
-									errorMessage
-								)
-								return {
-									modelId,
-									response: errorMessage,
-									error: new Error('Missing API key'),
-									duration: 0,
-								}
-							}
-
-							// Build messages array for AI service
-							const messages: ChatMessage[] = [
-								{
-									role: 'system',
-									content: substituteVariables(
-										activePromptId,
-										activeVersionId,
-										inputPromptContent
-									),
-								},
-								{
-									role: 'user',
-									content: row.input.trim(),
-								},
-							]
-
-							// Use non-streaming AI service
-							const startTime = performance.now()
-							const result = await generateText(messages, modelId)
-							const endTime = performance.now()
-							const duration = endTime - startTime
-							const fullResponse = result.text
-							let usageStr = ''
-							if (result.usage) {
-								usageStr = `__USAGE__${result.usage.promptTokens},${result.usage.completionTokens},${result.usage.totalTokens}`
-							}
-							updateTableCellResponse(
-								activePromptId || '',
-								activeVersionId,
-								row.id,
-								modelId,
-								`${fullResponse}__TIMING__${duration}${usageStr}`
-							)
-
-							// Validate response against schema if one exists
-							const schema = getOutputSchema(
-								activePromptId || '',
-								activeVersionId
-							)
-							if (schema) {
-								const validation = validateResponseAgainstSchema(fullResponse, {
-									schema,
-								})
-								updateSchemaValidationResult(
-									activePromptId || '',
-									activeVersionId,
-									row.id,
-									modelId,
-									validation
-								)
-							}
-
-							return { modelId, response: fullResponse, error: null, duration }
-						} catch (error) {
-							console.error(`Error with ${modelId}:`, error)
-							const errorMessage =
-								error instanceof Error
-									? error.message
-									: `Failed to get response from ${modelId}`
-							const fullErrorMessage = `Error: ${errorMessage}`
-							updateTableCellResponse(
-								activePromptId || '',
-								activeVersionId,
-								row.id,
-								modelId,
-								fullErrorMessage
-							)
-							return {
-								modelId,
-								response: fullErrorMessage,
-								error: error,
-								duration: 0,
-							}
-						}
-					})
-
-					// Wait for all models to complete for this row
-					const results = await Promise.all(modelPromises)
-					console.log(`All models completed for row ${row.id}:`, results)
-					return { rowId: row.id, results }
-				} catch (error) {
-					console.error(`Error processing row ${row.id}:`, error)
-					return { rowId: row.id, error }
-				}
+			await runEntireTable(selectedModels, {
+				activePromptId,
+				activeVersionId,
+				inputPromptContent,
 			})
-
-			// Wait for all rows to complete
-			const allResults = await Promise.all(rowPromises)
-			console.log('All table requests completed:', allResults)
 		} catch (error) {
 			console.error('Error in handleRunAllTable:', error)
 		} finally {
@@ -552,17 +160,9 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 		activePromptId,
 		activeVersionId,
 		runningAllTable,
-		tableData,
 		selectedModels,
-		generateText,
-		updateTableCellResponse,
-		substituteVariables,
+		runEntireTable,
 		inputPromptContent,
-		getOutputSchema,
-		updateSchemaValidationResult,
-		canUseModel,
-		hasCredits,
-		user,
 	])
 
 	const handleSaveTitle = () => {
@@ -733,7 +333,6 @@ export default function TableLayout({ inputPromptContent }: TableLayoutProps) {
 							activeVersionId={activeVersionId}
 							inputPromptContent={inputPromptContent}
 							hasValidKeyForModel={canUseModel}
-							onRunAllModels={handleRunAllModels}
 							onRunModelForAllRows={handleRunModelForAllRows}
 							onRemoveRow={handleRemoveRow}
 							onUpdateRowInput={handleUpdateRowInput}

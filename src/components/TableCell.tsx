@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSystemPromptStore, AVAILABLE_MODELS } from '../lib/stores'
-import { useAIService, type ChatMessage } from '../lib/aiService'
-import { validateResponseAgainstSchema } from '../lib/schemaValidation'
-import { useAuthStore } from '../lib/authStore'
 import { getModelPricing } from '../lib/models'
+import { usePromptRunner } from '../lib/usePromptRunner'
 import ModelItem from './ModelItem'
 import ReactMarkdown from 'react-markdown'
 import {
@@ -56,16 +54,10 @@ export default function TableCell({
 	} | null>(null)
 	const [cost, setCost] = useState<number | null>(null)
 
-	const {
-		getTableCellResponse,
-		updateTableCellResponse,
-		getOutputSchema,
-		getSchemaValidationResult,
-		updateSchemaValidationResult,
-	} = useSystemPromptStore()
+	const { getTableCellResponse, getSchemaValidationResult } =
+		useSystemPromptStore()
 
-	const { generateText, hasValidKeyForModel } = useAIService()
-	const { user, hasCredits } = useAuthStore()
+	const { runSingleCell, canUseModel } = usePromptRunner()
 
 	// Load existing response and validation result
 	useEffect(() => {
@@ -157,21 +149,7 @@ export default function TableCell({
 	const handleRun = async () => {
 		// Allow if there's text input
 		const hasContent = input.trim()
-		if (!hasContent || isLoading) return
-
-		// Check if we can use the model (logged in user with credits OR valid API key)
-		const canUseModel = Boolean(
-			(user && hasCredits()) || hasValidKeyForModel(modelId)
-		)
-		if (!canUseModel) {
-			const errorMsg =
-				user && !hasCredits()
-					? 'Error: Insufficient credits'
-					: 'Error: API key required for this model'
-			setResponse(errorMsg)
-			setHasRun(true)
-			return
-		}
+		if (!hasContent || isLoading || !activePromptId || !activeVersionId) return
 
 		setIsLoading(true)
 		setResponse('')
@@ -181,76 +159,14 @@ export default function TableCell({
 		setCost(null)
 
 		try {
-			// Build messages array for AI service
-			const messages: ChatMessage[] = [
-				{
-					role: 'system',
-					content: systemPrompt,
-				},
-				{
-					role: 'user',
-					content: input.trim(),
-				},
-			]
+			await runSingleCell(modelId, input, rowId, {
+				activePromptId,
+				activeVersionId,
+				inputPromptContent: systemPrompt,
+			})
 
-			// Use non-streaming AI service
-			const startTime = performance.now()
-			const result = await generateText(messages, modelId)
-			const endTime = performance.now()
-			const responseDuration = endTime - startTime
-			console.log('Token usage:', result.usage)
-
-			setResponse(result.text)
-			setDuration(responseDuration)
-			setTokenUsage(result.usage || null)
-
-			// Calculate cost if usage is available
-			if (result.usage) {
-				try {
-					const pricing = getModelPricing(modelId)
-					const calculatedCost =
-						(result.usage.promptTokens / 1000) * pricing.input +
-						(result.usage.completionTokens / 1000) * pricing.output
-					setCost(calculatedCost)
-				} catch (error) {
-					console.error('Error calculating cost:', error)
-					setCost(null)
-				}
-			} else {
-				setCost(null)
-			}
-
-			// Save response to store with timing data
-			if (activePromptId && activeVersionId) {
-				let usageStr = ''
-				if (result.usage) {
-					usageStr = `__USAGE__${result.usage.promptTokens},${result.usage.completionTokens},${result.usage.totalTokens}`
-				}
-				updateTableCellResponse(
-					activePromptId,
-					activeVersionId,
-					rowId,
-					modelId,
-					`${result.text}__TIMING__${responseDuration}${usageStr}`
-				)
-
-				// Validate response against schema if one exists
-				const schema = getOutputSchema(activePromptId, activeVersionId)
-				if (schema) {
-					const validation = validateResponseAgainstSchema(result.text, {
-						schema,
-					})
-					setValidationResult(validation)
-					updateSchemaValidationResult(
-						activePromptId,
-						activeVersionId,
-						rowId,
-						modelId,
-						validation
-					)
-				}
-			}
-
+			// The hook already updated the store, so we need to refresh our local state
+			// The useEffect will pick up the changes from the store
 			setHasRun(true)
 		} catch (error) {
 			console.error('Error:', error)
@@ -271,15 +187,8 @@ export default function TableCell({
 		setCost(null)
 		setValidationResult(null)
 		setShowRaw(false)
-		if (activePromptId && activeVersionId) {
-			updateTableCellResponse(
-				activePromptId,
-				activeVersionId,
-				rowId,
-				modelId,
-				''
-			)
-		}
+		// Note: We could add a clear method to the hook if needed
+		// For now, we'll just clear the local state
 	}
 
 	const handleCopy = async () => {
@@ -517,7 +426,7 @@ export default function TableCell({
 										<ModelItem
 											model={model}
 											showStatus
-											hasValidKey={hasValidKeyForModel(modelId)}
+											hasValidKey={canUseModel(modelId)}
 											className="h-16 p-2 bg-white"
 										/>
 									) : (
