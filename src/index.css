@@ -50,50 +50,6 @@
 		'Courier New', monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		/* Base colors */
-		--background: #0a0a0a;
-		--foreground: #ededed;
-
-		/* Semantic colors - dark mode variants */
-		--primary: #00d945;
-		--primary-light: #166534;
-		--primary-dark: #22c55e;
-
-		--secondary: #0080bc;
-		--secondary-light: #262626;
-		--secondary-dark: #0099dd;
-
-		--neutral: #404040;
-		--neutral-light: #171717;
-		--neutral-dark: #ededed;
-		--neutral-hover: #262626;
-
-		--success: #22c55e;
-		--success-light: #166534;
-		--success-dark: #4ade80;
-
-		--error: #ef4444;
-		--error-light: #7f1d1d;
-		--error-dark: #f87171;
-
-		--warning: #f59e0b;
-		--warning-light: #78350f;
-		--warning-dark: #fbbf24;
-
-		/* Text colors */
-		--text-primary: #ededed;
-		--text-secondary: #a3a3a3;
-		--text-muted: #737373;
-		--text-inverse: #171717;
-
-		/* Surface colors */
-		--surface-card: #171717;
-		--surface-input: #171717;
-	}
-}
-
 html {
 	height: 100%;
 }
