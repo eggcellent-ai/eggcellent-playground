@@ -7,8 +7,6 @@ import {
 	TableCellsIcon,
 	DocumentTextIcon,
 	UserGroupIcon,
-	AcademicCapIcon,
-	RocketLaunchIcon,
 } from '@heroicons/react/24/outline'
 
 interface LandingPageProps {
@@ -100,27 +98,6 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 			title: 'Local-First',
 			description:
 				'Your data stays private - works offline with optional cloud sync',
-		},
-	]
-
-	const useCases = [
-		{
-			icon: RocketLaunchIcon,
-			title: 'AI Startups',
-			description:
-				'Quickly prototype and optimize AI features before production',
-		},
-		{
-			icon: CodeBracketIcon,
-			title: 'Dev Teams',
-			description:
-				'Debug prompts, test edge cases, and ensure consistent AI behavior',
-		},
-		{
-			icon: AcademicCapIcon,
-			title: 'Researchers',
-			description:
-				'Compare model capabilities and analyze AI system performance',
 		},
 	]
 
@@ -260,6 +237,20 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 						</div>
 					</div>
 				</div>
+				{/* No API Keys Required Section */}
+				<div className="px-8 py-16 bg-green-50">
+					<h2 className="text-3xl md:text-4xl font-bold text-center text-primary mb-6">
+						No API Keys Required
+					</h2>
+					<p className="text-xl text-secondary text-center mb-6 max-w-2xl mx-auto">
+						You can try top models like Claude and Gemini without the hassle of
+						signing up for each provider.
+					</p>
+
+					<p className="text-lg text-primary font-semibold text-center mt-6">
+						With Eggcellent, you can skip all that—just start testing instantly.
+					</p>
+				</div>
 
 				{/* How it Works */}
 				<div className="px-8 py-16">
@@ -282,58 +273,6 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 								</div>
 							))}
 						</div>
-					</div>
-				</div>
-
-				{/* Use Cases */}
-				<div className="px-8 py-16 bg-neutral-light">
-					<h2 className="text-3xl md:text-4xl font-bold text-center text-primary mb-12">
-						Perfect for
-					</h2>
-					<div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8">
-						{useCases.map((useCase, index) => (
-							<div
-								key={index}
-								className="bg-surface-card rounded-xl p-8 text-center shadow-sm"
-							>
-								<div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-2xl flex items-center justify-center">
-									<useCase.icon className="w-8 h-8 text-primary" />
-								</div>
-								<h3 className="text-xl font-semibold text-primary mb-3">
-									{useCase.title}
-								</h3>
-								<p className="text-secondary leading-relaxed">
-									{useCase.description}
-								</p>
-							</div>
-						))}
-					</div>
-				</div>
-
-				{/* Call to Action */}
-				<div className="px-8 py-16 text-center">
-					<h2 className="text-3xl md:text-4xl font-bold text-primary mb-6">
-						Ready to improve your AI prompts?
-					</h2>
-					<p className="text-xl text-secondary mb-8 max-w-2xl mx-auto">
-						Start testing and optimizing your prompts today with our powerful,
-						local-first tool.
-					</p>
-					<div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-						<button
-							onClick={onClose}
-							className="bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors"
-						>
-							Start Using Eggcellent
-						</button>
-						<a
-							href="https://github.com/eggcellent-ai/eggcellent-playground"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="border border-neutral hover:bg-neutral-light px-8 py-4 rounded-xl font-semibold text-lg transition-colors text-primary"
-						>
-							View on GitHub
-						</a>
 					</div>
 				</div>
 			</div>
