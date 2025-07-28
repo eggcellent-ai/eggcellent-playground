@@ -8,6 +8,10 @@ import {
 	DocumentTextIcon,
 	UserGroupIcon,
 } from '@heroicons/react/24/outline'
+import OpenAILogo from '@/assets/logos/openai.svg'
+import AnthropicLogo from '@/assets/logos/anthropic.svg'
+import GoogleLogo from '@/assets/logos/google.svg'
+import GrokLogo from '@/assets/logos/grok.svg'
 
 interface LandingPageProps {
 	isOpen: boolean
@@ -101,27 +105,6 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 		},
 	]
 
-	const steps = [
-		{
-			number: '01',
-			title: 'Create Prompts',
-			description:
-				'Add your system prompts and test inputs in a clean table interface',
-		},
-		{
-			number: '02',
-			title: 'Select Models',
-			description:
-				'Choose from GPT-4, Claude, Gemini, and other leading AI models',
-		},
-		{
-			number: '03',
-			title: 'Compare Results',
-			description:
-				'See responses side-by-side to find the best model for your use case',
-		},
-	]
-
 	return (
 		<div
 			className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-2 sm:p-4"
@@ -156,14 +139,14 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 						Find your best model
 					</h1>
 					<p className="text-xl md:text-2xl text-secondary mb-8 max-w-3xl mx-auto">
-						Test, compare, and debug AI prompts with a powerful local-first tool
-						designed for developers, AI builders, and startup founders.
+						Compare AI models, manage prompts, and validate outputs — all in one
+						place.
 					</p>
 					<button
 						onClick={onClose}
-						className="bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors"
+						className="bg-primary hover:bg-primary-dark text-white px-8 py-3 border border-primary font-semibold text-lg transition-colors"
 					>
-						Try it now →
+						Start with your prompt →
 					</button>
 				</div>
 
@@ -190,7 +173,7 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 				</div>
 
 				{/* Model Comparison Demo */}
-				<div className="px-8 py-16 bg-neutral-light">
+				<div className="px-8 py-16 bg-[#f4f4f4]">
 					<div className="text-center mb-12">
 						<h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
 							Compare models side-by-side
@@ -200,22 +183,45 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 							best one for your use case.
 						</p>
 					</div>
+
 					<div className="max-w-4xl mx-auto">
-						<div className="bg-surface-card rounded-xl p-6 shadow-lg">
-							<div className="grid md:grid-cols-3 gap-4">
-								<div className="border border-neutral rounded-lg p-4">
+						{/* Input Prompt Box */}
+						<div className="font-semibold text-primary pb-2">System Prompt</div>
+
+						<div className="mb-6 p-4 border border-neutral gap-2">
+							<span className="text-secondary">
+								Summarize the following article in 3 bullet points: "AI is
+								transforming the world by enabling new possibilities in every
+								industry..."
+							</span>
+						</div>
+						<div className="font-semibold text-primary pb-2">
+							Response with multiple models
+						</div>
+
+						<div>
+							<div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+								<div className="border border-neutral p-4 bg-surface-card">
 									<div className="flex items-center mb-3">
-										<div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-										<span className="font-semibold">GPT-4</span>
+										<img
+											src={OpenAILogo}
+											alt="GPT-4 Logo"
+											className="w-6 h-6 mr-2"
+										/>
+										<span className="font-semibold">OpenAI</span>
 									</div>
 									<p className="text-sm text-secondary">
 										"Here's a comprehensive solution that considers multiple
 										perspectives..."
 									</p>
 								</div>
-								<div className="border border-neutral rounded-lg p-4">
+								<div className="border border-neutral p-4 bg-surface-card">
 									<div className="flex items-center mb-3">
-										<div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+										<img
+											src={AnthropicLogo}
+											alt="Claude Logo"
+											className="w-6 h-6 mr-2"
+										/>
 										<span className="font-semibold">Claude</span>
 									</div>
 									<p className="text-sm text-secondary">
@@ -223,9 +229,13 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 										components..."
 									</p>
 								</div>
-								<div className="border border-neutral rounded-lg p-4">
+								<div className="border border-neutral p-4 bg-surface-card">
 									<div className="flex items-center mb-3">
-										<div className="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
+										<img
+											src={GoogleLogo}
+											alt="Gemini Logo"
+											className="w-6 h-6 mr-2"
+										/>
 										<span className="font-semibold">Gemini</span>
 									</div>
 									<p className="text-sm text-secondary">
@@ -233,10 +243,25 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 										response..."
 									</p>
 								</div>
+								<div className="border border-neutral p-4 bg-surface-card">
+									<div className="flex items-center mb-3">
+										<img
+											src={GrokLogo}
+											alt="Grok Logo"
+											className="w-6 h-6 mr-2"
+										/>
+										<span className="font-semibold">Grok</span>
+									</div>
+									<p className="text-sm text-secondary">
+										"Let me tackle this with a fresh perspective and some humor
+										mixed in..."
+									</p>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+
 				{/* No API Keys Required Section */}
 				<div className="px-8 py-16 bg-green-50">
 					<h2 className="text-3xl md:text-4xl font-bold text-center text-primary mb-6">
@@ -250,30 +275,6 @@ export default function LandingPage({ isOpen, onClose }: LandingPageProps) {
 					<p className="text-lg text-primary font-semibold text-center mt-6">
 						With Eggcellent, you can skip all that—just start testing instantly.
 					</p>
-				</div>
-
-				{/* How it Works */}
-				<div className="px-8 py-16">
-					<h2 className="text-3xl md:text-4xl font-bold text-center text-primary mb-12">
-						How it works
-					</h2>
-					<div className="max-w-4xl mx-auto">
-						<div className="grid md:grid-cols-3 gap-8">
-							{steps.map((step, index) => (
-								<div key={index} className="text-center">
-									<div className="w-16 h-16 mx-auto mb-6 bg-primary text-white rounded-2xl flex items-center justify-center font-bold text-xl">
-										{step.number}
-									</div>
-									<h3 className="text-xl font-semibold text-primary mb-3">
-										{step.title}
-									</h3>
-									<p className="text-secondary leading-relaxed">
-										{step.description}
-									</p>
-								</div>
-							))}
-						</div>
-					</div>
 				</div>
 			</div>
 		</div>
