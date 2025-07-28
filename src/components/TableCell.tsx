@@ -417,7 +417,7 @@ export default function TableCell({
 						className="bg-white shadow-lg max-h-[90vh] w-full flex flex-col"
 						onClick={(e) => e.stopPropagation()}
 					>
-						{/* Modal Header */}
+						Modal Header
 						<div className="flex justify-between items-center border border-neutral bg-neutral">
 							<div className="flex-1">
 								{(() => {
@@ -427,7 +427,6 @@ export default function TableCell({
 											model={model}
 											showStatus
 											hasValidKey={canUseModel(modelId)}
-											className="h-16 p-2 bg-white"
 										/>
 									) : (
 										<h3 className="text-lg font-medium text-primary">
@@ -437,7 +436,6 @@ export default function TableCell({
 								})()}
 							</div>
 						</div>
-
 						{/* Modal Content */}
 						<div className="flex-1 overflow-y-auto p-4">
 							{showRaw ? (

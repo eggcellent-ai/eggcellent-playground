@@ -135,7 +135,7 @@ export default function ResponseTable({
 											model={model!}
 											showStatus
 											hasValidKey={hasValidKeyForModel(modelId)}
-											className={'h-15 p-3'}
+											className={'p-4'}
 											showRemoveButton={!!onRemoveModel}
 											onRemove={() => onRemoveModel?.(modelId)}
 											disableRemove={selectedModels.length <= 1}

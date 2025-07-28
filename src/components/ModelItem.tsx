@@ -84,7 +84,7 @@ export default function ModelItem({
 
 	return (
 		<div
-			className={`bg-surface-input p-4 flex items-center justify-between group relative h-15 ${
+			className={`bg-surface-input flex items-center justify-between group relative ${
 				onClick
 					? 'cursor-pointer hover:border-secondary hover:bg-neutral-light transition-all'
 					: ''

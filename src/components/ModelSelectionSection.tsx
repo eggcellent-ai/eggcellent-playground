@@ -71,7 +71,7 @@ export default function ModelSelectionSection({
 										disableRemove={selectedModels.length <= 1}
 										showStatus
 										hasValidKey={hasValidKeyForModel(modelId)}
-										className="border border-neutral"
+										className=" pl-4 border border-neutral"
 									/>
 								)
 							})}

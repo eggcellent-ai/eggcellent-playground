@@ -187,13 +187,13 @@ export default function ModelSelectionModal({
 											</div>
 
 											{/* Models Grid */}
-											<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+											<div className="flex flex-wrap gap-3">
 												{models.map((model) => (
 													<ModelItem
 														key={model.id}
 														model={model}
 														showLogo={false}
-														className="border border-neutral"
+														className="border border-neutral p-2 "
 														onClick={() => handleModelClick(model.id)}
 														selected={tempSelectedModels.includes(model.id)}
 													/>
