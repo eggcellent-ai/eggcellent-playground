@@ -2,6 +2,7 @@ import { useSystemPromptStore } from '../lib/stores'
 import { useNavigate } from 'react-router-dom'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import { DocumentTextIcon } from '@heroicons/react/24/outline'
+import { useState } from 'react'
 
 interface PromptType {
 	id: string
@@ -13,6 +14,7 @@ export default function PromptList() {
 		useSystemPromptStore()
 
 	const navigate = useNavigate()
+	const [openMenuId, setOpenMenuId] = useState<string | null>(null)
 
 	const handlePromptClick = (promptId: string) => {
 		navigate(`/prompt/${promptId}`)
@@ -60,13 +62,26 @@ export default function PromptList() {
 		return content.length > 50 ? content.substring(0, 50) + '...' : content
 	}
 
+	const getTimeAgo = (timestamp: number) => {
+		const now = new Date().getTime()
+		const diffInMs = now - timestamp
+		const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
+
+		if (diffInDays === 0) return 'today'
+		if (diffInDays === 1) return 'yesterday'
+		if (diffInDays < 7) return `${diffInDays} days ago`
+		if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} weeks ago`
+		if (diffInDays < 365) return `${Math.floor(diffInDays / 30)} months ago`
+		return `${Math.floor(diffInDays / 365)} years ago`
+	}
+
 	return (
 		<div className="flex flex-col h-full py-10">
 			<div className="flex-1 overflow-y-auto">
 				{prompts.length === 0 ? (
 					<div className="h-full flex items-center justify-center">
 						<div className="text-center py-12">
-							<div className="w-24 h-24 mx-auto mb-4 bg-neutral-hover flex items-center justify-center">
+							<div className="w-24 mx-auto mb-4 bg-neutral-hover flex items-center justify-center">
 								<DocumentTextIcon
 									className="w-12 h-12 text-muted"
 									aria-hidden="true"
@@ -90,55 +105,74 @@ export default function PromptList() {
 						</div>
 					</div>
 				) : (
-					<div className=" space-y-4">
+					<div className="grid grid-cols-3 gap-4">
 						{prompts.map((prompt: PromptType) => (
 							<div
 								key={prompt.id}
 								onClick={() => handlePromptClick(prompt.id)}
-								className="bg-surface-card border border-neutral hover:bg-neutral-hover transition-all duration-200 cursor-pointer group"
+								className="bg-surface-card border border-neutral hover:bg-neutral-hover transition-all duration-200 cursor-pointer group h-48"
 							>
-								<div className="p-4">
-									<div className="flex items-start justify-between mb-8">
-										<div className="flex-1 min-w-0 flex items-start">
+								<div className="p-4 h-full flex flex-col">
+									<div className="flex items-start justify-between mb-4">
+										<div className="flex-1 min-w-0 flex items-center gap-2">
 											<h3 className="text-lg font-medium text-primary line-clamp-1">
 												{getPromptTitle(prompt)}
 											</h3>
+											<span className="text-sm text-gray-500">
+												({prompt.versions.length} version
+												{prompt.versions.length !== 1 ? 's' : ''})
+											</span>
 										</div>
-										<div className="flex items-start gap-3">
-											<div className="flex items-center gap-2 text-sm text-gray-500">
-												<span>
-													{prompt.versions.length} version
-													{prompt.versions.length !== 1 ? 's' : ''}
-												</span>
-												<span>•</span>
-												<span>
-													{prompt.versions.length > 0 &&
-														new Date(
-															prompt.versions[
-																prompt.versions.length - 1
-															].timestamp
-														).toLocaleDateString()}
-												</span>
-											</div>
+										<div className="flex items-start gap-2 relative">
 											<button
 												onClick={(e) => {
 													e.stopPropagation()
-													deletePrompt(prompt.id)
+													setOpenMenuId(
+														openMenuId === prompt.id ? null : prompt.id
+													)
 												}}
-												className="transition-opacity p-1 hover:bg-error-50"
-												aria-label="Delete prompt"
+												className="p-1 hover:bg-neutral-200 rounded-full"
+												aria-label="Open menu"
 											>
-												<TrashIcon
-													className="w-4 h-4 text-error-500"
-													aria-hidden="true"
-												/>
+												<span className="w-5 h-5 flex items-center justify-center">
+													⋮
+												</span>
 											</button>
+											{openMenuId === prompt.id && (
+												<div
+													className="absolute right-0 mt-8 w-32 bg-white border border-gray-200 shadow-lg rounded z-10"
+													onClick={(e) => e.stopPropagation()}
+												>
+													<button
+														className="flex items-center w-full px-4 py-2 text-sm text-error-600 hover:bg-error-50"
+														onClick={() => {
+															deletePrompt(prompt.id)
+															setOpenMenuId(null)
+														}}
+													>
+														<TrashIcon
+															className="w-4 h-4 mr-2 text-error-500"
+															aria-hidden="true"
+														/>
+														Delete
+													</button>
+												</div>
+											)}
 										</div>
 									</div>
 
-									<p className="text-sm text-gray-500 line-clamp-3 mb-3">
+									<p className="text-sm text-gray-500 line-clamp-3 flex-1">
 										{getPromptPreview(prompt)}
 									</p>
+									<div className="flex items-center gap-1 text-xs text-gray-500 mt-4 justify-end">
+										Last updated
+										<span>
+											{prompt.versions.length > 0 &&
+												getTimeAgo(
+													prompt.versions[prompt.versions.length - 1].timestamp
+												)}
+										</span>
+									</div>
 								</div>
 							</div>
 						))}
